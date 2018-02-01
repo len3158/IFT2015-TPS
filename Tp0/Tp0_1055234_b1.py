@@ -72,7 +72,7 @@ def test(arg):
 		listeRegless = Regles()
 		grilleJeuu = creerGrill()
 		n = 0
-	for n in range(nbEtape):
-		grilleJeuu.updateGrille(listeRegless)
-	print(grilleJeuu)		
+		for n in range(nbEtape):
+			grilleJeuu.updateGrille(listeRegless)
+		print(grilleJeuu)		
 
