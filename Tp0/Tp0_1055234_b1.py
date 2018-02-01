@@ -57,7 +57,7 @@ def run():
 
 	for n in range(nbEtapes):
 		grilleJeu.updateGrille(listeRegles)
-		print(grilleJeu)
+	print(grilleJeu)
 
 #	else:
 #		print("Vous devez specifier le nombre d'etapes en argument")
@@ -72,8 +72,7 @@ def test(arg):
 		listeRegless = Regles()
 		grilleJeuu = creerGrill()
 		n = 0
-		while (n < nbEtape):
-			grilleJeuu.updateGrille(listeRegless)         
-			n+=1
-		print(grilleJeuu)		
+	for n in range(nbEtape):
+		grilleJeuu.updateGrille(listeRegless)
+	print(grilleJeuu)		
 
