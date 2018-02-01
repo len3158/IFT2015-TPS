@@ -52,10 +52,10 @@ def run():
 		nbEtapes = int(input("Veuillez entrer le nombre etapes :"))
 	elif(sys.argv[1].isdigit()):
 		nbEtapes = sys.argv[1]
-	n=0
 	else:
 		print("Format des arguments incorect")
 		break
+	n=0
 	while (n < nbEtapes):
 		grilleJeu.updateGrille(listeRegles)   
 #		effaceEcran()
