@@ -48,22 +48,17 @@ def run():
 			effaceEcran()
 			print(grilleJeu)
 	nbEtapes = 0
-	if(len(sys.argv) <= 1):         #Si rien entrer
-		nbEtapes = int(input("Veuillez entrer le nombre etapes :"))
-	elif(sys.argv[1].isdigit()):
+	bonFormat = True
+	if(len(sys.argv) > 1 and sys.argv[1].isdigit()):
 		nbEtapes = sys.argv[1]
 	else:
 		print("Format des arguments incorect")
-		break
-	n=0
-	while (n < nbEtapes):
-		grilleJeu.updateGrille(listeRegles)   
-#		effaceEcran()
-#		time.sleep(1)
-		n+=1
-	print(grilleJeu)
-	else:
-			print("Format des arguments incorect")
+		nbEtapes = int(input("Veuillez entrer le nombre etapes :"))
+
+	for n in range(nbEtapes):
+		grilleJeu.updateGrille(listeRegles)
+		print(grilleJeu)
+
 #	else:
 #		print("Vous devez specifier le nombre d'etapes en argument")
 
