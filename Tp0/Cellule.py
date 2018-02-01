@@ -1,11 +1,13 @@
-"""" Auteurs : Mehran Asadi  Matricule : 
+"""" Auteurs : Mehran Asadi  Matricule : 1047837
 			   Lenny Siemeni Matricule : 1055234 """
 from Grille import *
 
 class Cellule:
 	"""On considere une cellule de la grille comme un organisme"""
 	
-	def __init__(self,etat,position,bleu = 0,rouge = 0,jaune = 0,vert = 0):
+	def __init__(self,etat,position):
+		self._etat=etat #son etat
+		self._position = position
 	
 	def __str__(self):
 		"""Override de toString pour afficher la couleur de la cellule"""
@@ -31,7 +33,7 @@ class Cellule:
 	
 	def isAlive(self):
 		"""Determine si une cellule est vivante ou non"""
-		return str(self._etat) != " . "
+		return str(self._etat) != ". "
 
 	def __getitem__(self):
 		"""Accesseur qui retourne l'etat d'une cellule"""

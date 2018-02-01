@@ -1,4 +1,4 @@
-"""" Auteurs : Mehran Asadi  Matricule : 
+"""" Auteurs : Mehran Asadi  Matricule : 1047837
 			   Lenny Siemeni Matricule : 1055234 """
 from Cellule import *
 from Regles import *
@@ -22,7 +22,7 @@ class Grille:
 	def ajouterCelulle(self,elem,temp):
 		"""Initialise l'etat de la cellule courante"""
 		if elem in ['R','Y','B','G']:
-			self._grille[temp[0]][temp[1]]=Cellule(''+elem+' ',temp)
+			self._grille[temp[0]][temp[1]]=Cellule(elem+' ',temp)
 		else: 
 			self._grille[temp[0]][temp[1]]=Cellule('. ',temp)
 	
@@ -38,7 +38,7 @@ class Grille:
 		self._image = ""
 		for m in range(self._ligne):
 			for n in range(self._colonne):
-				self._image += self._grille[m][n].__str__()
+				self._image += self._grille[m][n]._etat
 			if(m < self._ligne - 1):
 				self._image += "\n"
 		return self._image
@@ -55,20 +55,23 @@ class Grille:
 				nbVoisins = self._grilleInvisible[i][j].voisinage(self._grilleInvisible)  #on regarde combien de voisins a la cellule courante
 				
 				if not self._grilleInvisible[i][j].isAlive(): #Si la cellule actuelle est morte on la fait naitre
-					if nbVoisins >=listeRegle._bleu[0]:			#conditions reunies pour faire naitre un bleu
+					if nbVoisins ==listeRegle._bleu[0]:			#conditions reunies pour faire naitre un bleu
 						self.modifierCellule('B ',i,j)
-					elif nbVoisins >=listeRegle._jaune[0]:		#idem pour un jaune
+					elif nbVoisins ==listeRegle._jaune[0]:		#idem pour un jaune
 						self.modifierCellule('Y ',i,j)       
-					elif nbVoisins >=listeRegle._rouge[0]:		#idem pour un rouge
+					elif nbVoisins ==listeRegle._rouge[0]:		#idem pour un rouge
 						self.modifierCellule('R ',i,j)
-					elif nbVoisins >=listeRegle._vert[0]:		#et un vert
+					elif nbVoisins ==listeRegle._vert[0]:		#et un vert
 						self.modifierCellule('G ',i,j)         
-				elif self._grilleInvisible[i][j]._etat=='B ' and (nbVoisins<listeRegle._bleu[1] or nbVoisins>listeRegle._bleu[2]):  
-					self.modifierCellule('. ',i,j)
-				elif self._grilleInvisible[i][j]._etat=='Y ' and (nbVoisins<listeRegle._jaune[1] or nbVoisins>listeRegle._jaune[2]):         
-					self.modifierCellule('. ',i,j)
-				elif self._grilleInvisible[i][j]._etat=='R ' and (nbVoisins<listeRegle._rouge[1] or nbVoisins>listeRegle._rouge[2]):    
-					self.modifierCellule('. ',i,j)
-				elif self._grilleInvisible[i][j]._etat=='G ' and (nbVoisins<listeRegle._vert[1] or nbVoisins>listeRegle._vert[2]):    
-					self.modifierCellule('. ',i,j)
+				else:
+					if self._grilleInvisible[i][j]._etat=='B ' and (nbVoisins<listeRegle._bleu[1] or nbVoisins>listeRegle._bleu[2]):  
+						self.modifierCellule('. ',i,j)
+					if self._grilleInvisible[i][j]._etat=='Y ' and (nbVoisins<listeRegle._jaune[1] or nbVoisins>listeRegle._jaune[2]):         
+						self.modifierCellule('. ',i,j)
+						print(nbVoisins)
+					if self._grilleInvisible[i][j]._etat=='R ' and (nbVoisins < listeRegle._rouge[1] or nbVoisins > listeRegle._rouge[2]):    
+						self.modifierCellule('. ',i,j)
+					if self._grilleInvisible[i][j]._etat=='G ' and (nbVoisins<listeRegle._vert[1] or nbVoisins>listeRegle._vert[2]):    
+						self.modifierCellule('. ',i,j)
+						print(nbVoisins)
 		return self._grille

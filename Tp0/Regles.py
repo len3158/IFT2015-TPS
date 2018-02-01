@@ -1,4 +1,4 @@
-"""" Auteurs : Mehran Asadi  Matricule : 
+"""" Auteurs : Mehran Asadi  Matricule : 1047837
 			   Lenny Siemeni Matricule : 1055234 """
 class Regles:
 		def __init__(self):
