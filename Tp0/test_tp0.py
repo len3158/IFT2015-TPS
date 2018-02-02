@@ -7,7 +7,7 @@ import glob
 import shutil
 # Changer cette ligne pour le nom de votre script
 # Change this line to your script name
-from Tp0_1055234_b1 import test as test
+from Tp0_1055234_1047837_b1 import test as test
 
 def test_all():
 	"""
