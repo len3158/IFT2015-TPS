@@ -34,6 +34,7 @@ def simulation(grille,nombreEtape,lesRegles):
 		et qui lance la simulation puis affiche la dernière grille resultante """
 	for n in range(nombreEtape):
 		grille.updateGrille(lesRegles)
+	print("\n")
 	print(grille)
 
 

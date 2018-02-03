@@ -68,10 +68,8 @@ class Grille:
 						self.modifierCellule('. ',i,j)
 					if self._grilleInvisible[i][j]._etat=='Y ' and (nbVoisins<listeRegle._jaune[1] or nbVoisins>listeRegle._jaune[2]):         
 						self.modifierCellule('. ',i,j)
-						print(nbVoisins)
 					if self._grilleInvisible[i][j]._etat=='R ' and (nbVoisins < listeRegle._rouge[1] or nbVoisins > listeRegle._rouge[2]):    
 						self.modifierCellule('. ',i,j)
 					if self._grilleInvisible[i][j]._etat=='G ' and (nbVoisins<listeRegle._vert[1] or nbVoisins>listeRegle._vert[2]):    
 						self.modifierCellule('. ',i,j)
-						print(nbVoisins)
 		return self._grille
