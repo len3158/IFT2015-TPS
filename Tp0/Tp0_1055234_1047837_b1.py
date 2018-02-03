@@ -4,7 +4,6 @@ from Grille import *
 from Regles import *
 import sys
 import time
-import os
 
 def effaceEcran():
 	"""Methode qui insere 100 lignes vides
