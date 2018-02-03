@@ -17,3 +17,4 @@ class Regles:
 						self._bleu=tabRegles
 					elif ligneLue[0]=='Y':
 						self._jaune=tabRegles
+			f.close()
