@@ -56,7 +56,8 @@ def run():
 	if '--animation' in sys.argv:			#Si l'utilisateur lance l'animation
 		animations(grilleJeu,listeRegles)
 	elif(len(sys.argv) > 1 and sys.argv[1].isdigit()):	#Si l'utilisateur entre une valeur en lanceant l'application
-		simulation(grilleJeu,sys.argv[1],listeRegles)
+		nbEtapes = int(sys.argv[1])
+		simulation(grilleJeu,nbEtapes,listeRegles)
 	else:												#Si l'utilisateur n'a entree aucune argument en leanceant l'application,
 		print("Format des arguments incorect")			#un message erreur sera afficher
 		nbEtapes = int(input("Veuillez entrer le nombre etapes :"))		#L'utilisateur devra alors entrer le nombre etapes
