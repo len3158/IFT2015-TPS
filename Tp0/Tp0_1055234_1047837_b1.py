@@ -34,6 +34,7 @@ def simulation(grille,nombreEtape,lesRegles):
 		et qui lance la simulation puis affiche la dernière grille resultante """
 	for n in range(nombreEtape):
 		grille.updateGrille(lesRegles)
+	print("\n") #Enlevez cette ligne pour passer les tests
 	print(grille)
 
 
@@ -44,6 +45,7 @@ def animations(grillee,listRegless):
 		grillee.updateGrille(listRegless)
 		input("Appuyez sur entree pour continuer...\n")
 		effaceEcran()
+		print("\n") #Enlevez cette ligne pour passer les tests
 		print(grillee)
 
 def run():
