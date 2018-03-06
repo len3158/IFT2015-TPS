@@ -3,13 +3,13 @@ from QuadTree import QuadTree
 
 class LinkedQuadTree( QuadTree ):
     
-    #inner class Feuille
+    #Class interne _Feuille pour les element de feuilles
 	class _Feuille:
 		__slots__ = '_xx', '_yy'
-		def __init__(x,y):
+		def __init__(x,y,parent = None):
 			self._xx= x
 			self._yy = y
-	#inner class Feuille
+	#inner class _Item pour les element internes (dimension des quadrants)
 	class _Item:
 		__slots__ = '_x1', '_x2','_y1', '_y2'
 		def __init__(self, x1,x2,y1,y2):
@@ -19,31 +19,43 @@ class LinkedQuadTree( QuadTree ):
 			self._y2 = y2
 			self._milieu_x = (x1+x2)//2
 			self._milieu_y = (y1+y2)//2
-	#inner class Node	
+	#Class interne _Node
 	class _Node:
 
     #inner class Position, a subclass of BinaryTree Position
-		__slots__ = '_element','_x1','_x2', '_parent', '_no', '_ne', '_se', '_so'
+		__slots__ = '_elemen', '_parent', '_no', '_ne', '_se', '_so'
 		def __init__( self, elem, parent = None, no = None, ne = None, se = None, so = None ):
 			self._element = elem
 			self._parent = parent
 			self._nO = no
 			self._nE = ne
 			self._sE = se
-			self._sO = so
-			self._est_interne = (type( elem ) is type( self._Item ))
-			
-        def same_type( self, other ):
-            return type( other ) is type( self )
+			self._sO = so		
+        #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
+		
+		def _est_interne(self):
+			return type(self._element) is type(self._Item)
 		
 		def go_nO(self,x,y):
-			return x < self._element._milieu_x and y < self._element._milieu_y
+			if self._est_interne():
+				return x < self._element._milieu_x and y < self._element._milieu_y
+			else:
+				return None
 		def go_nE(self,x,y):
-			return x < self._element._milieu_x and y > self._element._milieu_y
+			if self._est_interne():
+				return x < self._element._milieu_x and y > self._element._milieu_y
+			else:
+				return None
 		def go_sE(self,x,y):
-			return x > self._element._milieu_x and y > self._element._milieu_y	
+			if self._est_interne():
+				return x > self._element._milieu_x and y > self._element._milieu_y	
+			else:
+				return None
 		def go_sE(self,x,y):
-			return x > self._element._milieu_x and y < self._element._milieu_y
+			if self._est_interne():
+				return x > self._element._milieu_x and y < self._element._milieu_y
+			else
+				return None
     #inner class Position, a subclass of BinaryTree Position
    class Position( QuadTree.Position ):
 
@@ -207,14 +219,15 @@ class LinkedQuadTree( QuadTree ):
 		noeud_position = self._validate(p)
 		x = elem._xx
 		y = elem._yy
+		
 		if not noeud_position._est_interne:                 #Si le noeud de la position est une feuille
 			p = self.parent(p)								# Trouver le pointeur parent
 			noeud_position = self._validate(p)			    # trouver le noeud du parent
-		
+	
 		if noeud_position.go_nO(x,y):						#Si la les coordoonée sont dans nord ouest
 			if noeud_position._nO is None					#Si l'enfant nord oeust n'est pas null
 				return self._add_nO(p, elem )					#On ajoute l'élément
-			if noeud_position._nO._est_interne:             #si l'enfant nord Ouest pointe vers un arbre interne
+			if noeud_position._nO._est_interne():             #si l'enfant nord Ouest pointe vers un arbre interne
 				p_walk = self.nord_O						#Marcher vers nord ouest
 				p = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 			else:											#Si l'enfant nord Ouest appartient deja une feuille
@@ -227,7 +240,7 @@ class LinkedQuadTree( QuadTree ):
 		elif noeud_position.go_nE(x,y):
 			if noeud_position._nE is None					#Si l'enfant nord EST n'est pas null
 				return self._add_nE(p, elem )					#On ajoute l'élément
-			if noeud_position._nE._est_interne:             #si l'enfant nord EST pointe vers un arbre interne
+			if noeud_position._nE._est_interne():             #si l'enfant nord EST pointe vers un arbre interne
 				p_walk = self.nord_E						#Marcher vers nord EST
 				p = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 			else:											#Si l'enfant nord EST appartient deja une feuille
@@ -240,7 +253,7 @@ class LinkedQuadTree( QuadTree ):
 		elif noeud_position.go_sE(x,y):
 			if noeud_position._sE is None					#Si l'enfant sud EST n'est pas null
 				return self._add_sE(p, elem )					#On ajoute l'élément
-			if noeud_position._sE._est_interne:             #si l'enfant sud EST pointe vers un arbre interne
+			if noeud_position._sE._est_interne():             #si l'enfant sud EST pointe vers un arbre interne
 				p_walk = self.sud_E						#Marcher vers sud EST
 				p = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 			else:											#Si l'enfant sud EST appartient deja une feuille
@@ -253,7 +266,7 @@ class LinkedQuadTree( QuadTree ):
 		else:
 			if noeud_position._sO is None						#Si l'enfant sud oeust n'est pas null
 				return self._add_sO(p, elem )					#On ajoute l'élément
-			if noeud_position._sO._est_interne:             	#si l'enfant sud Ouest pointe vers un arbre interne
+			if noeud_position._sO._est_interne():             	#si l'enfant sud Ouest pointe vers un arbre interne
 				p_walk = self.sud_O								#Marcher vers sud ouest
 				p = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 			else:											#Si l'enfant nord Ouest appartient deja une feuille
@@ -267,56 +280,13 @@ class LinkedQuadTree( QuadTree ):
 	
 	#Remplacer le nouveau element à la position est retourner l'ancien 
 	def ajouter( self,x,y ):
-		feuille = self._Feuille(x,y)													#On créer une element feuille avec les coordonnée
-        if self.is_empty():																#Si l'arbre n'existe pas
-			item_root = self._Item(0,10315,0,10315)										#On creer un item interne racine
-            p = self._add_root( item_root ) #from LinkedBinaryTree						#On creer un nouveau racine avec l'item 
-			return self.ajouter_element(p,feuille)							# On ajoute la feuille a la racine et on retourn la position 
-        else:
-            p = self._subtree_search( self.root(), x,y )								#On cherche depuis la racine la position pour les coordonnée
+		feuille = self._Feuille(x,y)						#On créer une element feuille avec les coordonnée
+        if self.is_empty():									#Si l'arbre n'existe pas
+			item_root = self._Item(0,10315,0,10315)				#On creer un item interne racine
+            p = self._add_root( item_root ) 					#On creer un nouveau racine avec l'item 
+			return self.ajouter_element(p,feuille)				# On ajoute la feuille a la racine et on retourn la position 
+        else:												#Sinon
+            p = self._subtree_search( self.root(), x,y )		#On cherche depuis la racine la position pour les coordonnée
 			self.ajouter_element(p,feuille)
             
-			
 		
-    def _replace( self, p, e ):
-        node = self._validate( p )      #Trouver le noeud associé à la position
-		if node._est_interne: return False
-        old = node._element              #Creer un backup de l'ancien element
-        node._element = e			    #Assigner le nouveau element a node
-        return old
-
-    #delete a position
-    def _delete( self, p ):
-        #remove node p and replace it with its child if any
-        node = self._validate( p )    #Trouver le noeud associé à la position
-        if num_children( p ) > 1: raise ValueError( 'p a plus d'un enfant' )
-		child = None
-		a 
-		#Assigner l'enfant à child
-		if node._nO is not None:
-			child = node._nO
-		if node._nE is not None:
-			child = node._nE
-		if node._sE is not None:
-			child = node._sE
-		if node._sO is not None:
-			child = node._sO
-
-        if child is not None:					#Si le noeud a un enfant, pointer parent child à parent noeud
-            child._parent = node._parent
-        if node is self._root:					#Si le noeud a une racine, pointer la racine à child
-            self._root = child
-        else:									#Sinon
-            parent = node._parent				   #Pointer parent au parent du noeud correspondant
-            if node is parent._nO:
-                parent._nO = child
-            elif node is parent._nE:
-                parent._nE = child
-            elif node is parent._sE:
-                parent._sE = child
-            else:
-                parent._sO = child
-        self._size -= 1
-        #make the deleted node invalid
-        node._parent = node
-        return node._element
