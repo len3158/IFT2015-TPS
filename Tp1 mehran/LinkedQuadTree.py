@@ -6,7 +6,7 @@ class LinkedQuadTree( QuadTree ):
     #inner class Feuille
 	class _Feuille:
 		__slots__ = '_xx', '_yy'
-		def __init__(x,y,parent = None):
+		def __init__(x,y):
 			self._xx= x
 			self._yy = y
 	#inner class Feuille
@@ -23,7 +23,7 @@ class LinkedQuadTree( QuadTree ):
 	class _Node:
 
     #inner class Position, a subclass of BinaryTree Position
-		__slots__ = '_feuille','_x1','_x2', '_parent', '_no', '_ne', '_se', '_so'
+		__slots__ = '_element','_x1','_x2', '_parent', '_no', '_ne', '_se', '_so'
 		def __init__( self, elem, parent = None, no = None, ne = None, se = None, so = None ):
 			self._element = elem
 			self._parent = parent
