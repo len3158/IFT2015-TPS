@@ -9,6 +9,9 @@ class LinkedQuadTree( QuadTree ):
 		def __init__(x,y,parent = None):
 			self._xx= x
 			self._yy = y
+		
+		def __str__(self):
+			return "["+x + ", " +y + "]"
 	#inner class _Item pour les element internes (dimension des quadrants)
 	class _Item:
 		__slots__ = '_x1', '_x2','_y1', '_y2'
@@ -30,7 +33,7 @@ class LinkedQuadTree( QuadTree ):
 			self._nO = no
 			self._nE = ne
 			self._sE = se
-			self._sO = so		
+			self._sO = so
         #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
 		
 		def _est_interne(self):
@@ -51,7 +54,7 @@ class LinkedQuadTree( QuadTree ):
 				return x > self._element._milieu_x and y > self._element._milieu_y	
 			else:
 				return None
-		def go_sE(self,x,y):
+		def go_sO(self,x,y):
 			if self._est_interne():
 				return x > self._element._milieu_x and y < self._element._milieu_y
 			else
@@ -65,7 +68,16 @@ class LinkedQuadTree( QuadTree ):
             self._node = node
 
         def __str__( self ):
-            return str( self._node._element )
+			if self._node._est_interne():
+				mot = "<"
+				mot += "1" if self._nO is not None else "0"
+				mot += "1" if self._nE is not None else "0"
+				mot += "1" if self._sE is not None else "0"
+				mot += "1" if self._sO is not None else "0"
+				mot += " >"
+				return mot
+			else
+				return str( self._node._element )
 
         def element( self ):
             return self._node._element
@@ -73,7 +85,7 @@ class LinkedQuadTree( QuadTree ):
         def __eq__( self, other ):
             return type( other ) is type( self ) and other._node is self._node
 			
-
+			
     def _validate( self, p ):
         #return associated _Node if position is valid
         if not isinstance( p, self.Position ):
@@ -107,6 +119,7 @@ class LinkedQuadTree( QuadTree ):
     def parent( self, p ):
         node = self._validate( p )			#Trouver le noeud associé à la position
         return self._make_position( node._parent )  #Retourner la position crée
+	
 
     #Obtenir l'children NordOuest
     def nord_O( self, p ):
@@ -129,7 +142,53 @@ class LinkedQuadTree( QuadTree ):
         node = self._validate( p )                    #Trouver le noeud associé à la position
         return self._make_position( node._sO )      #Retourner la position crée
 	
+	#ask if the tree is empty
+    def is_empty( self ):
+        return len( self ) == 0
 
+	#ask if a position is a leaf
+    def is_leaf( self, p ):
+        return self.num_children( p ) == 0
+    
+	#get the height of a position by descending the tree (efficient)
+    def hauteur( self, p ):
+        #returns the height of the subtree at Position p
+        if self.is_leaf( p ):
+            return 0
+        else:
+            return 1 + max( self.hauteur( c ) for c in self.children( p ) )    #1 + (hauteur de chaque children
+				
+    def imprime_leaf( self, p ):
+        for c in self.children( p ):
+			if self.is_leaf(c):
+				print(c)
+            self.imprime_leaf( c )
+	
+	#Generate les childrens de même parents
+    def sisters_brother( self, p ):
+        parent = self.parent( p )          
+        if parent is None:                #Verifier si parents exist, sinon retourner None
+            return None
+        else:
+			children = self.children(parent)
+			for difchildren in children:
+				if p is not difchildren:
+					yield difchildren
+
+    #get the children as a generator
+    def children( self, p ):
+        if self.nord_O( p ) is not None:
+            yield self.nord_O( p )
+		if self.nord_E( p ) is not None:
+            yield self.nord_E( p )
+        if self.sud_E( p ) is not None:
+            yield self.sud_E( p )
+        if self.sud_O( p ) is not None:
+            yield self.sud_O( p )
+			
+	def num_children( self, p ):
+		return len(self.children())
+		
 	#Retourner le nombre d'enfants 
     def num_children( self, p ):
         node = self._validate( p )            
@@ -187,9 +246,7 @@ class LinkedQuadTree( QuadTree ):
         self._size += 1
         node._sO = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
         return self._make_position(node._sO ) 	
-	def add_leaf(self,x,y):
-		feuille = self._Feuille(x,y)
-		return self._make_position(feuille)
+
 	
 	def _subtree_search( self, p, x,y ):
 		
