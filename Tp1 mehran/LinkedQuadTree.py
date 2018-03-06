@@ -1,7 +1,5 @@
 
-from QuadTree import QuadTree
-
-class LinkedQuadTree( QuadTree ):
+class LinkedQuadTree:
     
     #Class interne _Feuille pour les element de feuilles
 	class _Feuille:
@@ -57,17 +55,16 @@ class LinkedQuadTree( QuadTree ):
 		def go_sO(self,x,y):
 			if self._est_interne():
 				return x > self._element._milieu_x and y < self._element._milieu_y
-			else
+			else:
 				return None
     #inner class Position, a subclass of BinaryTree Position
-   class Position( QuadTree.Position ):
+	class Position:
 
         #init specifies the Tree container and uses _Node to store the element
-        def __init__( self, container, node ):
-            self._container = container
-            self._node = node
-
-        def __str__( self ):
+		def __init__( self, container, node ):
+				self._container = container
+				self._node = node
+		def __str__( self ):
 			if self._node._est_interne():
 				mot = "<"
 				mot += "1" if self._nO is not None else "0"
@@ -76,198 +73,197 @@ class LinkedQuadTree( QuadTree ):
 				mot += "1" if self._sO is not None else "0"
 				mot += " >"
 				return mot
-			else
+			else:
 				return str( self._node._element )
 
-        def element( self ):
-            return self._node._element
+		def element( self ):
+			return self._node._element
 
-        def __eq__( self, other ):
-            return type( other ) is type( self ) and other._node is self._node
+		def __eq__( self, other ):
+			return type( other ) is type( self ) and other._node is self._node
 			
 			
-    def _validate( self, p ):
-        #return associated _Node if position is valid
-        if not isinstance( p, self.Position ):
-            raise TypeError( 'p must be proper Position type' )
-        if p._container is not self:
-            raise ValueError( 'p does not belong to this container' )
-        #if p was deleted (_parent points to itself: see _delete)
-        if p._node._parent is p._node:
-            raise ValueError( 'p is no longer valid' )
-        return p._node
+	def _validate( self, p ):
+		#return associated _Node if position is valid
+		if not isinstance( p, self.Position ):
+			raise TypeError( 'p must be proper Position type' )
+		if p._container is not self:
+			raise ValueError( 'p does not belong to this container' )
+		#if p was deleted (_parent points to itself: see _delete)
+		if p._node._parent is p._node:
+			raise ValueError( 'p is no longer valid' )
+		return p._node
 
-    def _make_position( self, node ):
+	def _make_position( self, node ):
 		#Retourner l'instance de Position crée si le noeud existe 
-        return self.Position( self, node ) if node is not None else None
+		return self.Position( self, node ) if node is not None else None
 
-    #BinaryTree constructor
-    def __init__( self ):
-        #create an initially empty binary tree
-        self._root = None
-        self._size = 0
+	#BinaryTree constructor
+	def __init__( self ):
+	#create an initially empty binary tree
+		self._root = None
+		self._size = 0
 
-    #get the size
-    def __len__( self ):
-        return self._size
+	#get the size
+	def __len__( self ):
+		return self._size
 
-    #get the root
-    def root( self ):
-        return self._make_position( self._root )
+	#get the root
+	def root( self ):
+		return self._make_position( self._root )
 
-    #get the parent of a position
-    def parent( self, p ):
-        node = self._validate( p )			#Trouver le noeud associé à la position
-        return self._make_position( node._parent )  #Retourner la position crée
-	
+	#get the parent of a position
+	def parent( self, p ):
+		node = self._validate( p )			#Trouver le noeud associé à la position
+		return self._make_position( node._parent )  #Retourner la position crée
 
-    #Obtenir l'children NordOuest
-    def nord_O( self, p ):
-        node = self._validate( p )                    #Trouver le noeud associé à la position
-		
-        return self._make_position( node._nO )      #Retourner la position crée
-		
+
+	#Obtenir l'children NordOuest
+	def nord_O( self, p ):
+		node = self._validate( p )                    #Trouver le noeud associé à la position
+		return self._make_position( node._nO )      #Retourner la position crée
+
 	#Obtenir l'children NordEst
-    def nord_E( self, p ):
-        node = self._validate( p )                    #Trouver le noeud associé à la position
-        return self._make_position( node._nE )      #Retourner la position crée
-		
+	def nord_E( self, p ):
+		node = self._validate( p )                    #Trouver le noeud associé à la position
+		return self._make_position( node._nE )      #Retourner la position crée
+
 	#Obtenir l'children SudEst
-    def sud_E( self, p ):
-        node = self._validate( p )                    #Trouver le noeud associé à la position
-        return self._make_position( node._sE )      #Retourner la position crée
-		
+	def sud_E( self, p ):
+		node = self._validate( p )                    #Trouver le noeud associé à la position
+		return self._make_position( node._sE )      #Retourner la position crée
+
 	#Obtenir l'children SudOuest
-    def sud_O( self, p ):
-        node = self._validate( p )                    #Trouver le noeud associé à la position
-        return self._make_position( node._sO )      #Retourner la position crée
-	
+	def sud_O( self, p ):
+		node = self._validate( p )                    #Trouver le noeud associé à la position
+		return self._make_position( node._sO )      #Retourner la position crée
+
 	#ask if the tree is empty
-    def is_empty( self ):
-        return len( self ) == 0
+	def is_empty( self ):
+		return len( self ) == 0
 
 	#ask if a position is a leaf
-    def is_leaf( self, p ):
-        return self.num_children( p ) == 0
-    
+	def is_leaf( self, p ):
+		return self.num_children( p ) == 0
+
 	#get the height of a position by descending the tree (efficient)
-    def hauteur( self, p ):
-        #returns the height of the subtree at Position p
-        if self.is_leaf( p ):
-            return 0
-        else:
-            return 1 + max( self.hauteur( c ) for c in self.children( p ) )    #1 + (hauteur de chaque children
-				
-    def imprime_leaf( self, p ):
-        for c in self.children( p ):
+	def hauteur( self, p ):
+		#returns the height of the subtree at Position p
+		if self.is_leaf( p ):
+			return 0
+		else:
+			return 1 + max( self.hauteur( c ) for c in self.children( p ) )    #1 + (hauteur de chaque children
+					
+	def imprime_leaf( self, p ):
+		for c in self.children( p ):
 			if self.is_leaf(c):
 				print(c)
-            self.imprime_leaf( c )
-	
+			self.imprime_leaf( c )
+
 	#Generate les childrens de même parents
-    def sisters_brother( self, p ):
-        parent = self.parent( p )          
-        if parent is None:                #Verifier si parents exist, sinon retourner None
-            return None
-        else:
+	def sisters_brother( self, p ):
+		parent = self.parent( p )          
+		if parent is None:                #Verifier si parents exist, sinon retourner None
+			return None
+		else:
 			children = self.children(parent)
 			for difchildren in children:
 				if p is not difchildren:
 					yield difchildren
 
-    #get the children as a generator
-    def children( self, p ):
-        if self.nord_O( p ) is not None:
-            yield self.nord_O( p )
+	#get the children as a generator
+	def children( self, p ):
+		if self.nord_O( p ) is not None:
+			yield self.nord_O( p )
 		if self.nord_E( p ) is not None:
-            yield self.nord_E( p )
-        if self.sud_E( p ) is not None:
-            yield self.sud_E( p )
-        if self.sud_O( p ) is not None:
-            yield self.sud_O( p )
+			yield self.nord_E( p )
+		if self.sud_E( p ) is not None:
+			yield self.sud_E( p )
+		if self.sud_O( p ) is not None:
+			yield self.sud_O( p )
 			
 	def num_children( self, p ):
 		return len(self.children())
-		
+
 	#Retourner le nombre d'enfants 
-    def num_children( self, p ):
-        node = self._validate( p )            
-        count = 0
-        if node._nO( p ) is not None:
-            count += 1
+	def num_children( self, p ):
+		node = self._validate( p )            
+		count = 0
+		if node._nO( p ) is not None:
+			count += 1
 		if node._nE( p ) is not None:
-            count += 1
-        if node._sE( p ) is not None:
-            count += 1
-        if node._sO( p ) is not None:
-            count += 1
-        return count
+			count += 1
+		if node._sE( p ) is not None:
+			count += 1
+		if node._sO( p ) is not None:
+			count += 1
+		return count
 
-    """developer-level building methods
-    """
-	
-	
-    #add the root node with element
-    def _add_root( self, e ):
-        if self._root is not None: raise ValueError( 'Root exists' )
-        self._size = 1
-        self._root = self._Node(e)
-        return self._make_position( self._root )
+	"""developer-level building methods
+	"""
 
-		
+
+	#add the root node with element
+	def _add_root( self, e ):
+		if self._root is not None: raise ValueError( 'Root exists' )
+		self._size = 1
+		self._root = self._Node(e)
+		return self._make_position( self._root )
+
+
 	#ajouter enfant Nord Ouest et retourner la position crée
-    def _add_nO( self, p, e ):
-        node = self._validate( p )    #Trouver le noeud associé à la position
-        if node._nO is not None: raise ValueError( 'Enfant Nord Ouest exist' )
-        self._size += 1
-        node._nO = self._Node(e,node)          #Créer un nouveau noeud(elem,parent = node)
-        return self._make_position( node._nO )   
+	def _add_nO( self, p, e ):
+		node = self._validate( p )    #Trouver le noeud associé à la position
+		if node._nO is not None: raise ValueError( 'Enfant Nord Ouest exist' )
+		self._size += 1
+		node._nO = self._Node(e,node)          #Créer un nouveau noeud(elem,parent = node)
+		return self._make_position( node._nO )   
 
-    #ajouter enfant Nord Est et retourner la position crée
-    def _add_nE( self, p, e ):
-        node = self._validate( p )    #Trouver le noeud associé à la position
-        if node._nE is not None: raise ValueError( 'Enfant Nord Est exist' )
-        self._size += 1
-        node._nE = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
-        return self._make_position( node._nE )   
-    
+	#ajouter enfant Nord Est et retourner la position crée
+	def _add_nE( self, p, e ):
+		node = self._validate( p )    #Trouver le noeud associé à la position
+		if node._nE is not None: raise ValueError( 'Enfant Nord Est exist' )
+		self._size += 1
+		node._nE = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
+		return self._make_position( node._nE )   
+
 	#ajouter enfant Sud Est et retourner la position crée
-    def _add_sE( self, p, e ):
-        node = self._validate( p )    #Trouver le noeud associé à la position
-        if node._sE is not None: raise ValueError( 'Enfant Nord Est exist' ) 
-        self._size += 1
-        node._sE = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
-        return self._make_position(node._sE ) 		
-	
-	#ajouter enfant Sud Ouest et retourner la position crée
-    def _add_sO( self, p, e ):
-        node = self._validate( p )    #Trouver le noeud associé à la position
-        if node._sO is not None: raise ValueError( 'Enfant Sud Ouest exist' )
-        self._size += 1
-        node._sO = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
-        return self._make_position(node._sO ) 	
+	def _add_sE( self, p, e ):
+		node = self._validate( p )    #Trouver le noeud associé à la position
+		if node._sE is not None: raise ValueError( 'Enfant Nord Est exist' ) 
+		self._size += 1
+		node._sE = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
+		return self._make_position(node._sE ) 		
 
-	
+	#ajouter enfant Sud Ouest et retourner la position crée
+	def _add_sO( self, p, e ):
+		node = self._validate( p )    #Trouver le noeud associé à la position
+		if node._sO is not None: raise ValueError( 'Enfant Sud Ouest exist' )
+		self._size += 1
+		node._sO = self._Node(e, node )          #Créer un nouveau noeud(elem,parent = node)
+		return self._make_position(node._sO ) 	
+
+
 	def _subtree_search( self, p, x,y ):
-		
+
 		node = self._validate( p )			#Trouver le noeud associé à la position
-        #return the Position with key k in subtree rooted at p
-        #or the last node visited.
-        if x == node._element._milieu and y == node._element._milieu:
-            #Position with key k found
-            return p
+		#return the Position with key k in subtree rooted at p
+		#or the last node visited.
+		if x == node._element._milieu and y == node._element._milieu:
+		#Position with key k found
+			return p
 		elif node.go_nO(x,y):
-            #Position with key k perhaps in left subtree
-            if self.nord_O( p ) is not None:
-                return self._subtree_search( self.nord_O( p ), x,y )
-        elif node.go_nE(x,y):
-            #Position with key k perhaps in right subtree
-            if self.nord_E( p ) is not None:
-                return self._subtree_search( self.nord_E( p ), x,y )
-		 elif node.go_sE(x,y):
-            #Position with key k perhaps in right subtree
-            if self.sud_E( p ) is not None:
-                return self._subtree_search( self.sud_E(p), x,y )
+		#Position with key k perhaps in left subtree
+			if self.nord_O( p ) is not None:
+				return self._subtree_search( self.nord_O( p ), x,y )
+		elif node.go_nE(x,y):
+		#Position with key k perhaps in right subtree
+			if self.nord_E( p ) is not None:
+				return self._subtree_search( self.nord_E( p ), x,y )
+		elif node.go_sE(x,y):
+		#Position with key k perhaps in right subtree
+			if self.sud_E( p ) is not None:
+				return self._subtree_search( self.sud_E(p), x,y )
 		elif self.sud_O(p) is not None:
 			return self._subtree_search( self.sud_O(p), x,y )
 		return p
@@ -276,14 +272,13 @@ class LinkedQuadTree( QuadTree ):
 		noeud_position = self._validate(p)
 		x = elem._xx
 		y = elem._yy
-		
-		if not noeud_position._est_interne:                 #Si le noeud de la position est une feuille
+		if not noeud_position._est_interne():                 #Si le noeud de la position est une feuille
 			p = self.parent(p)								# Trouver le pointeur parent
 			noeud_position = self._validate(p)			    # trouver le noeud du parent
-	
+
 		if noeud_position.go_nO(x,y):						#Si la les coordoonée sont dans nord ouest
-			if noeud_position._nO is None					#Si l'enfant nord oeust n'est pas null
-				return self._add_nO(p, elem )					#On ajoute l'élément
+			if noeud_position._nO is None:					#Si l'enfant nord oeust n'est pas null
+				return self._add_nO(p,elem)					#On ajoute l'élément
 			if noeud_position._nO._est_interne():             #si l'enfant nord Ouest pointe vers un arbre interne
 				p_walk = self.nord_O						#Marcher vers nord ouest
 				p = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
@@ -293,9 +288,9 @@ class LinkedQuadTree( QuadTree ):
 				pp = self._add_nO(p,item_interne)										#On ajoute un nouveau enfant Nord Ouest avec le nouveau noeud
 				ppp = self.ajouter_element(pp,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				p = self.ajouter_element(pp,elem)							#On ajoute l'élement au nouveau noeud
-		
+
 		elif noeud_position.go_nE(x,y):
-			if noeud_position._nE is None					#Si l'enfant nord EST n'est pas null
+			if noeud_position._nE is None:					#Si l'enfant nord EST n'est pas null
 				return self._add_nE(p, elem )					#On ajoute l'élément
 			if noeud_position._nE._est_interne():             #si l'enfant nord EST pointe vers un arbre interne
 				p_walk = self.nord_E						#Marcher vers nord EST
@@ -306,9 +301,9 @@ class LinkedQuadTree( QuadTree ):
 				pp = self._add_nE(p,item_interne)										#On ajoute un nouveau enfant Nord EST avec le nouveau noeud
 				ppp = self.ajouter_element(pp,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				p = self.ajouter_element(pp,elem)							#On ajoute l'élement au nouveau noeud
-		
+
 		elif noeud_position.go_sE(x,y):
-			if noeud_position._sE is None					#Si l'enfant sud EST n'est pas null
+			if noeud_position._sE is None:					#Si l'enfant sud EST n'est pas null
 				return self._add_sE(p, elem )					#On ajoute l'élément
 			if noeud_position._sE._est_interne():             #si l'enfant sud EST pointe vers un arbre interne
 				p_walk = self.sud_E						#Marcher vers sud EST
@@ -319,9 +314,9 @@ class LinkedQuadTree( QuadTree ):
 				pp = self._add_sE(p,item_interne)										#On ajoute un nouveau enfant sud EST avec le nouveau noeud
 				ppp = self.ajouter_element(pp,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				p = self.ajouter_element(pp,elem)							#On ajoute l'élement au nouveau noeud
-	
+
 		else:
-			if noeud_position._sO is None						#Si l'enfant sud oeust n'est pas null
+			if noeud_position._sO is None:						#Si l'enfant sud oeust n'est pas null
 				return self._add_sO(p, elem )					#On ajoute l'élément
 			if noeud_position._sO._est_interne():             	#si l'enfant sud Ouest pointe vers un arbre interne
 				p_walk = self.sud_O								#Marcher vers sud ouest
@@ -333,17 +328,24 @@ class LinkedQuadTree( QuadTree ):
 				ppp = self.ajouter_element(pp,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				p = self.ajouter_element(pp,elem)							#On ajoute l'élement au nouveau noeud
 		return p
-		
-	
+
+
 	#Remplacer le nouveau element à la position est retourner l'ancien 
 	def ajouter( self,x,y ):
 		feuille = self._Feuille(x,y)						#On créer une element feuille avec les coordonnée
-        if self.is_empty():									#Si l'arbre n'existe pas
+		if self.is_empty():									#Si l'arbre n'existe pas
 			item_root = self._Item(0,10315,0,10315)				#On creer un item interne racine
-            p = self._add_root( item_root ) 					#On creer un nouveau racine avec l'item 
+			p = self._add_root( item_root ) 					#On creer un nouveau racine avec l'item 
 			return self.ajouter_element(p,feuille)				# On ajoute la feuille a la racine et on retourn la position 
-        else:												#Sinon
-            p = self._subtree_search( self.root(), x,y )		#On cherche depuis la racine la position pour les coordonnée
-			self.ajouter_element(p,feuille)
-            
-		
+		else:												#Sinon
+			p = self._subtree_search( self.root(), x,y )		#On cherche depuis la racine la position pour les coordonnée
+			return self.ajouter_element(p,feuille)
+					
+	def __str__(self):
+		mot = ""
+		p = self._root()
+		for c in self.children( p ):
+			self.imprime_leaf( c )
+			mot += str(c)
+		return mot
+
