@@ -1,4 +1,4 @@
-#import sys
+import sys
 import collections
 class LinkedQuadTree:
     #Class interne _Feuille pour les element de feuilles
