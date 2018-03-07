@@ -1,6 +1,6 @@
+#import sys
 import collections
 class LinkedQuadTree:
-    
     #Class interne _Feuille pour les element de feuilles
 	class _Feuille:
 		__slots__ = '_xx', '_yy'
@@ -41,16 +41,16 @@ class LinkedQuadTree:
     #inner class Position, a subclass of BinaryTree Position
 		
 		def go_nO(self,x,y):
-			return self._est_interne() and x < self._element._milieu_x and y < self._element._milieu_y
+			return self._est_interne() and x <= self._element._milieu_x and y <= self._element._milieu_y
 
 		def go_nE(self,x,y):
-			return self._est_interne() and x < self._element._milieu_x and y > self._element._milieu_y
+			return self._est_interne() and x <= self._element._milieu_x and y >= self._element._milieu_y
 
 		def go_sE(self,x,y):
-			return self._est_interne() and x > self._element._milieu_x and y > self._element._milieu_y	
+			return self._est_interne() and x >= self._element._milieu_x and y >= self._element._milieu_y	
 
 		def go_sO(self,x,y):
-			return self._est_interne() and x > self._element._milieu_x and y < self._element._milieu_y			
+			return self._est_interne() and x >= self._element._milieu_x and y <= self._element._milieu_y			
 		
 		def __str__( self ):
 			if self._est_interne():
@@ -73,7 +73,7 @@ class LinkedQuadTree:
 		# if node._parent is node:
 			# raise ValueError( 'p is no longer valid' )
 
-
+#	sys.setrecursionlimit(10000)
 	#BinaryTree constructor
 	def __init__( self ):
 	#create an initially empty binary tree
@@ -244,65 +244,74 @@ class LinkedQuadTree:
 			
 	def ajouter_element(self,noeud,elem):
 		#self._validate(noeud)
+		
 		x = elem._xx
 		y = elem._yy
-		
-		if not noeud._est_interne():                 #Si le noeud de la position est une feuille
-			noeud = noeud._parent								# Trouver le pointeur parent
 
+		# if not noeud._est_interne():                 #Si le noeud de la position est une feuille
+			# noeud = noeud._parent								# Trouver le pointeur parent
+			# new_node = noeud
 		if noeud.go_nO(x,y):						#Si la les coordoonée sont dans nord ouest
-			if noeud._nO is None:					#Si l'enfant nord oeust n'est pas null
+			if noeud._nO is None:					#Si l'enfant nord oeust est null
 				return self._add_nO(noeud,elem)
-			if noeud._nO._est_interne():             #si l'enfant nord Ouest pointe vers un arbre interne
+			elif noeud._nO._est_interne():             #si l'enfant nord Ouest pointe vers un arbre interne
 				p_walk = noeud._nO						#Marcher vers nord ouest
-				new_node = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
-			else:											#Si l'enfant nord Ouest appartient deja une feuille
+				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+
+			else:									#Si l'enfant nord Ouest appartient deja une feuille
 				backup_feuille = noeud._nO._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._y1,noeud._element._milieu_y)   #On créer un nouveau item interne avec nouveau dimension
 				noeud._nO._element = item_interne	#On change l'élément de l'enfant nord oeust							
 				self.ajouter_element(noeud._nO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				new_node = self.ajouter_element(noeud._nO,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._nO,elem)							#On ajoute l'élement au nouveau noeud
+
 
 		elif noeud.go_nE(x,y):
 			if noeud._nE is None:					#Si l'enfant nord EST n'est pas null
 				return self._add_nE(noeud, elem )					#On ajoute l'élément
-			if noeud._nE._est_interne():             #si l'enfant nord EST pointe vers un arbre interne
+			elif noeud._nE._est_interne():             #si l'enfant nord EST pointe vers un arbre interne
 				p_walk = noeud._nE					#Marcher vers nord EST
-				new_node = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+
 			else:											#Si l'enfant nord EST appartient deja une feuille
 				backup_feuille = noeud._nE._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._milieu_x,noeud._element._x2,noeud._element._y1,noeud._element._milieu_y)   #On créer un nouveau item interne avec nouveau dimension
 				noeud._nE._element = item_interne     #On change l'élément de l'enfant nord oeust	
 				self.ajouter_element(noeud._nE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				p = self.ajouter_element(noeud._nE,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._nE,elem)							#On ajoute l'élement au nouveau noeud
 
 		elif noeud.go_sE(x,y):
 			if noeud._sE is None:					#Si l'enfant sud EST n'est pas null
 				return self._add_sE(noeud, elem )					#On ajoute l'élément
 			if noeud._sE._est_interne():             #si l'enfant sud EST pointe vers un arbre interne
 				p_walk = self._sE					#Marcher vers sud EST
-				new_node = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+
 			else:											#Si l'enfant sud EST appartient deja une feuille
 				backup_feuille = noeud._sE._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._milieu_x,noeud._element._x2,noeud._element._milieu_y,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
 				noeud._sE._element = item_interne           #On change l'élément de l'enfant nord oeust	
 				self.ajouter_element(noeud._sE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				new_node = self.ajouter_element(noeud._sE,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._sE,elem)							#On ajoute l'élement au nouveau noeud
 
-		else:
+
+		elif noeud.go_sO(x,y):
 			if noeud._sO is None:						#Si l'enfant sud oeust n'est pas null
 				return self._add_sO(noeud, elem )					#On ajoute l'élément
 			if noeud._sO._est_interne():             	#si l'enfant sud Ouest pointe vers un arbre interne
 				p_walk = self._sO								#Marcher vers sud ouest
-				new_node = ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+
 			else:											#Si l'enfant nord Ouest appartient deja une feuille
 				backup_feuille = noeud._sO._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._milieu_y,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
 				noeud._sO._element = item_interne		#On change l'élément de l'enfant nord oeust	
-				pp = self._make_position(noeud._sO)										#On ajoute un nouveau enfant sud Ouest avec le nouveau noeud
 				self.ajouter_element(noeud._sO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				new_node = self.ajouter_element(noeud._sO,elem)							#On ajoute l'élement au nouveau noeud
-		return new_node
+				return self.ajouter_element(noeud._sO,elem)							#On ajoute l'élement au nouveau noeud
+
+		 
+
+
 
 
 	#Remplacer le nouveau element à la position est retourner l'ancien 
@@ -315,6 +324,8 @@ class LinkedQuadTree:
 		else:		#Sinon
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )		#On cherche depuis la racine la position pour les coordonnée
+			if noeud._est_interne:
+				noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 					
 	def __str__(self):
