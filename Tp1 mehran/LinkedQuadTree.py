@@ -62,8 +62,7 @@ class LinkedQuadTree:
 				mot += " >"
 				return mot
 			else:
-				elemm = self.element()
-				return str( elemm )		
+				return str( self._element )		
 	
 
 	# def _validate( self, node ):
@@ -318,17 +317,21 @@ class LinkedQuadTree:
 			noeud = self._subtree_search( racine, x,y )		#On cherche depuis la racine la position pour les coordonnée
 			return self.ajouter_element(noeud,feuille)
 					
-	#def __str__(self):
+	def __str__(self):
+		mot = self.breadth_first_print()
+		return mot
 
 
 	#print the subtree rooted by position p
     #using a breadth-first traversal
 	def breadth_first_print( self ):
-		Q = ArrayQueue()
-		Q.enqueue( self._root )
-		while not Q.is_empty():
-			p = Q.dequeue()
-			print( p )
+		table = collections.deque()
+		table.appendleft( self._root )
+		mot = ""
+		while len(table) != 0:
+			p = table.pop()
+			mot += str(p)
 			for c in self.children( p ):
-				Q.enqueue( c )
+				table.appendleft( c )
+		return mot
 	
