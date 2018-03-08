@@ -38,19 +38,17 @@ class LinkedQuadTree:
 			#return type(self._element) is type(LinkedQuadTree._Item)
 			return isinstance( self._element, LinkedQuadTree._Item)
 		
-    #inner class Position, a subclass of BinaryTree Position
-		
 		def go_nO(self,x,y):
-			return self._est_interne() and x <= self._element._milieu_x and y <= self._element._milieu_y
-
-		def go_nE(self,x,y):
 			return self._est_interne() and x <= self._element._milieu_x and y >= self._element._milieu_y
 
+		def go_nE(self,x,y):
+			return self._est_interne() and x >= self._element._milieu_x and y >= self._element._milieu_y
+
 		def go_sE(self,x,y):
-			return self._est_interne() and x >= self._element._milieu_x and y >= self._element._milieu_y	
+			return self._est_interne() and x >= self._element._milieu_x and y <= self._element._milieu_y	
 
 		def go_sO(self,x,y):
-			return self._est_interne() and x >= self._element._milieu_x and y <= self._element._milieu_y			
+			return self._est_interne() and x <= self._element._milieu_x and y <= self._element._milieu_y			
 		
 		def __str__( self ):
 			if self._est_interne():
@@ -63,20 +61,10 @@ class LinkedQuadTree:
 				return mot
 			else:
 				return str( self._element )		
-	
-
-	# def _validate( self, node ):
-		# #return associated _Node if position is valid
-		# if not isinstance( node, self._Node ):
-			# raise TypeError( 'p must be proper Position type' )
-		# #if p was deleted (_parent points to itself: see _delete)
-		# if node._parent is node:
-			# raise ValueError( 'p is no longer valid' )
 
 #	sys.setrecursionlimit(10000)
 	#BinaryTree constructor
 	def __init__( self ):
-	#create an initially empty binary tree
 		self._root = None
 		self._size = 0
 
@@ -92,7 +80,6 @@ class LinkedQuadTree:
 	def parent( self, noeud ):
 		#self._validate( noeud )			#Tester si le noeud existe
 		return noeud._parent
-
 
 	#Obtenir l'children NordOuest
 	def nord_O( self, noeud ):
@@ -130,11 +117,11 @@ class LinkedQuadTree:
 		else:
 			return 1 + max( self.hauteur( c ) for c in self.children( noeud ) )    #1 + (hauteur de chaque children
 					
-	def imprime_leaf( self, noeud ):
-		for c in self.children( noeud ):
-			if self.is_leaf(c):
-				print(c)
-			self.imprime_leaf( c )
+#	def imprime_leaf( self, noeud ):
+#		for c in self.children( noeud ):
+#			if self.is_leaf(c):
+#				print(c)
+#			self.imprime_leaf( c )
 
 	#Generate les childrens de même parents
 	def sisters_brother( self, noeud ):
@@ -160,7 +147,7 @@ class LinkedQuadTree:
 				yield noeud._sO
 
 
-	#Retourner le nombre d'enfants 
+	#Retourner le nombre d'enfants d'UN SEUL noeud interne
 	def num_children( self, noeud ):
 		#self._validate( noeud )            
 		if not noeud._est_interne():
@@ -178,8 +165,6 @@ class LinkedQuadTree:
 
 	"""developer-level building methods
 	"""
-
-
 	#add the root node with element
 	def _add_root( self, e ):
 		if self._root is not None: raise ValueError( 'Root exists' )
@@ -187,7 +172,6 @@ class LinkedQuadTree:
 		root = self._Node(e)
 		self._root = root
 		return root
-
 
 	#ajouter enfant Nord Ouest et retourner la position crée
 	def _add_nO( self, noeud, e ):
@@ -220,7 +204,6 @@ class LinkedQuadTree:
 		self._size += 1
 		noeud._sO = self._Node(e, noeud )          #Créer un nouveau noeud(elem,parent = node)
 		return noeud._sO
-
 
 	def _subtree_search( self, noeud, x,y ):
 		#self._validate( noeud )			#Trouver le noeud associé à la position
@@ -319,7 +302,7 @@ class LinkedQuadTree:
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )		#On cherche depuis la racine la position pour les coordonnée
 			print(noeud)
-			if not noeud._est_interne:
+			if not noeud._est_interne():
 				noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 					

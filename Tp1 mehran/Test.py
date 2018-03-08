@@ -16,9 +16,11 @@ class Test:
 		y = random.randint(0, 10315)
 		boats.append((x, y))
 	i=0
+	data=()
 	for x, y in boats:
-#		print(boats[i])
+		data+=(boats[i])
 		mytree.ajouter(x, y)
 		i+=1
+	print(data)
 	print(len(mytree))
 	print(mytree)
