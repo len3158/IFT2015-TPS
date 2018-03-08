@@ -39,30 +39,30 @@ class LinkedQuadTree:
 			return isinstance( self._element, LinkedQuadTree._Item)
 		
 		def go_nO(self,x,y):
-			return self._est_interne() and x <= self._element._milieu_x and y >= self._element._milieu_y
+			return self._est_interne() and x <= self._element._milieu_x and y <= self._element._milieu_y
 
 		def go_nE(self,x,y):
-			return self._est_interne() and x >= self._element._milieu_x and y >= self._element._milieu_y
+			return self._est_interne() and x >= self._element._milieu_x and y <= self._element._milieu_y
 
 		def go_sE(self,x,y):
-			return self._est_interne() and x >= self._element._milieu_x and y <= self._element._milieu_y	
+			return self._est_interne() and x >= self._element._milieu_x and y >= self._element._milieu_y	
 
 		def go_sO(self,x,y):
-			return self._est_interne() and x <= self._element._milieu_x and y <= self._element._milieu_y			
+			return self._est_interne() and x <= self._element._milieu_x and y >= self._element._milieu_y			
 		
 		def __str__( self ):
 			if self._est_interne():
 				mot = "<"
 				mot += "1" if self._nO is not None else "0"
-				mot += "1" if self._nE is not None else "0"
-				mot += "1" if self._sE is not None else "0"
+				mot += " 1 " if self._nE is not None else " 0 "
+				mot += "1 " if self._sE is not None else "0 "
 				mot += "1" if self._sO is not None else "0"
-				mot += " >"
+				mot += ">"
 				return mot
 			else:
 				return str( self._element )		
 
-#	sys.setrecursionlimit(10000)
+	sys.setrecursionlimit(10000)
 	#BinaryTree constructor
 	def __init__( self ):
 		self._root = None
@@ -301,10 +301,15 @@ class LinkedQuadTree:
 		else:		#Sinon
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )		#On cherche depuis la racine la position pour les coordonnée
-			print(noeud)
 			if not noeud._est_interne():
 				noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
+	
+	def _intersect(self, noeud, elem,x1,y1,x2,y2):
+		if self.children:
+			if self.children.go_No:
+				if x <= (x1-x2):
+					self.
 					
 	def __str__(self):
 		mot = self.breadth_first_print()

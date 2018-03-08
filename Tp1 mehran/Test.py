@@ -11,7 +11,7 @@ class Test:
 #	mytree.ajouter(9,6)
 #	mytree.ajouter(3,2)
 	boats = []
-	for _ in range(10):
+	for _ in range(100):
 		x = random.randint(0, 10315)
 		y = random.randint(0, 10315)
 		boats.append((x, y))
@@ -21,6 +21,5 @@ class Test:
 		data+=(boats[i])
 		mytree.ajouter(x, y)
 		i+=1
-	print(data)
 	print(len(mytree))
 	print(mytree)
