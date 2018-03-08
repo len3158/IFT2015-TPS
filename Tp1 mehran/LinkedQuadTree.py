@@ -265,7 +265,6 @@ class LinkedQuadTree:
 				self.ajouter_element(noeud._nO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._nO,elem)							#On ajoute l'élement au nouveau noeud
 
-
 		elif noeud.go_nE(x,y):
 			if noeud._nE is None:					#Si l'enfant nord EST n'est pas null
 				return self._add_nE(noeud, elem )					#On ajoute l'élément
@@ -294,7 +293,6 @@ class LinkedQuadTree:
 				self.ajouter_element(noeud._sE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._sE,elem)							#On ajoute l'élement au nouveau noeud
 
-
 		elif noeud.go_sO(x,y):
 			if noeud._sO is None:						#Si l'enfant sud oeust n'est pas null
 				return self._add_sO(noeud, elem )					#On ajoute l'élément
@@ -309,10 +307,6 @@ class LinkedQuadTree:
 				self.ajouter_element(noeud._sO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._sO,elem)							#On ajoute l'élement au nouveau noeud
 
-		 
-
-
-
 
 	#Remplacer le nouveau element à la position est retourner l'ancien 
 	def ajouter( self,x,y ):
@@ -324,14 +318,15 @@ class LinkedQuadTree:
 		else:		#Sinon
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )		#On cherche depuis la racine la position pour les coordonnée
-			if noeud._est_interne:
+			print(noeud)
+			if not noeud._est_interne:
 				noeud = noeud._parent
+				return self.ajouter_element(noeud,feuille)
 			return self.ajouter_element(noeud,feuille)
 					
 	def __str__(self):
 		mot = self.breadth_first_print()
 		return mot
-
 
 	#print the subtree rooted by position p
     #using a breadth-first traversal

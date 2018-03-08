@@ -1,18 +1,24 @@
 from LinkedQuadTree import LinkedQuadTree
 import random
 class Test:
-		
+#5157 erreur
 	mytree = LinkedQuadTree()
 	#level 0
-#	mytree.ajouter(1,2)
+#	mytree.ajouter(5159,5157)
 #	mytree.ajouter(2,2)
+#	mytree.ajouter(12,10)
+#	mytree.ajouter(5,2)
+#	mytree.ajouter(9,6)
+#	mytree.ajouter(3,2)
 	boats = []
-	for _ in range(2):
-		x = random.randint(0, 10300)
-		y = random.randint(0, 10300)
+	for _ in range(10):
+		x = random.randint(0, 10315)
+		y = random.randint(0, 10315)
 		boats.append((x, y))
-		 
-	print(boats[0], boats[1])
+	i=0
 	for x, y in boats:
+#		print(boats[i])
 		mytree.ajouter(x, y)
+		i+=1
+	print(len(mytree))
 	print(mytree)
