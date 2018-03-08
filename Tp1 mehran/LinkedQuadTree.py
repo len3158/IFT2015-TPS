@@ -321,7 +321,6 @@ class LinkedQuadTree:
 			print(noeud)
 			if not noeud._est_interne:
 				noeud = noeud._parent
-				return self.ajouter_element(noeud,feuille)
 			return self.ajouter_element(noeud,feuille)
 					
 	def __str__(self):
