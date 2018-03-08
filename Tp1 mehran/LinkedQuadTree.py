@@ -324,7 +324,7 @@ class LinkedQuadTree:
 		else:		#Sinon
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )		#On cherche depuis la racine la position pour les coordonnée
-			if noeud._est_interne:
+			if not noeud._est_interne:
 				noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 					
