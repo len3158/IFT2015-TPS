@@ -294,28 +294,6 @@ class LinkedQuadTree:
 				self.ajouter_element(noeud._sO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._sO,elem)							#On ajoute l'élement au nouveau noeud
 
-	def ajouter_element_backup(self,noeud,elem):
-	#self._validate(noeud)
-		
-		x = elem._xx
-		y = elem._yy
-
-		if noeud.go_nO(x,y):						#Si la les coordoonée sont dans nord ouest
-			return self._add_nO(noeud,elem)
-
-		if noeud.go_nE(x,y):
-			return self._add_nE(noeud, elem )					#On ajoute l'élément
-
-		if noeud.go_sE(x,y):
-			if noeud._sE is None:					#Si l'enfant sud EST n'est pas null
-				return self._add_sE(noeud, elem )					#On ajoute l'élément
-
-		if noeud.go_sO(x,y):
-			if noeud._sO is None:						#Si l'enfant sud oeust n'est pas null
-				return self._add_sO(noeud, elem )					#On ajoute l'élément
-			
-	
-	
 	#Remplacer le nouveau element à la position est retourner l'ancien 
 	def ajouter( self,x,y ):
 		feuille = self._Feuille(x,y)						#On créer une element feuille avec les coordonnée
