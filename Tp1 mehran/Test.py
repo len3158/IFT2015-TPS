@@ -11,15 +11,10 @@ class Test:
 #	mytree.ajouter(9,6)
 #	mytree.ajouter(3,2)
 	boats = []
-	for _ in range(100):
-		x = random.randint(0, 10315)
-		y = random.randint(0, 10315)
-		boats.append((x, y))
-	i=0
-	data=()
-	for x, y in boats:
-		data+=(boats[i])
-		mytree.ajouter(x, y)
-		i+=1
-	print(len(mytree))
+	ecrire  = open("bateaux.txt", "w")
+	for _ in range(10):
+			x = random.randint(0, 10315)
+			y = random.randint(0, 10315)
+			mytree.ajouter(x,y)
 	print(mytree)
+
