@@ -1,4 +1,3 @@
-import sys
 import collections
 class LinkedQuadTree:
     #Class interne _Feuille pour les element de feuilles
@@ -63,7 +62,6 @@ class LinkedQuadTree:
 			else:
 				return str( self._element )		
 
-	sys.setrecursionlimit(3000)
 	#BinaryTree constructor
 	def __init__( self ):
 		self._root = None
