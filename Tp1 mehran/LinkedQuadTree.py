@@ -54,9 +54,9 @@ class LinkedQuadTree:
 		def __str__( self ):
 			if self._element._est_interne:
 				mot = "<"
-				mot += "1" if self._nO is not None else "0"
-				mot += "1" if self._nE is not None else "0"
-				mot += "1" if self._sE is not None else "0"
+				mot += "1 " if self._nO is not None else "0 "
+				mot += "1 " if self._nE is not None else "0 "
+				mot += "1 " if self._sE is not None else "0 "
 				mot += "1" if self._sO is not None else "0"
 				mot += ">"
 				return mot
@@ -310,7 +310,24 @@ class LinkedQuadTree:
 				else:
 					noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
-					
+
+#	def supprimer():
+#		return
+#	
+#	def intersect(self, bombe, aDetruire=None):
+#		if aDetruire is None:
+#			aDetruire = set()
+#		if self.children(self._root)
+#			if bombe[0] <= self._element._x1:
+#				self.children(self.children).intersect(bombe, aDetruire)
+#			if bombe[1] >= self._element._x1:
+#				self.children(self.children).intersect(bombe, aDetruire)
+#			if bombe[0] <= self._element._x2:
+#				self.children(self.children).intersect(bombe, aDetruire)
+#			if bombe[1] >= self._element._x2:
+#				self.children(self.children).intersect(bombe, aDetruire)
+#		return aDetruire
+		
 	def __str__(self):
 		mot = self.breadth_first_print()
 		return mot
