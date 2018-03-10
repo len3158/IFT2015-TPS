@@ -56,7 +56,7 @@ def bombarder(nomFichier, tree):
 def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
 	bombarder('bombes.txt', ocean)
-#	ocean.imprimer
+	print(ocean)
 
 if __name__=='__main__':
 	jouer()
