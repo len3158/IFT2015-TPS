@@ -43,13 +43,13 @@ class LinkedQuadTree:
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
 
 		def go_nE(self,x,y):
-			return self._element._est_interne and self._element._milieu_x <= x <= self._element._x2 and self._element._y1 <= y <= self._element._milieu_y
+			return self._element._est_interne and self._element._milieu_x+1 <= x <= self._element._x2 and self._element._y1 <= y <= self._element._milieu_y
 
 		def go_sE(self,x,y):
-			return self._element._est_interne and self._element._milieu_x <= x <= self._element._x2 and self._element._milieu_y <= y <= self._element._y2
+			return self._element._est_interne and self._element._milieu_x+1 <= x <= self._element._x2 and self._element._milieu_y+1 <= y <= self._element._y2
 
 		def go_sO(self,x,y):
-			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y <= y <= self._element._y2	
+			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y+1 <= y <= self._element._y2	
 		
 		def __str__( self ):
 			if self._element._est_interne:
