@@ -11,7 +11,7 @@ class LinkedQuadTree:
 			return self._xx == other._xx and self._yy == other._yy
 		
 		def __str__(self):
-			return "["+ str(self._xx) + ", " +str(self._yy) + "]"
+			return "["+ str(self._xx) + " " +str(self._yy) + "]"
 	#inner class _Item pour les element internes (dimension des quadrants)
 	class _Item:
 		__slots__ = '_x1', '_x2','_y1', '_y2', '_milieu_x','_milieu_y','_est_interne'
@@ -23,9 +23,18 @@ class LinkedQuadTree:
 			self._milieu_x = (x1+x2)//2
 			self._milieu_y = (y1+y2)//2
 			self._est_interne = True
+		
+		def _eq_(self, x1,y1,x2,y2):
+			return self._x1 == x1 and self._x2 == x2 and self._milieu_x == (x1+x2)//2 and self._milieu_y == (y1+y2)//2
+
+		def _lt_(self, other):
+			return self._x1 <= x1 and self._x2 <= x2 and self._milieu_x <= (x1+x2)//2 and self._milieu_y <= (y1+y2)//2
+			
+		def _gt_(self, other):
+			return self._x1 >= x1 and self._x2 >= x2 and self._milieu_x >= (x1+x2)//2 and self._milieu_y >= (y1+y2)//2
+			
 	#Class interne _Node
 	class _Node:
-
     #inner class Position, a subclass of BinaryTree Position
 		__slots__ = '_element', '_parent', '_nO', '_nE', '_sE', '_sO'
 		def __init__( self, elem, parent = None, no = None, ne = None, se = None, so = None ):
@@ -37,7 +46,6 @@ class LinkedQuadTree:
 			self._sO = so
         #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
 
-		
 		def go_nO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
 
@@ -312,19 +320,34 @@ class LinkedQuadTree:
 #	def supprimer():
 #		return
 #	
-#	def intersect(self, bombe, aDetruire=None):
-#		if aDetruire is None:
-#			aDetruire = set()
-#		if self.children(self._root)
-#			if bombe[0] <= self._element._x1:
-#				self.children(self.children).intersect(bombe, aDetruire)
-#			if bombe[1] >= self._element._x1:
-#				self.children(self.children).intersect(bombe, aDetruire)
-#			if bombe[0] <= self._element._x2:
-#				self.children(self.children).intersect(bombe, aDetruire)
-#			if bombe[1] >= self._element._x2:
-#				self.children(self.children).intersect(bombe, aDetruire)
-#		return aDetruire
+	def intersect(self, bombe, noeud, aDetruire=None):
+		if aDetruire is None:
+			aDetruire = set()
+		if self.children(noeud):
+			if bombe[0] <= self.noeud._element._milieu_x:
+				if bombe[1] <= self.noeud._element._milieu_y:
+					intersect(bombe, self.children(self._noeud._nO), aDetruire)
+				if bombe[3] >= self.noeud._element._milieu_y:
+					intersect(bombe, self.children(self._noeud._nE),aDetruire)
+			if bombe[2] >= self.noeud._element._milieu_x:
+				if bombe[1] <= self.noeud._element._milieu_y:
+					intersect(bombe, self.children(self._noeud._sO),aDetruire)
+				if bombe[3] >= self.noeud._element._milieu_y:
+					intersect(bombe, self.children(self._noeud._sE),aDetruire)
+		else:
+			if self.noeud._nO:
+				if(self.noeud._nO._y1 >= bombe[0] and self.noeud._nO._x1 <= bombe[2] and self.noeud._nO._y2 >= bombe[1] and self.noeud._nO._x2 <= bombe[3]):
+					aDetruire.add(self.noeud._nO)
+			elif self.noeud._nE:
+				if(self.noeud._nE._y1 >= bombe[0] and self.noeud._nE._x1 <= bombe[2] and self.noeud._nE._y2 >= bombe[1] and self.noeud._nE._x2 <= bombe[3]):
+					aDetruire.add(self.noeud._nE)
+			elif self.noeud._sO:
+				if(self.noeud._sO._y1 >= bombe[0] and self.noeud._sO._x1 <= bombe[2] and self.noeud._sO._y2 >= bombe[1] and self.noeud._sO._x2 <= bombe[3]):
+					aDetruire.add(self.noeud._sO)
+			elif self.noeud._sE:
+				if(self.noeud._sE._y1 >= bombe[0] and self.noeud._sE._x1 <= bombe[2] and self.noeud._sE._y2 >= bombe[1] and self.noeud._sE._x2 <= bombe[3]):
+					aDetruire.add(self.noeud._sE)
+		return aDetruire
 		
 	def __str__(self):
 		mot = self.breadth_first_print()
@@ -354,4 +377,3 @@ class LinkedQuadTree:
 				table1.clear()
 		return mot
 		
-	
