@@ -40,23 +40,26 @@ def bombarder(nomFichier, tree):
 	if not isEmpty(nomFichier):
 		for line in f:
 			line=(line.strip().split(' '))
+#			line.insert(0,0)
+#			line.insert(2,0)
 			bombs.append(list(map(int,line)))
 		f.close()
 		for x,y in bombs:
-			aDetruire.append(tree.intersect(x,y,))
+			aDetruire.append(tree.supprimer(x,y))
 	else:
 		limite = random.randint(1,1000)
 		for _ in range(1000):
 			x = random.randint(0, 10315)
 			y = random.randint(0, 10315)
-			bombs.append(x,y)
+			bombs.append(0,x,0,y)
 		print('File {} not found/empty, creating {} random bombs...'.format(nomFichier, limite))
+	for i in aDetruire:
+		print(i)
 		
-
 def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
-	bombarder('bombes.txt', ocean)
 	print(ocean)
+	bombarder('bombes.txt', ocean)
 #	ocean.intersect([4,54])
 
 if __name__=='__main__':

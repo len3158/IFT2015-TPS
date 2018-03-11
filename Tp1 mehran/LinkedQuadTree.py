@@ -123,13 +123,7 @@ class LinkedQuadTree:
 			return 0
 		else:
 			return 1 + max( self.hauteur( c ) for c in self.children( noeud ) )    #1 + (hauteur de chaque children
-					
-#	def imprime_leaf( self, noeud ):
-#		for c in self.children( noeud ):
-#			if self.is_leaf(c):
-#				print(c)
-#			self.imprime_leaf( c )
-
+			
 	#Generate les childrens de même parents
 	def sisters_brother( self, noeud ):
 		parent = self.parent( noeud )          
@@ -317,37 +311,18 @@ class LinkedQuadTree:
 					noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 
-#	def supprimer():
-#		return
-#	
-	def intersect(self, bombe, noeud, aDetruire=None):
-		if aDetruire is None:
-			aDetruire = set()
-		if self.children(noeud):
-			if bombe[0] <= self.noeud._element._milieu_x:
-				if bombe[1] <= self.noeud._element._milieu_y:
-					intersect(bombe, self.children(self._noeud._nO), aDetruire)
-				if bombe[3] >= self.noeud._element._milieu_y:
-					intersect(bombe, self.children(self._noeud._nE),aDetruire)
-			if bombe[2] >= self.noeud._element._milieu_x:
-				if bombe[1] <= self.noeud._element._milieu_y:
-					intersect(bombe, self.children(self._noeud._sO),aDetruire)
-				if bombe[3] >= self.noeud._element._milieu_y:
-					intersect(bombe, self.children(self._noeud._sE),aDetruire)
+	def supprimer(self, x,y):
+		feuille = self._Feuille(x,y)
+		if self.is_empty():
+			return 'L arbre est vide'
 		else:
-			if self.noeud._nO:
-				if(self.noeud._nO._y1 >= bombe[0] and self.noeud._nO._x1 <= bombe[2] and self.noeud._nO._y2 >= bombe[1] and self.noeud._nO._x2 <= bombe[3]):
-					aDetruire.add(self.noeud._nO)
-			elif self.noeud._nE:
-				if(self.noeud._nE._y1 >= bombe[0] and self.noeud._nE._x1 <= bombe[2] and self.noeud._nE._y2 >= bombe[1] and self.noeud._nE._x2 <= bombe[3]):
-					aDetruire.add(self.noeud._nE)
-			elif self.noeud._sO:
-				if(self.noeud._sO._y1 >= bombe[0] and self.noeud._sO._x1 <= bombe[2] and self.noeud._sO._y2 >= bombe[1] and self.noeud._sO._x2 <= bombe[3]):
-					aDetruire.add(self.noeud._sO)
-			elif self.noeud._sE:
-				if(self.noeud._sE._y1 >= bombe[0] and self.noeud._sE._x1 <= bombe[2] and self.noeud._sE._y2 >= bombe[1] and self.noeud._sE._x2 <= bombe[3]):
-					aDetruire.add(self.noeud._sE)
-		return aDetruire
+			racine = self._root
+			noeud = self._subtree_search( racine, feuille )
+			if noeud:
+				return noeud
+			else:
+				raise ValueError('Node not found')
+					
 		
 	def __str__(self):
 		mot = self.breadth_first_print()
@@ -356,24 +331,27 @@ class LinkedQuadTree:
 	#print the subtree rooted by position p
     #using a breadth-first traversal
 	def breadth_first_print( self ):
-		table = collections.deque()
-		table1 = collections.deque()
-		#table.appendleft( self._root )
-		mot = ""
-		mot += str(self._root)
-		mot += "\n"
-		for c in self.children( self._root ):
-			mot += str(c)
-			table.appendleft( c )
-		mot += "\n"
-		while len(table)!= 0:
-			p = table.pop()
-			for c in self.children(p):
+		if self._root is not None:
+			table = collections.deque()
+			table1 = collections.deque()
+			#table.appendleft( self._root )
+			mot = ""
+			mot += str(self._root)
+			mot += "\n"
+			for c in self.children( self._root ):
 				mot += str(c)
-				table1.appendleft(c)
-			if len(table)== 0:
-				mot += "\n"
-				table.extendleft(table1)
-				table1.clear()
+				table.appendleft( c )
+			mot += "\n"
+			while len(table)!= 0:
+				p = table.pop()
+				for c in self.children(p):
+					mot += str(c)
+					table1.appendleft(c)
+				if len(table)== 0:
+					mot += "\n"
+					table.extendleft(table1)
+					table1.clear()
+		else:
+			mot = "Tree is empty"
 		return mot
 		
