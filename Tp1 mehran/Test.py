@@ -57,7 +57,7 @@ def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
 	bombarder('bombes.txt', ocean)
 	print(ocean)
-	ocean.intersect([4,54])
+#	ocean.intersect([4,54])
 
 if __name__=='__main__':
 	jouer()
