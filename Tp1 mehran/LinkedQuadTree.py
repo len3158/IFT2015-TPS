@@ -47,6 +47,7 @@ class LinkedQuadTree:
 
 		def go_sO(self,x1,x2,y1,y2):
 			return x2 <= self._element._milieu_x and self._element._milieu_y+1 <= y1 
+		
 	#Class interne _Node
 	class _Node:
     #inner class Position, a subclass of BinaryTree Position
@@ -59,6 +60,14 @@ class LinkedQuadTree:
 			self._sE = se
 			self._sO = so
         #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
+		def contains(self,x1,y1,x2,y2):
+			x = x2-x1
+			y = y2-y1
+			if x >= self._element._x1 and x <= self._element._x2 and y >= self._element._y1 and y <= self._element._y2:
+				print('True')
+				return True
+			print('False')
+			return False
 		
 		def go_nO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
@@ -71,7 +80,7 @@ class LinkedQuadTree:
 
 		def go_sO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y+1 <= y <= self._element._y2	
-		
+			
 		def __str__( self ):
 			if self._element._est_interne:
 				mot = "<"
@@ -342,7 +351,9 @@ class LinkedQuadTree:
 					noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 
-	def supprimer(self, x,y):
+	def supprimer(self, x1, y1, x2, y2):
+		x = x2-x1
+		y = y2-y1
 		if self.is_empty():
 			return 'L arbre est vide'
 		else:
@@ -350,23 +361,23 @@ class LinkedQuadTree:
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )
 			if noeud._element._est_interne:
-				raise ValueError('Node {} not found'.format(x,y))
+				raise ValueError('Node {},{} not found'.format(x,y))
 			else:
 				if noeud._element != feuille:
-					raise ValueError('Node {} not found'.format(x,y))
+					raise ValueError('Node {},{} not found'.format(x,y))
 				else:
 					# print("Parent du noeud supprimé: " + str(noeud._parent))
 					# print("Noeud supprimé: " + str(noeud))
-					if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille):
+					if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille) and noeud._parent._nO.contains(x,y,x1,x2,y1,y2):
 						noeud._parent._nO = None
 						#print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
-					elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille):
+					elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille) and noeud._parent._nE.contains(x,y,x1,x2,y1,y2):
 						noeud._parent._nE = None
 						#print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
-					elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille):
+					elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille) and noeud._parent._sE.contains(x,y,x1,x2,y1,y2):
 						noeud._parent._sE = None
 						#print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
-					elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille):
+					elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille) and noeud._parent._sO.contains(x,y,x1,x2,y1,y2):
 						noeud._parent._sO = None
 						#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
 					print("Noeud supprimé: " + str(noeud))
@@ -374,6 +385,17 @@ class LinkedQuadTree:
 						self.supprimer_noeud_interne(noeud._parent)
 					noeud._parent = None
 					self._size -= 1
+
+	def supprimer_test(self, x1, y1, x2, y2, n):
+		for c in self.children(n):
+			if(self.is_leaf(c)):
+				print('feuille')
+				print(c._element._x1)
+#				c.contains(x1,y1,x2,y2)
+			self.supprimer_test(x1, y1, x2, y2, c)
+
+
+
 	def supprimer_noeud_interne(self,noeud):
 		if(self.root()._element == noeud._element):
 			self._size = 0
@@ -396,6 +418,7 @@ class LinkedQuadTree:
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None
 			self._size -= 1
+		
 	def __str__(self):
 		if self.is_empty():
 			return "Arbre vide"
