@@ -53,8 +53,8 @@ def bombarder(nomFichier, tree):
 			y = random.randint(0, 10315)
 			bombs.append(x,y)
 		print('File {} not found/empty, creating {} random bombs...'.format(nomFichier, limite))
-	for i in aDetruire:
-		print(i)
+	#for i in aDetruire:
+	#	print(i)
 		
 def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
