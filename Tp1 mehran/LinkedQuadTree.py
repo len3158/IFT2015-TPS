@@ -2,13 +2,16 @@ import collections
 class LinkedQuadTree:
     #Class interne _Feuille pour les element de feuilles
 	class _Feuille:
-		__slots__ = '_xx', '_yy','_est_interne'
+		__slots__ = '_xx', '_yy','_est_interne','__dict__'
 		def __init__(self, x,y):
 			self._xx= x
 			self._yy = y
 			self._est_interne = False
 		def __eq__(self,other):
 			return self._xx == other._xx and self._yy == other._yy
+		
+		def getX(self):
+			return self._xx
 		
 		def __str__(self):
 			return "["+ str(self._xx) + " " +str(self._yy) + "]"
@@ -209,10 +212,7 @@ class LinkedQuadTree:
 	def _subtree_search( self, noeud, feuille):
 		x = feuille._xx
 		y = feuille._yy
-		#self._validate( noeud )			#Trouver le noeud associé à la position
-		#return the Position with key k in subtree rooted at p
-		#or the last node visited.
-
+		#Trouver le noeud associé aux coordonnes x,y
 		if noeud._nO is not None and noeud.go_nO(x,y):
 			return self._subtree_search( noeud._nO,feuille)
 		if noeud._nE is not None and noeud.go_nE(x,y):
@@ -312,16 +312,28 @@ class LinkedQuadTree:
 			return self.ajouter_element(noeud,feuille)
 
 	def supprimer(self, x,y):
-		feuille = self._Feuille(x,y)
 		if self.is_empty():
 			return 'L arbre est vide'
 		else:
+#			feuille = self._Feuille(x,y)
 			racine = self._root
-			noeud = self._subtree_search( racine, feuille )
+			noeud = self._subtree_search( racine, self._Feuille(x,y) )
 			if noeud:
-				return noeud
+#				if (noeud._parent._nO._element._x == x and noeud._parent._nO._element._y == y):
+#					noeud._parent._nO == None
+#				elif(noeud._parent._nE._element._x == x and noeud._parent._nE._element._y == y):
+#					noeud._parent._nE == None
+#				elif(noeud._parent._sO._element._x == x and noeud._parent._sO._element._y == y):
+#					noeud._parent._nO == None
+#				elif(noeud._parent._sE._element._x == x and noeud._parent._sE._element._y == y):
+#					noeud._parent._sE == None
+				print(noeud._parent)
+				print(noeud._parent._nO._element._x)
+				print(noeud)
+				noeud._parent
+				noeud = None
 			else:
-				raise ValueError('Node not found')
+				raise ValueError('Node {} not found'.format(x,y))
 					
 		
 	def __str__(self):
