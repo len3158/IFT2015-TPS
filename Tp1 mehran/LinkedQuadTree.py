@@ -10,9 +10,6 @@ class LinkedQuadTree:
 		def __eq__(self,other):
 			return self._xx == other._xx and self._yy == other._yy
 		
-		def getX(self):
-			return self._xx
-		
 		def __str__(self):
 			return "["+ str(self._xx) + " " +str(self._yy) + "]"
 	#inner class _Item pour les element internes (dimension des quadrants)
@@ -390,7 +387,10 @@ class LinkedQuadTree:
 		for c in self.children(n):
 			if(self.is_leaf(c)):
 				print('feuille')
-				print(c._element._x1)
+#				print(c._parent._nO._element._est_interne)
+				print(c._parent._nO)
+				print(type(c._parent._nO))
+				print(dir(c._parent._nO))
 #				c.contains(x1,y1,x2,y2)
 			self.supprimer_test(x1, y1, x2, y2, c)
 
