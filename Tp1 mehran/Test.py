@@ -59,6 +59,7 @@ def bombarder(nomFichier, tree):
 def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
 	print(ocean)
+	print("Commencer bombardemement")
 	bombarder('bombes.txt', ocean)
 	print(ocean)
 #	ocean.intersect([4,54])

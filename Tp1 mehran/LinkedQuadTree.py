@@ -35,7 +35,18 @@ class LinkedQuadTree:
 			
 		def _gt_(self, other):
 			return self._x1 >= x1 and self._x2 >= x2 and self._milieu_x >= (x1+x2)//2 and self._milieu_y >= (y1+y2)//2
-			
+		
+		def go_nO(self,x1,x2,y1,y2):
+			return x2 <= self._element._milieu_x and y2 <= self._element._milieu_y
+
+		def go_nE(self,x1,x2,y1,y2):
+			return self._element._milieu_x+1 <= x1 and y2 <= self._element._milieu_y
+
+		def go_sE(self,x1,x2,y1,y2):
+			return self._element._milieu_x+1 <= x1 and self._element._milieu_y+1 <= y1 
+
+		def go_sO(self,x1,x2,y1,y2):
+			return x2 <= self._element._milieu_x and self._element._milieu_y+1 <= y1 
 	#Class interne _Node
 	class _Node:
     #inner class Position, a subclass of BinaryTree Position
@@ -48,7 +59,7 @@ class LinkedQuadTree:
 			self._sE = se
 			self._sO = so
         #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
-
+		
 		def go_nO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
 
@@ -209,18 +220,34 @@ class LinkedQuadTree:
 		noeud._sO = self._Node(e, noeud )          #Créer un nouveau noeud(elem,parent = node)
 		return noeud._sO
 
-	def _subtree_search( self, noeud, feuille):
-		x = feuille._xx
-		y = feuille._yy
+	def _subtree_search( self, noeud, x,y):
+		# x = feuille.xx
+		# y = feuille.yy
 		#Trouver le noeud associé aux coordonnes x,y
 		if noeud._nO is not None and noeud.go_nO(x,y):
-			return self._subtree_search( noeud._nO,feuille)
+			return self._subtree_search( noeud._nO,x,y)
 		if noeud._nE is not None and noeud.go_nE(x,y):
-			return self._subtree_search( noeud._nE,feuille)
+			return self._subtree_search( noeud._nE,x,y)
 		if noeud._sE is not None and noeud.go_sE(x,y):
-			return self._subtree_search( noeud._sE,feuille)
+			return self._subtree_search( noeud._sE,x,y)
 		if noeud._sO is not None and noeud.go_sO(x,y):
-			return self._subtree_search( noeud._sO,feuille)
+			return self._subtree_search( noeud._sO,x,y)
+		return noeud
+		
+	def _interne_arbre_cherche( self, noeud, x1,x2,y1,y2):
+		# x = feuille.xx
+		# y = feuille.yy
+		#Trouver le noeud associé aux coordonnes x,y
+		if not noeud._element._est_interne:
+			return noeud
+		if noeud._nO is not None and noeud._element.go_nO(x1,x2,y1,y2):
+			return self._subtree_search( noeud._nO,x1,x2,y1,y2)
+		if noeud._nE is not None and noeud.go_nE(x1,x2,y1,y2):
+			return self._subtree_search( noeud._nE,x1,x2,y1,y2)
+		if noeud._sE is not None and noeud.go_sE(x1,x2,y1,y2):
+			return self._subtree_search( noeud._sE,x1,x2,y1,y2)
+		if noeud._sO is not None and noeud.go_sO(x1,x2,y1,y2):
+			return self._subtree_search( noeud._sO,x1,x2,y1,y2)
 		return noeud
 		
 	def ajouter_element(self,noeud,elem):
@@ -229,14 +256,13 @@ class LinkedQuadTree:
 		x = elem._xx
 		y = elem._yy
 
-		# if not noeud._element._est_interne:                 #Si le noeud de la position est une feuille
-			# noeud = noeud._parent								# Trouver le pointeur parent
-			# new_node = noeud
+		if not noeud._element._est_interne:                 #Si le noeud de la position est une feuille
+			noeud = noeud._parent								# Trouver le pointeur parent
 		if noeud.go_nO(x,y):						#Si la les coordoonée sont dans nord ouest
 			if noeud._nO is None:					#Si l'enfant nord oeust est null
 				return self._add_nO(noeud,elem)
 			if noeud._nO._element._est_interne:             #si l'enfant nord Ouest pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._nO, elem )						#Marcher vers nord ouest
+				p_walk = self._subtree_search(noeud._nO, x,y )						#Marcher vers nord ouest
 				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 
 			if not noeud._nO._element._est_interne:  								#Si l'enfant nord Ouest appartient deja une feuille
@@ -252,7 +278,7 @@ class LinkedQuadTree:
 			if noeud._nE is None:					#Si l'enfant nord EST n'est pas null
 				return self._add_nE(noeud, elem )					#On ajoute l'élément
 			if noeud._nE._element._est_interne:             #si l'enfant nord EST pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._nE, elem ) 					#Marcher vers nord EST
+				p_walk = self._subtree_search(noeud._nE, x,y ) 					#Marcher vers nord EST
 				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 
 			if not noeud._nE._element._est_interne:		#Si l'enfant nord EST appartient deja une feuille
@@ -268,7 +294,7 @@ class LinkedQuadTree:
 			if noeud._sE is None:					#Si l'enfant sud EST n'est pas null
 				return self._add_sE(noeud, elem )					#On ajoute l'élément
 			if noeud._sE._element._est_interne:             #si l'enfant sud EST pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._sE, elem )				#Marcher vers sud EST
+				p_walk = self._subtree_search(noeud._sE, x,y )				#Marcher vers sud EST
 				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 
 			if not noeud._sE._element._est_interne:											#Si l'enfant sud EST appartient deja une feuille
@@ -284,7 +310,7 @@ class LinkedQuadTree:
 			if noeud._sO is None:						#Si l'enfant sud oeust n'est pas null
 				return self._add_sO(noeud, elem )					#On ajoute l'élément
 			if noeud._sO._element._est_interne:             	#si l'enfant sud Ouest pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._sE, elem )								#Marcher vers sud ouest
+				p_walk = self._subtree_search(noeud._sE, x,y )								#Marcher vers sud ouest
 				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 
 			if not noeud._sO._element._est_interne:											#Si l'enfant nord Ouest appartient deja une feuille
@@ -303,7 +329,7 @@ class LinkedQuadTree:
 			return self.ajouter_element(racine,feuille)				# On ajoute la feuille a la racine et on retourn la position 
 		else:		#Sinon
 			racine = self._root
-			noeud = self._subtree_search( racine, feuille )		#On cherche depuis la racine la position pour les coordonnée
+			noeud = self._subtree_search( racine, x,y)		#On cherche depuis la racine la position pour les coordonnée
 			if not noeud._element._est_interne:
 				if noeud._element == feuille:
 					return False
@@ -315,25 +341,32 @@ class LinkedQuadTree:
 		if self.is_empty():
 			return 'L arbre est vide'
 		else:
-#			feuille = self._Feuille(x,y)
+			feuille = self._Feuille(x,y)
 			racine = self._root
-			noeud = self._subtree_search( racine, self._Feuille(x,y) )
-			if noeud:
-#				if (noeud._parent._nO._element._x == x and noeud._parent._nO._element._y == y):
-#					noeud._parent._nO == None
-#				elif(noeud._parent._nE._element._x == x and noeud._parent._nE._element._y == y):
-#					noeud._parent._nE == None
-#				elif(noeud._parent._sO._element._x == x and noeud._parent._sO._element._y == y):
-#					noeud._parent._nO == None
-#				elif(noeud._parent._sE._element._x == x and noeud._parent._sE._element._y == y):
-#					noeud._parent._sE == None
-				print(noeud._parent)
-				print(noeud._parent._nO._element._x)
-				print(noeud)
-				noeud._parent
-				noeud = None
-			else:
+			noeud = self._subtree_search( racine, x,y )
+			if noeud._element._est_interne or not noeud._element._est_interne and not noeud._element == feuille:
 				raise ValueError('Node {} not found'.format(x,y))
+			else:
+				if noeud._element != feuille:
+					raise ValueError('Node {} not found'.format(x,y))
+				else:
+					print("Parent du noeud supprimé: " + str(noeud._parent))
+					print("Noeud supprimé: " + str(noeud))
+				if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille):
+					noeud._parent._nO == None
+				elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille):
+					noeud._parent._nE == None
+				elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille):
+					noeud._parent._sE == None
+				elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille):
+					noeud._parent._sO == None
+				noeud._parent = None
+				# print(noeud._parent)
+				# print(noeud._parent._nO._element._x)
+				# print(noeud)
+				# noeud._parent = None
+			# else:
+				# raise ValueError('Node {} not found'.format(x,y))
 					
 		
 	def __str__(self):
