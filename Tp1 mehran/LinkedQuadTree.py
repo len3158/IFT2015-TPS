@@ -124,7 +124,7 @@ class LinkedQuadTree:
 
 	#ask if the tree is empty
 	def is_empty( self ):
-		return self._size == 0
+		return self._size <= 0
 
 	#ask if a position is a leaf
 	def is_leaf( self, noeud ):
@@ -359,21 +359,21 @@ class LinkedQuadTree:
 					# print("Noeud supprimé: " + str(noeud))
 					if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille):
 						noeud._parent._nO = None
-						print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
+						#print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
 					elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille):
 						noeud._parent._nE = None
-						print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
+						#print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
 					elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille):
 						noeud._parent._sE = None
-						print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
+						#print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
 					elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille):
 						noeud._parent._sO = None
-						print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
+						#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
+					print("Noeud supprimé: " + str(noeud))
 					if not self.has_children(noeud._parent):
 						self.supprimer_noeud_interne(noeud._parent)
 					noeud._parent = None
 					self._size -= 1
-					print("Noeud ssupprimé: " + str(noeud))
 	def supprimer_noeud_interne(self,noeud):
 		if(self.root()._element == noeud._element):
 			self._size = 0
@@ -381,21 +381,21 @@ class LinkedQuadTree:
 		else:
 			if (noeud._parent._nO is not None and noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element):
 				noeud._parent._nO = None
-				print("Parent du noeud interne nord-oeust supprimé: " + str(noeud._parent))
+				#print("Parent du noeud interne nord-oeust supprimé: " + str(noeud._parent))
 			elif(noeud._parent._nE is not None and noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element):
 				noeud._parent._nE = None
-				print("Parent du noeud interne nord-est supprimé: " + str(noeud._parent))
+				#print("Parent du noeud interne nord-est supprimé: " + str(noeud._parent))
 			elif(noeud._parent._sE is not None and noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element):
 				noeud._parent._sE = None
-				print("Parent du noeud interne sud-est supprimé: " + str(noeud._parent))
+				#print("Parent du noeud interne sud-est supprimé: " + str(noeud._parent))
 			elif(noeud._parent._sO is not None and noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element):
 				noeud._parent._sO = None
-				print("Parent du noeud interne sud-oeust supprimé: " + str(noeud._parent))
+				#print("Parent du noeud interne sud-oeust supprimé: " + str(noeud._parent))
+			print("Noeud interne supprimé: " + "(" + str(noeud._element._x1) + ", " + str(noeud._element._y1) + ") (" + str(noeud._element._x2) + ", " + str(noeud._element._y2) + ")")
 			if not self.has_children(noeud._parent):
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None
 			self._size -= 1
-			print("Noeud interne supprimé: " + str(noeud))
 	def __str__(self):
 		if self.is_empty():
 			return "Arbre vide"
