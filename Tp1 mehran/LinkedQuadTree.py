@@ -124,7 +124,7 @@ class LinkedQuadTree:
 
 	#ask if the tree is empty
 	def is_empty( self ):
-		return len( self ) == 0
+		return self._size == 0
 
 	#ask if a position is a leaf
 	def is_leaf( self, noeud ):
@@ -177,7 +177,8 @@ class LinkedQuadTree:
 		if noeud._sO is not None:
 			count += 1
 		return count
-
+	def has_children(self,noeud):
+		return self.num_children(noeud) > 0
 	"""developer-level building methods
 	"""
 	#add the root node with element
@@ -270,6 +271,7 @@ class LinkedQuadTree:
 					raise ValueError( 'Coordonnée se ressemble' )
 				backup_feuille = noeud._nO._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._y1,noeud._element._milieu_y)   #On créer un nouveau item interne avec nouveau dimension
+				self._size += 1
 				noeud._nO._element = item_interne	#On change l'élément de l'enfant nord oeust							
 				self.ajouter_element(noeud._nO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._nO,elem)							#On ajoute l'élement au nouveau noeud
@@ -286,6 +288,7 @@ class LinkedQuadTree:
 					raise ValueError( 'Coordonnée se ressemble' )
 				backup_feuille = noeud._nE._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._milieu_x+1,noeud._element._x2,noeud._element._y1,noeud._element._milieu_y)   #On créer un nouveau item interne avec nouveau dimension
+				self._size += 1
 				noeud._nE._element = item_interne     #On change l'élément de l'enfant nord oeust	
 				self.ajouter_element(noeud._nE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._nE,elem)							#On ajoute l'élement au nouveau noeud
@@ -302,6 +305,7 @@ class LinkedQuadTree:
 					raise ValueError( 'Coordonnée se ressemble' )
 				backup_feuille = noeud._sE._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._milieu_x+1,noeud._element._x2,noeud._element._milieu_y+1,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
+				self._size += 1
 				noeud._sE._element = item_interne           #On change l'élément de l'enfant nord oeust	
 				self.ajouter_element(noeud._sE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._sE,elem)							#On ajoute l'élement au nouveau noeud
@@ -316,6 +320,7 @@ class LinkedQuadTree:
 			if not noeud._sO._element._est_interne:											#Si l'enfant nord Ouest appartient deja une feuille
 				backup_feuille = noeud._sO._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._milieu_y+1,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
+				self._size += 1
 				noeud._sO._element = item_interne		#On change l'élément de l'enfant nord oeust	
 				self.ajouter_element(noeud._sO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
 				return self.ajouter_element(noeud._sO,elem)							#On ajoute l'élement au nouveau noeud
@@ -353,34 +358,48 @@ class LinkedQuadTree:
 					# print("Parent du noeud supprimé: " + str(noeud._parent))
 					# print("Noeud supprimé: " + str(noeud))
 					if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille):
-						noeud._parent._nO == None
+						noeud._parent._nO = None
 						print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
 					elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille):
-						noeud._parent._nE == None
+						noeud._parent._nE = None
 						print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
 					elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille):
-						noeud._parent._sE == None
+						noeud._parent._sE = None
 						print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
 					elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille):
-						noeud._parent._sO == None
+						noeud._parent._sO = None
 						print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
-						
-					print("Noeud ssupprimé: " + str(noeud))
+					if not self.has_children(noeud._parent):
+						self.supprimer_noeud_interne(noeud._parent)
 					noeud._parent = None
 					self._size -= 1
-				# print(noeud._parent)
-				# print(noeud._parent._nO._element._x)
-				# print(noeud)
-				# noeud._parent = None
-			# else:
-				# raise ValueError('Node {} not found'.format(x,y))
-					
-		
+					print("Noeud ssupprimé: " + str(noeud))
+	def supprimer_noeud_interne(self,noeud):
+		if(self.root()._element == noeud._element):
+			self._size = 0
+			print("Racine supprimer")
+		else:
+			if (noeud._parent._nO is not None and noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element):
+				noeud._parent._nO = None
+				print("Parent du noeud interne nord-oeust supprimé: " + str(noeud._parent))
+			elif(noeud._parent._nE is not None and noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element):
+				noeud._parent._nE = None
+				print("Parent du noeud interne nord-est supprimé: " + str(noeud._parent))
+			elif(noeud._parent._sE is not None and noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element):
+				noeud._parent._sE = None
+				print("Parent du noeud interne sud-est supprimé: " + str(noeud._parent))
+			elif(noeud._parent._sO is not None and noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element):
+				noeud._parent._sO = None
+				print("Parent du noeud interne sud-oeust supprimé: " + str(noeud._parent))
+			if not self.has_children(noeud._parent):
+				self.supprimer_noeud_interne(noeud._parent)
+			noeud._parent = None
+			self._size -= 1
+			print("Noeud interne supprimé: " + str(noeud))
 	def __str__(self):
-		if self.is_empty:
-		 return "Arbre vide"
-		mot = self.breadth_first_print()
-		return mot
+		if self.is_empty():
+			return "Arbre vide"
+		return self.breadth_first_print()
 
 	#print the subtree rooted by position p
     #using a breadth-first traversal
