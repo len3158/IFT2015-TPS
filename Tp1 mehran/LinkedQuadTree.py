@@ -10,6 +10,9 @@ class LinkedQuadTree:
 		def __eq__(self,other):
 			return self._xx == other._xx and self._yy == other._yy
 		
+		def getX(self):
+			return self._xx
+		
 		def __str__(self):
 			return "["+ str(self._xx) + " " +str(self._yy) + "]"
 	#inner class _Item pour les element internes (dimension des quadrants)
@@ -32,19 +35,19 @@ class LinkedQuadTree:
 			
 		def _gt_(self, other):
 			return self._x1 >= x1 and self._x2 >= x2 and self._milieu_x >= (x1+x2)//2 and self._milieu_y >= (y1+y2)//2
-		
+			
 		def go_nO(self,x1,x2,y1,y2):
-			return x2 <= self._element._milieu_x and y2 <= self._element._milieu_y
+			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._y1 <= y1 <= self._element._milieu_y and self._y1 <= y2 <= self._element._milieu_y
 
 		def go_nE(self,x1,x2,y1,y2):
-			return self._element._milieu_x+1 <= x1 and y2 <= self._element._milieu_y
+			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._y1 <= y1 <= self._element._milieu_y and self._y1 <= y2 <= self._element._milieu_y
 
 		def go_sE(self,x1,x2,y1,y2):
-			return self._element._milieu_x+1 <= x1 and self._element._milieu_y+1 <= y1 
+			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._element._milieu_y + 1 <= y1 <= self._element.y2 and self._element._milieu_y + 1 <= y2 <= self._element.y2
 
 		def go_sO(self,x1,x2,y1,y2):
-			return x2 <= self._element._milieu_x and self._element._milieu_y+1 <= y1 
-		
+			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._element._milieu_y + 1 <= y1 <= self._element.y2 and self._element._milieu_y + 1 <= y2 <= self._element.y2 		
+
 	#Class interne _Node
 	class _Node:
     #inner class Position, a subclass of BinaryTree Position
@@ -57,14 +60,6 @@ class LinkedQuadTree:
 			self._sE = se
 			self._sO = so
         #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
-		def contains(self,x1,y1,x2,y2):
-			x = x2-x1
-			y = y2-y1
-			if x >= self._element._x1 and x <= self._element._x2 and y >= self._element._y1 and y <= self._element._y2:
-				print('True')
-				return True
-			print('False')
-			return False
 		
 		def go_nO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
@@ -76,8 +71,8 @@ class LinkedQuadTree:
 			return self._element._est_interne and self._element._milieu_x+1 <= x <= self._element._x2 and self._element._milieu_y+1 <= y <= self._element._y2
 
 		def go_sO(self,x,y):
-			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y+1 <= y <= self._element._y2	
-			
+			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y+1 <= y <= self._element._y2			
+		
 		def __str__( self ):
 			if self._element._est_interne:
 				mot = "<"
@@ -248,13 +243,13 @@ class LinkedQuadTree:
 		if not noeud._element._est_interne:
 			return noeud
 		if noeud._nO is not None and noeud._element.go_nO(x1,x2,y1,y2):
-			return self._subtree_search( noeud._nO,x1,x2,y1,y2)
-		if noeud._nE is not None and noeud.go_nE(x1,x2,y1,y2):
-			return self._subtree_search( noeud._nE,x1,x2,y1,y2)
-		if noeud._sE is not None and noeud.go_sE(x1,x2,y1,y2):
-			return self._subtree_search( noeud._sE,x1,x2,y1,y2)
-		if noeud._sO is not None and noeud.go_sO(x1,x2,y1,y2):
-			return self._subtree_search( noeud._sO,x1,x2,y1,y2)
+			return self._interne_arbre_cherche( noeud._nO,x1,x2,y1,y2)
+		if noeud._nE is not None and noeud._element.go_nE(x1,x2,y1,y2):
+			return self._interne_arbre_cherche( noeud._nE,x1,x2,y1,y2)
+		if noeud._sE is not None and noeud._element.go_sE(x1,x2,y1,y2):
+			return self._interne_arbre_cherche( noeud._sE,x1,x2,y1,y2)
+		if noeud._sO is not None and noeud._element.go_sO(x1,x2,y1,y2):
+			return self._interne_arbre_cherche( noeud._sO,x1,x2,y1,y2)
 		return noeud
 		
 	def ajouter_element(self,noeud,elem):
@@ -348,9 +343,7 @@ class LinkedQuadTree:
 					noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 
-	def supprimer(self, x1, y1, x2, y2):
-		x = x2-x1
-		y = y2-y1
+	def supprimer(self, x,y):
 		if self.is_empty():
 			return 'L arbre est vide'
 		else:
@@ -358,44 +351,33 @@ class LinkedQuadTree:
 			racine = self._root
 			noeud = self._subtree_search( racine, x,y )
 			if noeud._element._est_interne:
-				raise ValueError('Node {},{} not found'.format(x,y))
+				raise ValueError('Node {} not found'.format(x,y))
 			else:
 				if noeud._element != feuille:
-					raise ValueError('Node {},{} not found'.format(x,y))
+					raise ValueError('Node {} not found'.format(x,y))
 				else:
 					# print("Parent du noeud supprimé: " + str(noeud._parent))
 					# print("Noeud supprimé: " + str(noeud))
-					if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille) and noeud._parent._nO.contains(x,y,x1,x2,y1,y2):
-						noeud._parent._nO = None
-						#print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
-					elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille) and noeud._parent._nE.contains(x,y,x1,x2,y1,y2):
-						noeud._parent._nE = None
-						#print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
-					elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille) and noeud._parent._sE.contains(x,y,x1,x2,y1,y2):
-						noeud._parent._sE = None
-						#print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
-					elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille) and noeud._parent._sO.contains(x,y,x1,x2,y1,y2):
-						noeud._parent._sO = None
-						#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
-					print("Noeud supprimé: " + str(noeud))
-					if not self.has_children(noeud._parent):
-						self.supprimer_noeud_interne(noeud._parent)
-					noeud._parent = None
-					self._size -= 1
-
-	def supprimer_test(self, x1, y1, x2, y2, n):
-		for c in self.children(n):
-			if(self.is_leaf(c)):
-				print('feuille')
-#				print(c._parent._nO._element._est_interne)
-				print(c._parent._nO)
-				print(type(c._parent._nO))
-				print(dir(c._parent._nO))
-#				c.contains(x1,y1,x2,y2)
-			self.supprimer_test(x1, y1, x2, y2, c)
-
-
-
+					self.supprimer_feuille(noeud)
+	def supprimer_feuille(self,noeud):
+		if noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element:
+			noeud._parent._nO = None
+			#print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
+		elif noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element:
+			noeud._parent._nE = None
+			#print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
+		elif noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element:
+			noeud._parent._sE = None
+			#print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
+		elif noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element:
+			noeud._parent._sO = None
+			#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
+		print("Noeud supprimé: " + str(noeud))
+		if not self.has_children(noeud._parent):
+			self.supprimer_noeud_interne(noeud._parent)
+		noeud._parent = None
+		self._size -= 1
+	
 	def supprimer_noeud_interne(self,noeud):
 		if(self.root()._element == noeud._element):
 			self._size = 0
@@ -418,7 +400,79 @@ class LinkedQuadTree:
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None
 			self._size -= 1
+	
+	def test_bombes(self,x1,x2,y1,y2):
+		noeud = self._root
+		self.bombes(noeud,x1,x2,y1,y2)
+	def bombes(self,racine,x1,x2,y1,y2):
+		noeud_bombes = self._Item(x1,x2,y1,y2)
+		noeud = self._interne_arbre_cherche(racine,x1,x2,y1,y2)			#Descendre les arbres internes avec les coordonnees
+		if not noeud._element._est_interne:							#Si le noeud est une feuille
+			if x1 <= noeud._element._xx <= x2 and y1 <= noeud._element._yy <= y2:   #Si la feuille est a l'interieur de les coordonnes bombe
+				self.supprimer_feuille(noeud)											#Effacer la feuille
+			else:																	#Sinon
+				print("Espace vide")													#Afficer espace vide 
+				return																	#Retourner vide
+		elif noeud._element == noeud_bombes:						#Sinon si le noeud interne a les meme dimension que la dimension de la bombe
+			self.supprimer_noeud_interne(noeud)							#Supprimer le noeud interne
+			return
+		else:														#Sinon
+			if noeud._nO is not None:									#Si enfant Nord-Ouest existe
+				if not noeud._nO._element._est_interne and x1 <= noeud._nO._element._xx <= x2 and y1 <= noeud._nO._element._yy <= y2:						#S'il n'est pas interne
+					self.supprimer_feuille(noeud._nO)												#Supprimer la feuille
+				elif noeud._nO._element._est_interne:														#Sinon il est interne
+					if noeud._nO._element._x1 >= x1 and noeud._nO._element._x2 <= x2 and noeud._nO._element._y1 >= y1 and noeud._nO._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
+						self.supprimer_noeud_interne(noeud._nO)																								#Detruire le noeud interne
+					elif noeud._nO._element._x1 <= x1 <= noeud._nO._element._x2 and noeud._nO._element._y1 <= y1 <= noeud._element._y2:					#Sinon si une partie de bombe se trouve dans le noeud interne
+						self.bombes(noeud._nO,x1,x2,y1,y2)
+			if noeud._nE is not None:							#Si enfant Nord-Est existe
+				if not noeud._nE._element._est_interne:				#S'il n'est pas interne
+					if x1 <= noeud._nE._element._xx <= x2 and y1 <= noeud._nE._element._yy <= y2:	#Si la feuille se trouve dans coordoonee bombe
+						self.supprimer_feuille(noeud._nE)												#Supprimer la feuille
+				else:												#Sinon il est interne
+					if noeud._nE._element._x1 >= x1 and noeud._nE._element._x2 <= x2 and noeud._nE._element._y1 >= y1 and noeud._nE._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
+						self.supprimer_noeud_interne(noeud._nE)																								#Detruire le noeud interne
+					elif noeud._nE._element._x1 <= x1 <= noeud._nE._element._x2 or noeud._nE._element._x1 <= x2 <= noeud._nE._element._x2 and noeud._nE._element._y1 <= y1 <= noeud._element._y2:	#Sinon si une partie de bombe se trouve dans le noeud interne
+						self.bombes(noeud._nE,x1,x2,y1,y2)
+			if noeud._sE is not None:							#Si enfant Sud-Est existe
+				if not noeud._sE._element._est_interne:				#S'il n'est pas interne
+					if x1 <= noeud._sE._element._xx <= x2 and y1 <= noeud._sE._element._yy <= y2:	#Si la feuille se trouve dans coordoonee bombe
+						self.supprimer_feuille(noeud._sE)												#Supprimer la feuille
+				else:												#Sinon il est interne
+					if noeud._sE._element._x1 >= x1 and noeud._sE._element._x2 <= x2 and noeud._sE._element._y1 >= y1 and noeud._sE._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
+						self.supprimer_noeud_interne(noeud._sE)																								#Detruire le noeud interne
+					elif noeud._sE._element._x1 <= x1 <= noeud._sE._element._x2 or noeud._sE._element._x1 <= x2 <= noeud._sE._element._x2 and noeud._sE._element._y1 <= y2 <= noeud._element._y2:	#Sinon si une partie de bombe se trouve dans le noeud interne
+						self.bombes(noeud._sE,x1,x2,y1,y2)
+			if noeud._sO is not None:							#Si enfant Sud-Ouest existe
+				if not noeud._sO._element._est_interne:				#S'il n'est pas interne
+					if x1 <= noeud._sO._element._xx <= x2 and y1 <= noeud._sO._element._yy <= y2:	#Si la feuille se trouve dans coordoonee bombe
+						self.supprimer_feuille(noeud._sO)												#Supprimer la feuille
+				else:												#Sinon il est interne
+					if noeud._sO._element._x1 >= x1 and noeud._sO._element._x2 <= x2 and noeud._sO._element._y1 >= y1 and noeud._sO._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
+						self.supprimer_noeud_interne(noeud._sO)																								#Detruire le noeud interne
+					elif noeud._sO._element._x1 <= x1 <= noeud._sO._element._x2 and noeud._sO._element._y1 <= y2 <= noeud._element._y2:	#Sinon si une partie de bombe se trouve dans le noeud interne
+						self.bombes(noeud._sO,x1,x2,y1,y2)				
+
+				
+	# def diviser_bombe(noeud,x1,x2,y1,y2):
+		# if x1 <= noeud._element._milieu_x and x2 >= noeud._element._element._milieu_x +1:	#Si le bombe entre Ouest et Est
+			# if y1 <= noeud._element._milieu_y and y2 >= noeud._element._milieu_y + 1:			#Si le bombe entre Nord et Sud
+				# self.bombes(noeud,x1,noeud._element._milieu_x,y1,noeud._milieu_y)					#Divisier bombe Nord-Ouest
+				# self.bombes(noeud,noeud._element._milieu_x+1,x2,y1,noeud._element._milieu_y)		#Divisier bombe Nord-Est
+				# self.bombes(noeud,noeud._element._milieu_x+1,x2,noeud._element._milieu_y+1,y2)		#Diviser bombe Sud-Est
+				# self.bombes(noeud,x1,noeud._element._milieu_x,noeud._element._milieu_y+1,y2)		#Diviser bombe Sud-Ouest
+			# else:																				#Sinon
+				# self.bombes(noeud,x1,noeud._element._milieu_x,y1,y2)								#Bombe Ouest
+				# self.bombes(noeud._element._milieu_x +1, x2,y1,y2)									#Bombe Est
+		# else:																				#Sinon
+			# self.bombes(noeud,x1,x2,y1,noeud._milieu_y)											#Bombe Nord
+			# self.bombes(noeud,x1,x2,noeud._milieu_y+1,y2)										#Bombe Sud
+				
+			# bombe_O = self._Item(x1,noeud._element._milieu_x,y1,y2)
+			# bombe_e = self._Item(noeud._milieu_x+1,x2,y1,y2)
 		
+	
+	
 	def __str__(self):
 		if self.is_empty():
 			return "Arbre vide"
