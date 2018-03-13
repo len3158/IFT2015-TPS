@@ -51,7 +51,7 @@ def bombarder(nomFichier, tree):
 			if y1 > y2:
 				y1, y2 = y2, y1
 #			tree.supprimer(x1, y1, x2, y2)
-			tree.supprimer_test(x1, y1, x2, y2, tree.root())
+			tree.test_bombes(x1, x2, y1, y2)
 
 	else:
 		limite = random.randint(1,1000)
