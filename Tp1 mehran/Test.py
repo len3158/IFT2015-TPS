@@ -42,7 +42,7 @@ def bombarder(nomFichier, tree):
 			line=(line.strip().split(' '))
 			bombs.append(list(map(int,line)))
 		f.close()
-		#print(bombs[0][2])
+		print(bombs[0][2])
 		#x1,y1,x2,y2 | [0]=x1, [1]=y1, [2]=x2, [3]=y2
 		for i in range(len(bombs)):
 			x1, y1, x2, y2 = bombs[i][0], bombs[i][1], bombs[i][2], bombs[i][3]
@@ -51,8 +51,7 @@ def bombarder(nomFichier, tree):
 			if y1 > y2:
 				y1, y2 = y2, y1
 #			tree.supprimer(x1, y1, x2, y2)
-			tree.test_bombes(x1,x2,y1,y2)
-			print(str(x1) + "," + str(x2) +"," +str(y1) +"," +str(y2)+'\n')
+			tree.supprimer_test(x1, y1, x2, y2, tree.root())
 
 	else:
 		limite = random.randint(1,1000)
