@@ -358,6 +358,7 @@ class LinkedQuadTree:
 				else:
 					# print("Parent du noeud supprimé: " + str(noeud._parent))
 					# print("Noeud supprimé: " + str(noeud))
+<<<<<<< HEAD
 					self.supprimer_feuille(noeud)
 	def supprimer_feuille(self,noeud):
 		if noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element:
@@ -378,6 +379,36 @@ class LinkedQuadTree:
 		noeud._parent = None
 		self._size -= 1
 	
+=======
+					if (noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == feuille) and noeud._parent._nO.contains(x,y,x1,x2,y1,y2):
+						noeud._parent._nO = None
+						#print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
+					elif(noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == feuille) and noeud._parent._nE.contains(x,y,x1,x2,y1,y2):
+						noeud._parent._nE = None
+						#print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
+					elif(noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == feuille) and noeud._parent._sE.contains(x,y,x1,x2,y1,y2):
+						noeud._parent._sE = None
+						#print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
+					elif(noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == feuille) and noeud._parent._sO.contains(x,y,x1,x2,y1,y2):
+						noeud._parent._sO = None
+						#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
+					print("Noeud supprimé: " + str(noeud))
+					if not self.has_children(noeud._parent):
+						self.supprimer_noeud_interne(noeud._parent)
+					noeud._parent = None
+					self._size -= 1
+
+	def supprimer_test(self, x1, y1, x2, y2, n):
+		for c in self.children(n):
+			if(self.is_leaf(c)):
+				print('feuille')
+				print(c._element._x1)
+#				c.contains(x1,y1,x2,y2)
+			self.supprimer_test(x1, y1, x2, y2, c)
+
+
+
+>>>>>>> parent of be02c9b... problème accès feuille
 	def supprimer_noeud_interne(self,noeud):
 		if(self.root()._element == noeud._element):
 			self._size = 0
