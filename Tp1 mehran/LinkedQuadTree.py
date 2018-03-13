@@ -93,36 +93,11 @@ class LinkedQuadTree:
 	#get the size
 	def __len__( self ):
 		return self._size
-
-	#get the root
-	def root( self ):
-		return self._root
-
-	#get the parent of a position
-	def parent( self, noeud ):
-		#self._validate( noeud )			#Tester si le noeud existe
-		return noeud._parent
-
-	#Obtenir l'children NordOuest
-	def nord_O( self, noeud ):
-		#self._validate( noeud )                    #Trouver le noeud associé à la position
-		return noeud._nO     #Retourner la position crée
-
-	#Obtenir l'children NordEst
-	def nord_E( self, noeud ):
-		#self._validate( noeud )                    #Trouver le noeud associé à la position
-		return noeud._nE      #Retourner la position crée
-
-	#Obtenir l'children SudEst
-	def sud_E( self, noeud ):
-		#self._validate( noeud )                    #Trouver le noeud associé à la position
-		return noeud._sE       #Retourner la position crée
-
-	#Obtenir l'children SudOuest
-	def sud_O( self, noeud ):
-		#self._validate( noeud )                    #Trouver le noeud associé à la position
-		return noeud._sO       #Retourner la position crée
-
+	#print the tree
+	def __str__(self):
+		if self.is_empty():
+			return "Arbre vide"
+		return self.breadth_first_print()
 	#ask if the tree is empty
 	def is_empty( self ):
 		return self._size <= 0
@@ -130,25 +105,6 @@ class LinkedQuadTree:
 	#ask if a position is a leaf
 	def is_leaf( self, noeud ):
 		return not noeud._element._est_interne
-
-	#get the height of a position by descending the tree (efficient)
-	def hauteur( self, noeud ):
-		#returns the height of the subtree at Position p
-		if self.is_leaf( noeud ):
-			return 0
-		else:
-			return 1 + max( self.hauteur( c ) for c in self.children( noeud ) )    #1 + (hauteur de chaque children
-			
-	#Generate les childrens de même parents
-	def sisters_brother( self, noeud ):
-		parent = self.parent( noeud )          
-		if parent is None:                #Verifier si parents exist, sinon retourner None
-			return None
-		else:
-			children = self.children(parent)
-			for difchildren in children:
-				if noeud is not difchildren:
-					yield difchildren
 
 	#get the children as a generator
 	def children( self, noeud ):
@@ -223,8 +179,6 @@ class LinkedQuadTree:
 		return noeud._sO
 
 	def _subtree_search( self, noeud, x,y):
-		# x = feuille.xx
-		# y = feuille.yy
 		#Trouver le noeud associé aux coordonnes x,y
 		if noeud._nO is not None and noeud.go_nO(x,y):
 			return self._subtree_search( noeud._nO,x,y)
@@ -237,9 +191,7 @@ class LinkedQuadTree:
 		return noeud
 		
 	def _interne_arbre_cherche( self, noeud, x1,x2,y1,y2):
-		# x = feuille.xx
-		# y = feuille.yy
-		#Trouver le noeud associé aux coordonnes x,y
+		#Trouver le noeud interne associé aux coordonnes x,y
 		if not noeud._element._est_interne:
 			return noeud
 		if noeud._nO is not None and noeud._element.go_nO(x1,x2,y1,y2):
@@ -451,31 +403,6 @@ class LinkedQuadTree:
 						self.supprimer_noeud_interne(noeud._sO)																								#Detruire le noeud interne
 					elif (noeud._sO._element._x1 <= x1 <= noeud._sO._element._x2 or noeud._sO._element._x1 <= x2 <= noeud._sO._element._x2) and (noeud._sO._element._y1 <= y1 <= noeud._sO._element._y2 or noeud._sO._element._y1 <= y2 <= noeud._sO._element._y2):	#Sinon si une partie de bombe se trouve dans le noeud interne
 						self.bombes(noeud._sO,x1,x2,y1,y2)				
-
-				
-	# def diviser_bombe(noeud,x1,x2,y1,y2):
-		# if x1 <= noeud._element._milieu_x and x2 >= noeud._element._element._milieu_x +1:	#Si le bombe entre Ouest et Est
-			# if y1 <= noeud._element._milieu_y and y2 >= noeud._element._milieu_y + 1:			#Si le bombe entre Nord et Sud
-				# self.bombes(noeud,x1,noeud._element._milieu_x,y1,noeud._milieu_y)					#Divisier bombe Nord-Ouest
-				# self.bombes(noeud,noeud._element._milieu_x+1,x2,y1,noeud._element._milieu_y)		#Divisier bombe Nord-Est
-				# self.bombes(noeud,noeud._element._milieu_x+1,x2,noeud._element._milieu_y+1,y2)		#Diviser bombe Sud-Est
-				# self.bombes(noeud,x1,noeud._element._milieu_x,noeud._element._milieu_y+1,y2)		#Diviser bombe Sud-Ouest
-			# else:																				#Sinon
-				# self.bombes(noeud,x1,noeud._element._milieu_x,y1,y2)								#Bombe Ouest
-				# self.bombes(noeud._element._milieu_x +1, x2,y1,y2)									#Bombe Est
-		# else:																				#Sinon
-			# self.bombes(noeud,x1,x2,y1,noeud._milieu_y)											#Bombe Nord
-			# self.bombes(noeud,x1,x2,noeud._milieu_y+1,y2)										#Bombe Sud
-				
-			# bombe_O = self._Item(x1,noeud._element._milieu_x,y1,y2)
-			# bombe_e = self._Item(noeud._milieu_x+1,x2,y1,y2)
-		
-	
-	
-	def __str__(self):
-		if self.is_empty():
-			return "Arbre vide"
-		return self.breadth_first_print()
 
 	#print the subtree rooted by position p
     #using a breadth-first traversal
