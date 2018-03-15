@@ -40,17 +40,16 @@ class LinkedQuadTree:
 			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
 
 		def go_nE(self,x1,x2,y1,y2):
-			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
+			return self._milieu_x <= x1 <= self._x2 and self._milieu_x <= x2 <= self._x2 and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
 
 		def go_sE(self,x1,x2,y1,y2):
-			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._milieu_y + 1 <= y1 <= self.y2 and self._milieu_y + 1 <= y2 <= self.y2
+			return self._milieu_x <= x1 <= self._x2 and self._milieu_x<= x2 <= self._x2 and self._milieu_y <= y1 <= self.y2 and self._milieu_y <= y2 <= self.y2
 
 		def go_sO(self,x1,x2,y1,y2):
-			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._milieu_y + 1 <= y1 <= self.y2 and self._milieu_y + 1 <= y2 <= self.y2 		
+			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._milieu_y <= y1 <= self.y2 and self._milieu_y <= y2 <= self.y2 		
 
 	#Class interne _Node
 	class _Node:
-    #inner class Position, a subclass of BinaryTree Position
 		__slots__ = '_element', '_parent', '_nO', '_nE', '_sE', '_sO'
 		def __init__( self, elem, parent = None, no = None, ne = None, se = None, so = None ):
 			self._element = elem
@@ -65,13 +64,13 @@ class LinkedQuadTree:
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
 
 		def go_nE(self,x,y):
-			return self._element._est_interne and self._element._milieu_x+1 <= x <= self._element._x2 and self._element._y1 <= y <= self._element._milieu_y
+			return self._element._est_interne and self._element._milieu_x <= x <= self._element._x2 and self._element._y1 <= y <= self._element._milieu_y
 
 		def go_sE(self,x,y):
-			return self._element._est_interne and self._element._milieu_x+1 <= x <= self._element._x2 and self._element._milieu_y+1 <= y <= self._element._y2
+			return self._element._est_interne and self._element._milieu_x <= x <= self._element._x2 and self._element._milieu_y <= y <= self._element._y2
 
 		def go_sO(self,x,y):
-			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y+1 <= y <= self._element._y2			
+			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y <= y <= self._element._y2			
 		
 		def __str__( self ):
 			if self._element._est_interne:
@@ -205,8 +204,6 @@ class LinkedQuadTree:
 		return noeud
 		
 	def ajouter_element(self,noeud,elem):
-		#self._validate(noeud)
-		
 		x = elem._xx
 		y = elem._yy
 
