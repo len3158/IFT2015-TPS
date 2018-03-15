@@ -61,7 +61,7 @@ def bombarder(nomFichier, tree):
 				x1, x2 = x2, x1
 			if y1 > y2:
 				y1, y2 = y2, y1
-			bombs.append(x1,y1,x2,x2)
+			bombs.append(x1,y1,x2,y2)
 		print('File {} not found/empty, creating {} random bombs...'.format(nomFichier, limite))
 	#for i in aDetruire:
 	#	print(i)
