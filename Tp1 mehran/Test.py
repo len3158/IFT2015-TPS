@@ -42,7 +42,6 @@ def bombarder(nomFichier, tree):
 			line=(line.strip().split(' '))
 			bombs.append(list(map(int,line)))
 		f.close()
-		print(bombs[0][2])
 		#x1,y1,x2,y2 | [0]=x1, [1]=y1, [2]=x2, [3]=y2
 		for i in range(len(bombs)):
 			x1, y1, x2, y2 = bombs[i][0], bombs[i][1], bombs[i][2], bombs[i][3]
@@ -50,9 +49,7 @@ def bombarder(nomFichier, tree):
 				x1, x2 = x2, x1
 			if y1 > y2:
 				y1, y2 = y2, y1
-#			tree.supprimer(x1, y1, x2, y2)
 			tree.test_bombes(x1, x2, y1, y2)
-
 	else:
 		limite = random.randint(1,1000)
 		for _ in range(1000):
@@ -71,8 +68,8 @@ def bombarder(nomFichier, tree):
 		
 def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
-	print(ocean)
-	print("Commencer bombardemement")
+#	print(ocean)
+#	print("Commencer bombardemement")
 	bombarder('bombes.txt', ocean)
 	print(ocean)
 #	ocean.intersect([4,54])

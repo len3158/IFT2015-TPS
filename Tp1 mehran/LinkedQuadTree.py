@@ -37,16 +37,16 @@ class LinkedQuadTree:
 			return self._x1 >= x1 and self._x2 >= x2 and self._milieu_x >= (x1+x2)//2 and self._milieu_y >= (y1+y2)//2
 			
 		def go_nO(self,x1,x2,y1,y2):
-			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._y1 <= y1 <= self._element._milieu_y and self._y1 <= y2 <= self._element._milieu_y
+			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
 
 		def go_nE(self,x1,x2,y1,y2):
-			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._y1 <= y1 <= self._element._milieu_y and self._y1 <= y2 <= self._element._milieu_y
+			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
 
 		def go_sE(self,x1,x2,y1,y2):
-			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._element._milieu_y + 1 <= y1 <= self._element.y2 and self._element._milieu_y + 1 <= y2 <= self._element.y2
+			return self._milieu_x + 1 <= x1 <= self._x2 and self._milieu_x + 1 <= x2 <= self._x2 and self._milieu_y + 1 <= y1 <= self.y2 and self._milieu_y + 1 <= y2 <= self.y2
 
 		def go_sO(self,x1,x2,y1,y2):
-			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._element._milieu_y + 1 <= y1 <= self._element.y2 and self._element._milieu_y + 1 <= y2 <= self._element.y2 		
+			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._milieu_y + 1 <= y1 <= self.y2 and self._milieu_y + 1 <= y2 <= self.y2 		
 
 	#Class interne _Node
 	class _Node:
@@ -311,6 +311,7 @@ class LinkedQuadTree:
 					# print("Parent du noeud supprimé: " + str(noeud._parent))
 					# print("Noeud supprimé: " + str(noeud))
 					self.supprimer_feuille(noeud)
+	
 	def supprimer_feuille(self,noeud):
 		if noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element:
 			noeud._parent._nO = None
@@ -331,7 +332,7 @@ class LinkedQuadTree:
 		self._size -= 1
 	
 	def supprimer_noeud_interne(self,noeud):
-		if(self.root()._element == noeud._element):
+		if(self._root._element == noeud._element):
 			self._size = 0
 			print("Racine supprimer")
 		else:
