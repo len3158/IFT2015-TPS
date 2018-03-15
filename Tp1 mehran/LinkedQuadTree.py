@@ -27,8 +27,8 @@ class LinkedQuadTree:
 			self._milieu_y = (y1+y2)//2
 			self._est_interne = True
 		
-		def _eq_(self, x1,y1,x2,y2):
-			return self._x1 == x1 and self._x2 == x2 and self._milieu_x == (x1+x2)//2 and self._milieu_y == (y1+y2)//2
+		def _eq_(self, other):
+			return self._x1 == other._x1 and self._x2 == other._x2 and self._y1 == other._y1 and self._y2 == other._y2
 
 		def _lt_(self, other):
 			return self._x1 <= x1 and self._x2 <= x2 and self._milieu_x <= (x1+x2)//2 and self._milieu_y <= (y1+y2)//2
@@ -79,7 +79,8 @@ class LinkedQuadTree:
 				mot += "1 " if self._nE is not None else "0 "
 				mot += "1 " if self._sE is not None else "0 "
 				mot += "1" if self._sO is not None else "0"
-				mot += ">"
+				mot += "> "
+				mot += "(" + str(self._element._x1) +"," + str(self._element._y1) + "," + str(self._element._x2) + "," + str(self._element._x2) + ")"
 				return mot
 			else:
 				return str( self._element )		
@@ -97,6 +98,10 @@ class LinkedQuadTree:
 		if self.is_empty():
 			return "Arbre vide"
 		return self.breadth_first_print()
+	#get the root
+	def root( self ):
+		return self._root
+	
 	#ask if the tree is empty
 	def is_empty( self ):
 		return self._size <= 0
@@ -264,10 +269,12 @@ class LinkedQuadTree:
 			if noeud._sO is None:						#Si l'enfant sud oeust n'est pas null
 				return self._add_sO(noeud, elem )					#On ajoute l'élément
 			if noeud._sO._element._est_interne:             	#si l'enfant sud Ouest pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._sE, x,y )								#Marcher vers sud ouest
+				p_walk = self._subtree_search(noeud._sO, x,y )								#Marcher vers sud ouest
 				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
 
 			if not noeud._sO._element._est_interne:											#Si l'enfant nord Ouest appartient deja une feuille
+				if noeud._sO._element == elem:
+					raise ValueError( 'Coordonnée se ressemble' )
 				backup_feuille = noeud._sO._element    # On backup la feuille
 				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._milieu_y+1,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
 				self._size += 1
@@ -308,7 +315,6 @@ class LinkedQuadTree:
 					# print("Parent du noeud supprimé: " + str(noeud._parent))
 					# print("Noeud supprimé: " + str(noeud))
 					self.supprimer_feuille(noeud)
-	
 	def supprimer_feuille(self,noeud):
 		if noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element:
 			noeud._parent._nO = None
@@ -322,14 +328,14 @@ class LinkedQuadTree:
 		elif noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element:
 			noeud._parent._sO = None
 			#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
-		print("Noeud supprimé: " + str(noeud))
+		#print("Noeud supprimé: " + str(noeud))
 		if not self.has_children(noeud._parent):
 			self.supprimer_noeud_interne(noeud._parent)
 		noeud._parent = None
 		self._size -= 1
 	
 	def supprimer_noeud_interne(self,noeud):
-		if(self._root._element == noeud._element):
+		if(self.root()._element == noeud._element):
 			self._size = 0
 			print("Racine supprimer")
 		else:
@@ -345,7 +351,7 @@ class LinkedQuadTree:
 			elif(noeud._parent._sO is not None and noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element):
 				noeud._parent._sO = None
 				#print("Parent du noeud interne sud-oeust supprimé: " + str(noeud._parent))
-			print("Noeud interne supprimé: " + "(" + str(noeud._element._x1) + ", " + str(noeud._element._y1) + ") (" + str(noeud._element._x2) + ", " + str(noeud._element._y2) + ")")
+			#print("Noeud interne supprimé: " + "(" + str(noeud._element._x1) + ", " + str(noeud._element._y1) + ") (" + str(noeud._element._x2) + ", " + str(noeud._element._y2) + ")")
 			if not self.has_children(noeud._parent):
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None
@@ -356,7 +362,8 @@ class LinkedQuadTree:
 		self.bombes(noeud,x1,x2,y1,y2)
 	def bombes(self,racine,x1,x2,y1,y2):
 		noeud_bombes = self._Item(x1,x2,y1,y2)
-		noeud = self._interne_arbre_cherche(racine,x1,x2,y1,y2)			#Descendre les arbres internes avec les coordonnees
+		#noeud = self._interne_arbre_cherche(racine,x1,x2,y1,y2)			#Descendre les arbres internes avec les coordonnees
+		noeud = racine
 		if not noeud._element._est_interne:							#Si le noeud est une feuille
 			if x1 <= noeud._element._xx <= x2 and y1 <= noeud._element._yy <= y2:   #Si la feuille est a l'interieur de les coordonnes bombe
 				self.supprimer_feuille(noeud)											#Effacer la feuille
