@@ -81,7 +81,7 @@ class LinkedQuadTree:
 				mot += "1 " if self._sE is not None else "0 "
 				mot += "1" if self._sO is not None else "0"
 				mot += "> "
-				mot += "(" + str(self._element._x1) +"," + str(self._element._y1) + "," + str(self._element._x2) + "," + str(self._element._x2) + ")"
+				mot += "(" + str(self._element._x1) +"," + str(self._element._y1) + "," + str(self._element._x2) + "," + str(self._element._y2) + ")"
 				return mot
 			else:
 				return str( self._element )		
@@ -388,7 +388,7 @@ class LinkedQuadTree:
 				if not noeud._nE._element._est_interne:				#S'il n'est pas interne
 					if x1 <= noeud._nE._element._xx <= x2 and y1 <= noeud._nE._element._yy <= y2:	#Si la feuille se trouve dans coordoonee bombe
 						self.supprimer_feuille(noeud._nE)												#Supprimer la feuille
-				else:												#Sinon il est interne
+				elif noeud._nE._element._est_interne:												#Sinon il est interne
 					if noeud._nE._element._x1 >= x1 and noeud._nE._element._x2 <= x2 and noeud._nE._element._y1 >= y1 and noeud._nE._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
 						self.supprimer_noeud_interne(noeud._nE)																								#Detruire le noeud interne
 					elif (noeud._nE._element._x1 <= x1 <= noeud._nE._element._x2 or noeud._nE._element._x1 <= x2 <= noeud._nE._element._x2) and (noeud._nE._element._y1 <= y1 <= noeud._nE._element._y2 or noeud._nE._element._y1 <= y2 <= noeud._nE._element._y2):	#Sinon si une partie de bombe se trouve dans le noeud interne
@@ -397,7 +397,7 @@ class LinkedQuadTree:
 				if not noeud._sE._element._est_interne:				#S'il n'est pas interne
 					if x1 <= noeud._sE._element._xx <= x2 and y1 <= noeud._sE._element._yy <= y2:	#Si la feuille se trouve dans coordoonee bombe
 						self.supprimer_feuille(noeud._sE)												#Supprimer la feuille
-				else:												#Sinon il est interne
+				elif noeud._sE._element._est_interne:												#Sinon il est interne
 					if noeud._sE._element._x1 >= x1 and noeud._sE._element._x2 <= x2 and noeud._sE._element._y1 >= y1 and noeud._sE._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
 						self.supprimer_noeud_interne(noeud._sE)																								#Detruire le noeud interne
 					elif (noeud._sE._element._x1 <= x1 <= noeud._sE._element._x2 or noeud._sE._element._x1 <= x2 <= noeud._sE._element._x2) and (noeud._sE._element._y1 <= y1 <= noeud._sE._element._y2 or noeud._sE._element._y1 <= y2 <= noeud._sE._element._y2):	#Sinon si une partie de bombe se trouve dans le noeud interne
@@ -406,7 +406,7 @@ class LinkedQuadTree:
 				if not noeud._sO._element._est_interne:				#S'il n'est pas interne
 					if x1 <= noeud._sO._element._xx <= x2 and y1 <= noeud._sO._element._yy <= y2:	#Si la feuille se trouve dans coordoonee bombe
 						self.supprimer_feuille(noeud._sO)												#Supprimer la feuille
-				else:												#Sinon il est interne
+				elif noeud._sO._element._est_interne:												#Sinon il est interne
 					if noeud._sO._element._x1 >= x1 and noeud._sO._element._x2 <= x2 and noeud._sO._element._y1 >= y1 and noeud._sO._element._y2 <= y2: #Si le noeud interne se trouve dans coordoonée bombe
 						self.supprimer_noeud_interne(noeud._sO)																								#Detruire le noeud interne
 					elif (noeud._sO._element._x1 <= x1 <= noeud._sO._element._x2 or noeud._sO._element._x1 <= x2 <= noeud._sO._element._x2) and (noeud._sO._element._y1 <= y1 <= noeud._sO._element._y2 or noeud._sO._element._y1 <= y2 <= noeud._sO._element._y2):	#Sinon si une partie de bombe se trouve dans le noeud interne
@@ -433,7 +433,7 @@ class LinkedQuadTree:
 					table1.appendleft(c)
 				if len(table)== 0:
 					mot += "\n"
-					table.extendleft(table1)
+					table = table1.copy()
 					table1.clear()
 		else:
 			mot = "Tree is empty"
