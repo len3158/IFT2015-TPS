@@ -6,7 +6,7 @@ def isEmpty(nomFichier):
 	e=open(nomFichier,'r')
 	return e.read(0)
 
-def	setQuadTreeFromFile(nomFichier):		
+def	setQuadTreeFromFile(nomFichier):	
 	boats = []
 	mytree = LinkedQuadTree()
 	try:
@@ -38,18 +38,32 @@ def bombarder(nomFichier, tree):
 	except FileNotFoundError:
 		return None
 	if not isEmpty(nomFichier):
-		for line in f:
-			line=(line.strip().split(' '))
-			bombs.append(list(map(int,line)))
-		f.close()
-		#x1,y1,x2,y2 | [0]=x1, [1]=y1, [2]=x2, [3]=y2
-		for i in range(len(bombs)):
-			x1, y1, x2, y2 = bombs[i][0], bombs[i][1], bombs[i][2], bombs[i][3]
-			if x1 > x2:
-				x1, x2 = x2, x1
-			if y1 > y2:
-				y1, y2 = y2, y1
+		mot = "";
+		for line in f.readlines():
+			mot += line.rstrip('\n')
+		point = mot.split('.')
+		bombs = list(point)
+		while len(bombs) > 4:
+			y2 = int(bombs.pop())
+			x2 = int(bombs.pop())
+			y1 = int(bombs.pop())
+			x1 = int(bombs.pop())
 			tree.test_bombes(x1, x2, y1, y2)
+			
+		# for line in f:
+			# #line=(line.strip().split('.'))
+			# bombs.append(line.split('.'))
+			# lines = file_handle.read().split('\n')
+		# f.close()
+		# #x1,y1,x2,y2 | [0]=x1, [1]=y1, [2]=x2, [3]=y2
+		# for i in range(len(bombs)):
+			# x1, y1, x2, y2 = bombs[i][0], bombs[i][1], bombs[i][2], bombs[i][3]
+			# # if x1 > x2:
+				# # x1, x2 = x2, x1
+			# # if y1 > y2:
+				# # y1, y2 = y2, y1
+			# #tree.test_bombes(x1, x2, y1, y2)
+			# print("("+str(x1)+","+str(y1)+")("+str(x2)+","+str(y2)+")")
 	else:
 		limite = random.randint(1,1000)
 		for _ in range(1000):
@@ -68,7 +82,7 @@ def bombarder(nomFichier, tree):
 		
 def jouer():
 	ocean = setQuadTreeFromFile('bateaux.txt')
-#	print(ocean)
+	#print(ocean)
 #	print("Commencer bombardemement")
 	bombarder('bombes.txt', ocean)
 	print(ocean)
@@ -77,4 +91,5 @@ def jouer():
 if __name__=='__main__':
 	jouer()
 
+	
 		

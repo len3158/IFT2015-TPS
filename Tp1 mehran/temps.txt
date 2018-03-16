@@ -1,0 +1,5 @@
+Pour les fichiers bateaux.txt et bombes.txt fournis (100 000 bateaux et 1000 bombes)
+
+bon temps : autour de 5 secondes
+temps excellent : 3 secondes ou moins
+temps acceptable : 20 secondes ou moins

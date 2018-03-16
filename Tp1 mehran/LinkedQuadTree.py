@@ -37,10 +37,10 @@ class LinkedQuadTree:
 			return self._milieu_x <= x1 <= self._x2 and self._milieu_x <= x2 <= self._x2 and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
 
 		def go_sE(self,x1,x2,y1,y2):
-			return self._milieu_x  <= x1 <= self._x2 and self._milieu_x  <= x2 <= self._x2 and self._milieu_y  <= y1 <= self.y2 and self._milieu_y  <= y2 <= self.y2
+			return self._milieu_x  <= x1 <= self._x2 and self._milieu_x  <= x2 <= self._x2 and self._milieu_y  <= y1 <= self._y2 and self._milieu_y  <= y2 <= self._y2
 
 		def go_sO(self,x1,x2,y1,y2):
-			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._milieu_y  <= y1 <= self.y2 and self._milieu_y  <= y2 <= self.y2 		
+			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._milieu_y  <= y1 <= self._y2 and self._milieu_y  <= y2 <= self._y2 		
 
 	#Class interne _Node
 	class _Node:
