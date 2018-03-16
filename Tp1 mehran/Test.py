@@ -1,6 +1,8 @@
 from LinkedQuadTree import LinkedQuadTree
 import random
 #class Test:
+import time
+start_time = time.time()
 
 def isEmpty(nomFichier):
 	e=open(nomFichier,'r')
@@ -81,15 +83,18 @@ def bombarder(nomFichier, tree):
 	#	print(i)
 		
 def jouer():
+	#start_time = time.time()
 	ocean = setQuadTreeFromFile('bateaux.txt')
 	#print(ocean)
 #	print("Commencer bombardemement")
 	bombarder('bombes.txt', ocean)
 	print(ocean)
 #	ocean.intersect([4,54])
+	#print("--- %s seconds ---" % (time.time() - start_time))
 
 if __name__=='__main__':
 	jouer()
+	print("--- %s seconds ---" % (time.time() - start_time))
 
 	
 		

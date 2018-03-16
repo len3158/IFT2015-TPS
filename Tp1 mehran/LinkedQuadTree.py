@@ -75,7 +75,7 @@ class LinkedQuadTree:
 				mot += "1 " if self._sE is not None else "0 "
 				mot += "1" if self._sO is not None else "0"
 				mot += "> "
-				mot += "(" + str(self._element._x1) +"," + str(self._element._y1) + "," + str(self._element._x2) + "," + str(self._element._y2) + ")"
+				#mot += "(" + str(self._element._x1) +"," + str(self._element._y1) + "," + str(self._element._x2) + "," + str(self._element._y2) + ")"
 				return mot
 			else:
 				return str( self._element )		
