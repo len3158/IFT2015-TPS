@@ -1,14 +1,7 @@
-import io
-from contextlib import redirect_stdout
-import sys
-import glob
-import shutil
 from LinkedQuadTree import LinkedQuadTree
 import random
 #class Test:
 import time
-start_time = time.time()
-
 def isEmpty(nomFichier):
 	e=open(nomFichier,'r')
 	return e.read(0)
@@ -86,25 +79,26 @@ def bombarder(nomFichier, tree):
 		print('File {} not found/empty, creating {} random bombs...'.format(nomFichier, limite))
 	#for i in aDetruire:
 	#	print(i)
-		
+	
 def jouer():
-	#start_time = time.time()
 	ocean = setQuadTreeFromFile('bateaux.txt')
-	#print(ocean)
+	print(ocean)
 #	print("Commencer bombardemement")
 	bombarder('bombes.txt', ocean)
 	print(ocean)
 #	ocean.intersect([4,54])
-	#print("--- %s seconds ---" % (time.time() - start_time))
 
-if __name__=='__main__':
-	file = open("testfile.txt","w") 
-	f = io.StringIO()
+
+""" Lancer l'application sans le test """
+if __name__ == '__main__':
 	jouer()
-	output = f.getvalue()
-	file.write(output) 
-	file.close()
-	#print("--- %s seconds ---" % (time.time() - start_time))
 
-	
+
+def test():
+	""" Methode qui test les fonctionnalité du programme """
+	if __name__ != '__main__':
+		start_time = time.time()
+		jouer()
+		return time.time() - start_time
 		
+

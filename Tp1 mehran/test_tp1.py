@@ -6,7 +6,7 @@ import shutil
 
 # Changer cette ligne pour le nom de votre script. 
 # Change this line to your script name
-from tp1_matricule import test as test
+from Tp1_1055234_1047837_b1 import test as test
 # Votre script doit comprendre une méthode test qui sera exécutée par le présent
 # script. Cette méthode ne prend aucun argument en entrée (elle fait la même
 # chose que votre __main__).
@@ -28,22 +28,22 @@ def test_all():
 	"""
 	tests = glob.glob("unit_tests_tp1/test*")
 	passed = 0
+	temps = 0
 	for t in tests:
 		for fn in ["bateaux.txt", "bombes.txt", "out.txt"]:
 			shutil.copyfile("{}/{}".format(t, fn), "{}".format(fn))
 		f = io.StringIO()
 		with redirect_stdout(f):
-			test()
+			temps = test()
 		output = f.getvalue()
 		expected = readout()
 		print("########## Currently testing: {} ##########".format(t))
 		if output == expected:
-			print("Test passed!\n")
+			print("Test passed!\n Times:\n{}".format(temps))
 			passed += 1
 		else:
 			print("Test failed...")
-			print("Expected output:\n{}Your output:\n{}\n\n".format(expected,
-																	output))
+			print("Expected output:\n{}Your output:\n{}Your times:\n{}\n\n".format(expected,output,temps))
 	print("{}/{} unit tests passed.".format(passed,len(tests)))
 
 def readout():
