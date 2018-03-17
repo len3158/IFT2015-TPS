@@ -49,7 +49,7 @@ def bombarder(nomFichier, tree):
 				x1, x2 = x2, x1
 			if y1 > y2:
 				y1, y2 = y2, y1
-			tree.test_bombes(x1, y1, x2, y2)
+			tree.test_bombes(x1, x2, y1, y2)
 	else:
 		limite = random.randint(1,1000)
 		for _ in range(1000):
@@ -70,7 +70,7 @@ def jouer():
 	#print(ocean)
 #	print("Commencer bombardemement")
 	bombarder('bombes.txt', ocean)
-	print(ocean)
+	print(ocean,end="")
 #	ocean.intersect([4,54])
 
 

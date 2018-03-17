@@ -342,7 +342,7 @@ class LinkedQuadTree:
 	def supprimer_noeud_interne(self,noeud):
 		if(self.root()._element == noeud._element):
 			self._size = 0
-			print("Racine supprimer")
+			#print("Racine supprimer")
 			return
 		if noeud._parent._element == noeud._element:
 			return
@@ -384,8 +384,9 @@ class LinkedQuadTree:
 		noeud = self._root
 		self.bombes(noeud,x1,x2,y1,y2)
 	def bombes(self,racine,x1,x2,y1,y2):
+		#print("Bombes:"+"("+str(x1)+","+str(y1)+")("+str(x2)+","+str(y2)+")")
 		noeud_bombes = self._Item(x1,x2,y1,y2)
-		noeud = self._interne_arbre_cherche(racine,x1,x2,y1,y2)	#Descendre les arbres internes tant que bombe se trouve dans quadrant
+		noeud = self._interne_arbre_cherche(racine,x1,y1,x2,y2)	#Descendre les arbres internes tant que bombe se trouve dans quadrant
 		
 		#Si le noeud est un bateau et il se trouve à l'interieur coordonee bombe, alors supprimer le bateau et return vide
 		if not noeud._element._est_interne and x1 <= noeud._element._xx <= x2 and y1 <= noeud._element._yy <= y2:
@@ -465,11 +466,13 @@ class LinkedQuadTree:
 				p = table.pop()
 				for c in self.children(p):
 					mot += str(c)
-					table1.appendleft(c)
-				if len(table)== 0:
-					mot += "\n"
-					table = table1.copy()
-					table1.clear()
+					if c._element._est_interne:
+						table1.appendleft(c)
+				if len(table)== 0 and not len(table1) == 0:
+					if not len(table1) == 0:
+						mot += "\n"
+						table = table1.copy()
+						table1.clear()
 		else:
 			mot = "Tree is empty"
 		return mot
