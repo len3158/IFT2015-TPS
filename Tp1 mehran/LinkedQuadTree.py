@@ -5,7 +5,7 @@
 import collections
 
 class LinkedQuadTree:
-    """Class interne _Feuille pour les element de type feuilles"""
+	"""Class interne _Feuille pour les element de type feuilles"""
 	class _Feuille:
 		__slots__ = '_xx', '_yy','_est_interne','__dict__'
 		def __init__(self, x,y):
@@ -15,12 +15,12 @@ class LinkedQuadTree:
 		def __eq__(self,other):
 			return self._xx == other._xx and self._yy == other._yy
 		
-		def getX(self):
-			return self._xx
-		
+		#Override toString pour affichage tel que specifie des feuilles	
 		def __str__(self):
 			return "["+ str(self._xx) + " " +str(self._yy) + "]"
-	#inner class _Item pour les element internes (dimension des quadrants)
+			
+	"""Classe interne _Item pour les element internes (dimension des quadrants)
+		    une instance de _Item est un pointeur vers un quadrant"""
 	class _Item:
 		__slots__ = '_x1', '_x2','_y1', '_y2', '_milieu_x','_milieu_y','_est_interne'
 		def __init__(self, x1,x2,y1,y2):
@@ -28,13 +28,15 @@ class LinkedQuadTree:
 			self._x2 = x2
 			self._y1 = y1
 			self._y2 = y2
-			self._milieu_x = round((x1+x2)/2,2)   #max 2 chiffre apres la virgule
+			self._milieu_x = round((x1+x2)/2,2)    #division non entiere max 2 chiffre apres la virgule
 			self._milieu_y = round((y1+y2)/2,2)
 			self._est_interne = True
 		
 		def _eq_(self, other):
 			return int(self._x1) == int(other._x1) and int(self._x2) == int(other._x2) and int(self._y1) == int(other._y1) and int(self._y2) == int(other._y2)
-			
+		
+		"""Cette section de methodes boolean permet de determiner la direction a prendre
+			lors de la recherche d'un _Item dans un quadrant"""
 		def go_nO(self,x1,x2,y1,y2):
 			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._y1 <= y1 <= self._milieu_y and self._y1 <= y2 <= self._milieu_y
 
@@ -47,7 +49,7 @@ class LinkedQuadTree:
 		def go_sO(self,x1,x2,y1,y2):
 			return self._x1 <= x1 <= self._milieu_x and self._x1 <= x2 <= self._milieu_x and self._milieu_y  <= y1 <= self._y2 and self._milieu_y  <= y2 <= self._y2 		
 
-	#Class interne _Node
+	"""Class interne _Node pour les noeuds internes"""
 	class _Node:
     #inner class Position, a subclass of BinaryTree Position
 		__slots__ = '_element', '_parent', '_nO', '_nE', '_sE', '_sO'
@@ -58,8 +60,9 @@ class LinkedQuadTree:
 			self._nE = ne
 			self._sE = se
 			self._sO = so
-        #Les operation boolean pour verifier la direction selon la position x et y de l'element feuille
-		
+			
+		"""Cette section de methodes boolean permet de determiner la direction a prendre
+			lors de la recherche d'un noeud dans l'arbre"""
 		def go_nO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._y1 <= y <= self._element._milieu_y
 
@@ -72,6 +75,7 @@ class LinkedQuadTree:
 		def go_sO(self,x,y):
 			return self._element._est_interne and self._element._x1 <= x <= self._element._milieu_x and self._element._milieu_y <= y <= self._element._y2			
 		
+		#Overide toString pour afficher un noeud interne tel que demande
 		def __str__( self ):
 			if self._element._est_interne:
 				mot = "<"
@@ -80,12 +84,11 @@ class LinkedQuadTree:
 				mot += "1 " if self._sE is not None else "0 "
 				mot += "1" if self._sO is not None else "0"
 				mot += "> "
-				#mot += "(" + str(self._element._x1) +"," + str(self._element._y1) + "," + str(self._element._x2) + "," + str(self._element._y2) + ")"
 				return mot
 			else:
 				return str( self._element )		
 
-	#BinaryTree constructor
+	#Constructeur de l'arbre
 	def __init__( self ):
 		self._root = None
 		self._size = 0
@@ -93,20 +96,22 @@ class LinkedQuadTree:
 	#get the size
 	def __len__( self ):
 		return self._size
-	#print the tree
+	
+	#Override toString pour afficher l'arbre en Breadth-First-Print
 	def __str__(self):
 		if self.is_empty():
 			return "Arbre vide"
 		return self.breadth_first_print()
+		
 	#get the root
 	def root( self ):
 		return self._root
 	
-	#ask if the tree is empty
+	#Boolean si l'arbre est vide
 	def is_empty( self ):
 		return self._size <= 0
 
-	#ask if a position is a leaf
+	#Bolean si un noeud est une feuille retourne true if not interne
 	def is_leaf( self, noeud ):
 		return not noeud._element._est_interne
 
@@ -124,8 +129,7 @@ class LinkedQuadTree:
 
 
 	#Retourner le nombre d'enfants d'UN SEUL noeud interne
-	def num_children( self, noeud ):
-		#self._validate( noeud )            
+	def num_children( self, noeud ):      
 		if not noeud._element._est_interne:
 			return 0
 		count = 0
@@ -138,11 +142,14 @@ class LinkedQuadTree:
 		if noeud._sO is not None:
 			count += 1
 		return count
+	
+	#Boolean si un noeud interne possede des enfants
 	def has_children(self,noeud):
 		return self.num_children(noeud) > 0
+		
 	"""developer-level building methods
 	"""
-	#add the root node with element
+	#Ajouter la racine a l'arbre
 	def _add_root( self, e ):
 		if self._root is not None: raise ValueError( 'Root exists' )
 		self._size = 1
@@ -152,7 +159,6 @@ class LinkedQuadTree:
 
 	#ajouter enfant Nord Ouest et retourner la position crée
 	def _add_nO( self, noeud, e ):
-		#self._validate( noeud )    #Valider le noeud
 		if noeud._nO is not None: raise ValueError( 'Enfant Nord Ouest exist' )
 		self._size += 1
 		noeud._nO = self._Node(e,noeud)          #Créer un nouveau noeud(elem,parent = node)
@@ -160,7 +166,6 @@ class LinkedQuadTree:
 
 	#ajouter enfant Nord Est et retourner la position crée
 	def _add_nE( self, noeud, e ):
-		#self._validate( noeud )    
 		if noeud._nE is not None: raise ValueError( 'Enfant Nord Est exist' )
 		self._size += 1
 		noeud._nE = self._Node(e, noeud )          #Créer un nouveau noeud(elem,parent = node)
@@ -168,7 +173,6 @@ class LinkedQuadTree:
 
 	#ajouter enfant Sud Est et retourner la position crée
 	def _add_sE( self, noeud, e ):
-		#self._validate( noeud )    #Trouver le noeud associé à la position
 		if noeud._sE is not None: raise ValueError( 'Enfant Nord Est exist' ) 
 		self._size += 1
 		noeud._sE = self._Node(e, noeud )          #Créer un nouveau noeud(elem,parent = node)
@@ -176,14 +180,14 @@ class LinkedQuadTree:
 
 	#ajouter enfant Sud Ouest et retourner la position crée
 	def _add_sO( self, noeud, e ):
-		#self._validate( noeud )    #Trouver le noeud associé à la position
 		if noeud._sO is not None: raise ValueError( 'Enfant Sud Ouest exist' )
 		self._size += 1
 		noeud._sO = self._Node(e, noeud )          #Créer un nouveau noeud(elem,parent = node)
 		return noeud._sO
-	##Descendre l'arbe avec coordoonee bateau#####################
+		
+	"""Descendre l'arbe avec les coordoonees d'une feuille (bateau)"""
 	def _subtree_search( self, noeud, x,y):
-		#Trouver le noeud associé aux coordonnes x,y
+		#Trouver le bon noeud associé aux coordonnes x,y
 		if noeud._nO is not None and noeud.go_nO(x,y):
 			return self._subtree_search( noeud._nO,x,y)
 		if noeud._nE is not None and noeud.go_nE(x,y):
@@ -193,9 +197,10 @@ class LinkedQuadTree:
 		if noeud._sO is not None and noeud.go_sO(x,y):
 			return self._subtree_search( noeud._sO,x,y)
 		return noeud
-	##Descendre l'arbr avec coordonnee bombe###########################
+		
+	"""Descendre l'arbe avec les coordoonees d'une bombe (bateau)"""
 	def _interne_arbre_cherche( self, noeud, x1,x2,y1,y2):
-		#Trouver le noeud interne associé aux coordonnes x,y
+		#Trouver le bon noeud interne associé aux coordonnes x,y
 		if not noeud._element._est_interne:
 			return noeud
 		if noeud._nO is not None and noeud._element.go_nO(x1,x2,y1,y2):
@@ -207,84 +212,89 @@ class LinkedQuadTree:
 		if noeud._sO is not None and noeud._element.go_sO(x1,x2,y1,y2):
 			return self._interne_arbre_cherche( noeud._sO,x1,x2,y1,y2)
 		return noeud
-		
+	
+	"""				
+	###INSERTION NOEUD##################################
+	#Methode recursive d'insertion d'un noeud a l'arbre#
+	####################################################
+	"""	
 	def ajouter_element(self,noeud,elem):
-		#self._validate(noeud)
-		
 		x = elem._xx
 		y = elem._yy
 
-		if not noeud._element._est_interne:                 #Si le noeud de la position est une feuille
-			noeud = noeud._parent								# Trouver le pointeur parent
-		if noeud.go_nO(x,y):						#Si la les coordoonée sont dans nord ouest
-			if noeud._nO is None:					#Si l'enfant nord oeust est null
-				return self._add_nO(noeud,elem)
-			if noeud._nO._element._est_interne:             #si l'enfant nord Ouest pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._nO, x,y )						#Marcher vers nord ouest
-				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+		if not noeud._element._est_interne:                					#Si le noeud de la position est une feuille
+			noeud = noeud._parent											# Trouver le pointeur parent
+		if noeud.go_nO(x,y):												#Si la les coordoonée sont dans nord ouest
+			if noeud._nO is None:											#Si l'enfant nord oeust est null
+				return self._add_nO(noeud,elem)								#On ajoute l'element
+			if noeud._nO._element._est_interne:             				#si l'enfant nord Ouest pointe vers un arbre interne
+				p_walk = self._subtree_search(noeud._nO, x,y )				#Marcher vers nord ouest
+				return ajouter_element(p_walk,elem)							#ajout recursif a la position final
 
-			if not noeud._nO._element._est_interne:  								#Si l'enfant nord Ouest appartient deja une feuille
+			if not noeud._nO._element._est_interne:  						#Si l'enfant nord Ouest est deja une feuille
 				if noeud._nO._element == elem:
 					raise ValueError( 'Coordonnée se ressemble' )
-				backup_feuille = noeud._nO._element    # On backup la feuille
-				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._y1,noeud._element._milieu_y)   #On créer un nouveau item interne avec nouveau dimension
+				backup_feuille = noeud._nO._element    						# On backup la feuille
+				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._y1,noeud._element._milieu_y)   #On cree un nouveau item interne avec ses nouvelles dimensions
 				self._size += 1
-				noeud._nO._element = item_interne	#On change l'élément de l'enfant nord oeust							
+				noeud._nO._element = item_interne							#On change l'element de l'enfant nord oeust							
 				self.ajouter_element(noeud._nO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				return self.ajouter_element(noeud._nO,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._nO,elem)					#On ajoute l'element au nouveau noeud
 
 		if noeud.go_nE(x,y):
-			if noeud._nE is None:					#Si l'enfant nord EST n'est pas null
-				return self._add_nE(noeud, elem )					#On ajoute l'élément
-			if noeud._nE._element._est_interne:             #si l'enfant nord EST pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._nE, x,y ) 					#Marcher vers nord EST
-				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+			if noeud._nE is None:											#Si l'enfant nord EST est null
+				return self._add_nE(noeud, elem )							#On ajoute l'element
+			if noeud._nE._element._est_interne:            					#si l'enfant nord EST pointe vers un arbre interne
+				p_walk = self._subtree_search(noeud._nE, x,y ) 				#Marcher vers nord EST
+				return ajouter_element(p_walk,elem)							#ajout recursif a la position finale
 
-			if not noeud._nE._element._est_interne:		#Si l'enfant nord EST appartient deja une feuille
+			if not noeud._nE._element._est_interne:							#Si l'enfant nord EST appartient deja une feuille
 				if noeud._nE._element == elem:
 					raise ValueError( 'Coordonnée se ressemble' )
-				backup_feuille = noeud._nE._element    # On backup la feuille
-				item_interne = self._Item(noeud._element._milieu_x,noeud._element._x2,noeud._element._y1,noeud._element._milieu_y)   #On créer un nouveau item interne avec nouveau dimension
+				backup_feuille = noeud._nE._element    						# On backup la feuille
+				item_interne = self._Item(noeud._element._milieu_x,noeud._element._x2,noeud._element._y1,noeud._element._milieu_y)   #On cree un nouveau item interne avec ses nouvelles dimensions
 				self._size += 1
-				noeud._nE._element = item_interne     #On change l'élément de l'enfant nord oeust	
+				noeud._nE._element = item_interne     						#On change l'element de l'enfant nord oeust	
 				self.ajouter_element(noeud._nE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				return self.ajouter_element(noeud._nE,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._nE,elem)					#On ajoute l'element au nouveau noeud
 
 		if noeud.go_sE(x,y):
-			if noeud._sE is None:					#Si l'enfant sud EST n'est pas null
-				return self._add_sE(noeud, elem )					#On ajoute l'élément
-			if noeud._sE._element._est_interne:             #si l'enfant sud EST pointe vers un arbre interne
+			if noeud._sE is None:											#Si l'enfant sud EST est null
+				return self._add_sE(noeud, elem )							#On ajoute l'element
+			if noeud._sE._element._est_interne:             				#si l'enfant sud EST pointe vers un arbre interne
 				p_walk = self._subtree_search(noeud._sE, x,y )				#Marcher vers sud EST
-				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+				return ajouter_element(p_walk,elem)							#ajouter recursif à la position final
 
-			if not noeud._sE._element._est_interne:											#Si l'enfant sud EST appartient deja une feuille
+			if not noeud._sE._element._est_interne:							#Si l'enfant sud EST appartient deja une feuille
 				if noeud._sE._element == elem:
 					raise ValueError( 'Coordonnée se ressemble' )
-				backup_feuille = noeud._sE._element    # On backup la feuille
-				item_interne = self._Item(noeud._element._milieu_x,noeud._element._x2,noeud._element._milieu_y,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
+				backup_feuille = noeud._sE._element    						# On backup la feuille
+				item_interne = self._Item(noeud._element._milieu_x,noeud._element._x2,noeud._element._milieu_y,noeud._element._y2)   #On cree un nouveau item interne avec ses nouvelles dimensions
 				self._size += 1
-				noeud._sE._element = item_interne           #On change l'élément de l'enfant nord oeust	
+				noeud._sE._element = item_interne           				#On change l'element de l'enfant nord oeust	
 				self.ajouter_element(noeud._sE,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				return self.ajouter_element(noeud._sE,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._sE,elem)					#On ajoute l'élement au nouveau noeud
 
 		if noeud.go_sO(x,y):
-			if noeud._sO is None:						#Si l'enfant sud oeust n'est pas null
-				return self._add_sO(noeud, elem )					#On ajoute l'élément
-			if noeud._sO._element._est_interne:             	#si l'enfant sud Ouest pointe vers un arbre interne
-				p_walk = self._subtree_search(noeud._sO, x,y )								#Marcher vers sud ouest
-				return ajouter_element(p_walk,elem)			#ajouter recursif à la position final
+			if noeud._sO is None:											#Si l'enfant sud oeust est null
+				return self._add_sO(noeud, elem )							#On ajoute l'élément
+			if noeud._sO._element._est_interne:             				#si l'enfant sud Ouest pointe vers un arbre interne
+				p_walk = self._subtree_search(noeud._sO, x,y )				#Marcher vers sud ouest
+				return ajouter_element(p_walk,elem)							#ajouter recursif à la position final
 
-			if not noeud._sO._element._est_interne:											#Si l'enfant nord Ouest appartient deja une feuille
+			if not noeud._sO._element._est_interne:							#Si l'enfant nord Ouest appartient deja une feuille
 				if noeud._sO._element == elem:
 					raise ValueError( 'Coordonnée se ressemble' )
-				backup_feuille = noeud._sO._element    # On backup la feuille
+				backup_feuille = noeud._sO._element    						# On backup la feuille
 				item_interne = self._Item(noeud._element._x1,noeud._element._milieu_x,noeud._element._milieu_y,noeud._element._y2)   #On créer un nouveau item interne avec nouveau dimension
 				self._size += 1
-				noeud._sO._element = item_interne		#On change l'élément de l'enfant nord oeust	
+				noeud._sO._element = item_interne							#On change l'élément de l'enfant nord oeust	
 				self.ajouter_element(noeud._sO,backup_feuille)				#On ajoute le backup feuille au nouveau noeud
-				return self.ajouter_element(noeud._sO,elem)							#On ajoute l'élement au nouveau noeud
+				return self.ajouter_element(noeud._sO,elem)					#On ajoute l'élement au nouveau noeud
+					
 
-	#Remplacer le nouveau element à la position est retourner l'ancien 
+	"""Methode d'insertion iterative determinant comment inserer un element dans
+			le QuadTree"""
 	def ajouter( self,x,y ):
 		feuille = self._Feuille(x,y)						#On créer une element feuille avec les coordonnée
 		if self.is_empty():									#Si l'arbre n'existe pas
@@ -301,165 +311,167 @@ class LinkedQuadTree:
 					noeud = noeud._parent
 			return self.ajouter_element(noeud,feuille)
 					
-	###SUPRIMER BATEAU####################################################################################################################
-	#Ici on cherche le bateau appartient à quel quadrant parent, puis supprimer le bateau correspodant 
-	#et SI le quadrant n'a aucun enfant, supprimer le quadrant
-	########################################################################################################################
+	"""				
+	###SUPRIMER FEUILLE (BATEAU)##########################################################################
+	#Ici on cherche quel bateau appartient a quel quadrant parent, si on trouve le bateau, on le supprime#
+	#sinon SI le quadrant n'a aucun enfant on supprime le quadrant										 #
+	######################################################################################################
+	"""
 	def supprimer_feuille(self,noeud):
 		if noeud._parent._nO is not None and not noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element:
-			noeud._parent._nO = None    #Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):	#Si Noeud-Parent n'a plus d'enfant, supprimer quadrant parent
+			noeud._parent._nO = None    				#Changer le pointeur parent de l'enfant a None
+			if not self.has_children(noeud._parent):	#Si le Noeud-Parent n'a plus d'enfant, supprimer le quadrant parent
 				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None		#Pointer le parent du noeud à None
+			noeud._parent = None						#Pointer le parent du noeud a None
 			self._size -= 1
 			return
-			#print("Parent du noeud nord-oeust supprimé: " + str(noeud._parent))
-		if noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element:
-			noeud._parent._nE = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):	#Si Noeud-Parent n'a plus d'enfant, supprimer quadrant parent
-				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
-			self._size -= 1
-			return
-			#print("Parent du noeud nord-est supprimé: " + str(noeud._parent))
-		if noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element:
-			noeud._parent._sE = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):	#Si Noeud-Parent n'a plus d'enfant, supprimer quadrant parent
-				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
-			self._size -= 1
-			return
-			#print("Parent du noeud sud-est supprimé: " + str(noeud._parent))
-		if noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element:
-			noeud._parent._sO = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):	#Si Noeud-Parent n'a plus d'enfant, supprimer quadrant parent
-				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
-			self._size -= 1
-			return
-			#print("Parent du noeud sud-oeust supprimé: " + str(noeud._parent))
-		#print("Noeud supprimé: " + str(noeud))
 
-	#####SUPPRIMER QUADRANT#########################################################################################################################
-	#Ici on cherhce le quadrant appartient à quel quadrant parent, puis supprimer le quadrant correspondant
-	#et SI le quadrant parent n'a plus d'enfant, supprimer le quadrant parent
-	#############################################################################################################################
-	def supprimer_noeud_interne(self,noeud):
-		if(self.root()._element == noeud._element):
-			self._size = 0
-			#print("Racine supprimer")
+		if noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element:
+			noeud._parent._nE = None					#Changer le pointeur parent de l'enfant a None
+			if not self.has_children(noeud._parent):	#Si le Noeud-Parent n'a plus d'enfant, supprimer le quadrant parent
+				self.supprimer_noeud_interne(noeud._parent)
+			noeud._parent = None						#Pointer le parent du noeud a None
+			self._size -= 1
 			return
+
+		if noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element:
+			noeud._parent._sE = None					#Changer pointeur parent enfant a None
+			if not self.has_children(noeud._parent):	#Si le Noeud-Parent n'a plus d'enfant, supprimer le quadrant parent
+				self.supprimer_noeud_interne(noeud._parent)
+			noeud._parent = None						#Pointer le parent du noeud à None
+			self._size -= 1
+			return
+
+		if noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element:
+			noeud._parent._sO = None					#Changer pointeur parent enfant à None
+			if not self.has_children(noeud._parent):	#Si le Noeud-Parent n'a plus d'enfant, supprimer le quadrant parent
+				self.supprimer_noeud_interne(noeud._parent)
+			noeud._parent = None						#Pointer le parent du noeud à None
+			self._size -= 1
+			return
+	
+	"""
+	#####SUPPRIMER QUADRANT#######################################################################
+	#Ici on cherhce quel quadrant appartient a quel quadrant parent, son le trouve on le supprime#
+	#et SI le quadrant parent n'a plus d'enfant, supprimer le quadrant parent					 #
+	##############################################################################################
+	"""
+	def supprimer_noeud_interne(self,noeud):
+		if(self.root()._element == noeud._element):		#Si le pointeur du noeud a supprimer est la racine
+			self._size = 0								#On le supprime
+			return										#On ne retourne rien l'arbre est vide
 		if noeud._parent._element == noeud._element:
 			return
 		if (noeud._parent is not None and noeud._parent._nO is not None and noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element):
-			noeud._parent._nO = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):
+			noeud._parent._nO = None					#Changer le pointeur parent enfant à None
+			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
+			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
-			#print("Parent du noeud interne nord-oeust supprimé: " + str(noeud._parent))
+
 			return
 		if(noeud._parent._nE is not None and noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element):
-			noeud._parent._nE = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):
+			noeud._parent._nE = None					#Changer pointeur parent enfant à None
+			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
+			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
 			return
-			#print("Parent du noeud interne nord-est supprimé: " + str(noeud._parent))
+
 		if(noeud._parent._sE is not None and noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element):
-			noeud._parent._sE = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):
+			noeud._parent._sE = None					#Changer pointeur parent enfant à None
+			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
+			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
 			return
-			#print("Parent du noeud interne sud-est supprimé: " + str(noeud._parent))
+
 		if(noeud._parent._sO is not None and noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element):
-			noeud._parent._sO = None	#Changer pointeur parent enfant à None
-			if not self.has_children(noeud._parent):
+			noeud._parent._sO = None					#Changer pointeur parent enfant à None
+			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
-			noeud._parent = None	#Pointer le parent du noeud à None
+			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
 			return
-				#print("Parent du noeud interne sud-oeust supprimé: " + str(noeud._parent))
-			#print("Noeud interne supprimé: " + "(" + str(noeud._element._x1) + ", " + str(noeud._element._y1) + ") (" + str(noeud._element._x2) + ", " + str(noeud._element._y2) + ")")
 	
+	#FORMAT X1, Y1, X2, Y2
+	"""Methode permettant de pointer sur la racine du QuadTree
+		et appelant la suppression recursive des bateaux a l'aide des bombes"""
 	def test_bombes(self,x1,x2,y1,y2):
 		noeud = self._root
 		self.bombes(noeud,x1,x2,y1,y2)
-	def bombes(self,racine,x1,x2,y1,y2):
-		#print("Bombes:"+"("+str(x1)+","+str(y1)+")("+str(x2)+","+str(y2)+")")
-		noeud_bombes = self._Item(x1,x2,y1,y2)
-		noeud = self._interne_arbre_cherche(racine,x1,y1,x2,y2)	#Descendre les arbres internes tant que bombe se trouve dans quadrant
 		
-		#Si le noeud est un bateau et il se trouve à l'interieur coordonee bombe, alors supprimer le bateau et return vide
+	"""Methode recursive permettant la suppression des bateaux"""
+	def bombes(self,racine,x1,x2,y1,y2):
+		noeud_bombes = self._Item(x1,x2,y1,y2)
+		noeud = self._interne_arbre_cherche(racine,x1,y1,x2,y2)	#Descendre les arbres internes tant que la bombe se trouve dans le quadrant
+		
+		#Si le noeud est un bateau et qu'il se trouve a l'interieur des coordonees de la bombe, alors supprimer le bateau et return vide
 		if not noeud._element._est_interne and x1 <= noeud._element._xx <= x2 and y1 <= noeud._element._yy <= y2:
 			self.supprimer_feuille(noeud)
 			return																		
 		
 		#Si noeud est un quadrant
 		if noeud._element._est_interne:
-			#Si le quadrant se trouve à l'interieur coordonne bombe, alors supprimer le quadrant et retourner vide
+			#Si le quadrant se trouve a l'interieur des coordonnes de la bombe, alors supprimer le quadrant et ne rien retourner
 			if x1 <= noeud._element._x1 and noeud._element._x2 <= x2 and y1 <= noeud._element._y1 and noeud._element._y2 <= y2:
 				self.supprimer_noeud_interne(noeud)
 				return
 			if noeud._nO is not None:  #Si enfant Nord-Ouest existe
-				#Si enfant Nord-Ouest est un bateau et il se trouve à l'interieur de coordoonee bombe, alors supprimer bateaux Nord-Ouest
+				#Si l'enfant Nord-Ouest est un bateau et qu'il se trouve a l'interieur de coordoonee bombe, alors supprimer le bateau Nord-Ouest
 				if not noeud._nO._element._est_interne and x1 <= noeud._nO._element._xx <= x2 and y1 <= noeud._nO._element._yy <= y2:
 					self.supprimer_feuille(noeud._nO)
 				#Si enfant Nord-Ouest est un quadrant
 				elif noeud._nO._element._est_interne:
-					#Si le quadrant se trouve à l'interieur de coordonnee bombe, supprimer le quadrant Nord-Ouest
+					#Si le quadrant se trouve a l'interieur de la coordonnees de la bombe, supprimer le quadrant Nord-Ouest
 					if x1 <= noeud._nO._element._x1 and noeud._nO._element._x2 <= x2 and y1 <= noeud._nO._element._y1 and noeud._nO._element._y2 <= y2: 
 						self.supprimer_noeud_interne(noeud._nO)
-					#Sinon si une partie de la bombe se trouve dans quadrant Nord-Ouest, alors operation recursif de methode bombes pour quadrant Nord-Ouest
+					#Sinon si une partie de la bombe se trouve dans le quadrant Nord-Ouest,alors on appele recursivement en partant du quadrant Nord-Ouest
 					elif (noeud._nO._element._x1 <= x1 <= noeud._nO._element._x2  or noeud._nO._element._x1 <= x2 <= noeud._nO._element._x2) and (noeud._nO._element._y1 <= y1 <= noeud._nO._element._y2 or noeud._nO._element._y1 <= y2 <= noeud._nO._element._y2):
 						self.bombes(noeud._nO,x1,x2,y1,y2)
 			if noeud._nE is not None: #Si enfant Nord-Est existe
-				#Si enfant Nord-Est est un bateau et il se trouve à l'interieur coordonne bombe, alors supprimer bateau Nord-Est
+				#Si l'enfant Nord-Est est un bateau et qu'il se trouve a l'interieur des coordonnees de la bombe, alors supprimer le bateau Nord-Est
 				if not noeud._nE._element._est_interne and x1 <= noeud._nE._element._xx <= x2 and y1 <= noeud._nE._element._yy <= y2:	
 						self.supprimer_feuille(noeud._nE)	
 				#Sinon si enfant Nord-Est est un quadrant
 				elif noeud._nE._element._est_interne:
-					#Si le quadrant se trouve à l'interieur de coordonnee bombe, alors supprimer le quadrant Nord-Est
+					#Si le quadrant se trouve a l'interieur des coordonnees de la bombe, alors supprimer le quadrant Nord-Est
 					if x1 <= noeud._nE._element._x1 and noeud._nE._element._x2 <= x2 and y1 <= noeud._nE._element._y1 and noeud._nE._element._y2 <= y2: 
 						self.supprimer_noeud_interne(noeud._nE)
-					#Sinon si une partie de la bombe se trouve dans quadrant Nord-Est, alors operation recursif de methode bombes pour quadrant Nord-Est
+					#Sinon si une partie de la bombe se trouve dans le quadrant Nord-Est, alors on appele recursivement en partant du quadrant Nord-Est
 					elif (noeud._nE._element._x1 <= x1 <= noeud._nE._element._x2 or noeud._nE._element._x1 <= x2 <= noeud._nE._element._x2) and (noeud._nE._element._y1 <= y1 <= noeud._nE._element._y2 or noeud._nE._element._y1 <= y2 <= noeud._nE._element._y2):	
 						self.bombes(noeud._nE,x1,x2,y1,y2)
 			if noeud._sE is not None:	#Si enfant Sud-Est existe
-				#Si endant Sud-Est est un bateau et il se trouve à l'interieur de coordoonee bombe, alors supprimer bateau Sud-Est
+				#Si l'enfant Sud-Est est un bateau et qu'il se trouve a l'interieur des coordoonees de la bombe, alors supprimer le bateau Sud-Est
 				if not noeud._sE._element._est_interne and x1 <= noeud._sE._element._xx <= x2 and y1 <= noeud._sE._element._yy <= y2:
 						self.supprimer_feuille(noeud._sE)
 				#Sinon si enfant Surd-Est est un quadrant
 				elif noeud._sE._element._est_interne:
-					#Si le quadrant se trouve à l'interieur de coordonnee bombe, alors supprimer le quadrant Sud-Est
+					#Si le quadrant se trouve a l'interieur des coordonnees bombe, alors supprimer le quadrant Sud-Est
 					if x1 <= noeud._sE._element._x1 and noeud._sE._element._x2 <= x2 and y1 <= noeud._sE._element._y1 and noeud._sE._element._y2 <= y2: 
 						self.supprimer_noeud_interne(noeud._sE)
-					#Sinon si une partie de la bombe se trouve dans quadrant Sud-Est, alors operation recursif de methode bombes pour quadrant Sud-Est
+					#Sinon si une partie de la bombe se trouve dans le quadrant Sud-Est, alors on appele recursivement en partant du quadrant Sud-Est
 					elif (noeud._sE._element._x1 <= x1 <= noeud._sE._element._x2 or noeud._sE._element._x1 <= x2 <= noeud._sE._element._x2) and (noeud._sE._element._y1 <= y1 <= noeud._sE._element._y2 or noeud._sE._element._y1 <= y2 <= noeud._sE._element._y2):
 						self.bombes(noeud._sE,x1,x2,y1,y2)
 			if noeud._sO is not None: #Si enfant Sud-Ouest existe
-				#Si enfant Sud-Ouest est un bateaux et il se trouve à l'interieur coordonnee bombe, alors supprimer bateaux Nord-Ouest
+				#Si l'enfant Sud-Ouest est un bateau et il se trouve à l'interieur des coordonnees de la bombe, alors supprimer le bateau Nord-Ouest
 				if not noeud._sO._element._est_interne and x1 <= noeud._sO._element._xx <= x2 and y1 <= noeud._sO._element._yy <= y2:
 						self.supprimer_feuille(noeud._sO)
 				#Sinon si enfant Sud-Ouest est un quadrant
 				elif noeud._sO._element._est_interne:
-					#Si le quadrant se trouve à l'interieur de coordonnee bombe, alors supprimer le quadrant Sud-Ouest
+					#Si le quadrant se trouve à l'interieur de scoordonnees de la bombe, alors supprimer le quadrant Sud-Ouest
 					if x1 <= noeud._sO._element._x1 and noeud._sO._element._x2 <= x2 and noeud._sO._element._y1 >= y1 and noeud._sO._element._y2 <= y2:
 						self.supprimer_noeud_interne(noeud._sO)
-					#Sinon si une partie de la bombe se trouve dans quadrant Sud-Ouest, alors operation recursif de bombes pour quadrant Sud-Ouest
+					#Sinon si une partie de la bombe se trouve dans le quadrant Sud-Ouest, alors on appele recursivement en partant du quadrant Sud-Ouest
 					elif (noeud._sO._element._x1 <= x1 <= noeud._sO._element._x2 or noeud._sO._element._x1 <= x2 <= noeud._sO._element._x2) and (noeud._sO._element._y1 <= y1 <= noeud._sO._element._y2 or noeud._sO._element._y1 <= y2 <= noeud._sO._element._y2):
 						self.bombes(noeud._sO,x1,x2,y1,y2)				
 
-	#print the subtree rooted by position p
-    #using a breadth-first traversal
+	"""Affichage de l'arbre en utilisant la traversée
+			breadth-first"""
 	def breadth_first_print( self ):
 		if self._root is not None:
 			table = collections.deque()
 			table1 = collections.deque()
-			#table.appendleft( self._root )
 			mot = ""
 			mot += str(self._root)
 			mot += "\n"

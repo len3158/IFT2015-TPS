@@ -1,10 +1,10 @@
-""" Classe permettant de construire le Quadtree, et de supprimer des elements
+""" Classe permettant d'instancier le Quadtree, d'ajouter et de supprimer des elements
 	**Auteurs: - Mehran ASADI. Matricule: 1047837
 			 - Lenny SIEMENI. Matricule: 1055234**
 """
 
 from LinkedQuadTree import LinkedQuadTree
-import random
+import random, time
 
 """Boolean test si le fichier specifie est non vide"""
 def isEmpty(nomFichier):

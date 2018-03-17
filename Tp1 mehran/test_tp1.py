@@ -4,6 +4,7 @@ import sys
 import glob
 import shutil
 
+
 # Changer cette ligne pour le nom de votre script. 
 # Change this line to your script name
 from Tp1_1055234_1047837_b1 import test as test
