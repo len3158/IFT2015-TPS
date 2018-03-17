@@ -37,6 +37,10 @@ def test_all():
 			temps = test()
 		output = f.getvalue()
 		expected = readout()
+		# file = open("testfile.txt","w") 
+		# output = f.getvalue()
+		# file.write(output) 
+		# file.close()
 		print("########## Currently testing: {} ##########".format(t))
 		if output == expected:
 			print("Test passed!\n Times:\n{}".format(temps))
