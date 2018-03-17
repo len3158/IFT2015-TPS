@@ -486,10 +486,9 @@ class LinkedQuadTree:
 					if c._element._est_interne:
 						table1.appendleft(c)
 				if len(table)== 0 and not len(table1) == 0:
-					if not len(table1) == 0:
-						mot += "\n"
-						table = table1.copy()
-						table1.clear()
+					mot += "\n"
+					table = table1.copy()
+					table1.clear()
 		else:
 			mot = "Tree is empty"
 		return mot
