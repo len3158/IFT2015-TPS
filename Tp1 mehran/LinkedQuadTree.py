@@ -1,6 +1,11 @@
+"""Classe LinkedQuaTree. Structure principale de notre Quadtree
+	**Auteurs: - Mehran ASADI. Matricule: 1047837
+			   - Lenny SIEMENI. Matricule: 1055234**
+"""
 import collections
+
 class LinkedQuadTree:
-    #Class interne _Feuille pour les element de feuilles
+    """Class interne _Feuille pour les element de type feuilles"""
 	class _Feuille:
 		__slots__ = '_xx', '_yy','_est_interne','__dict__'
 		def __init__(self, x,y):
