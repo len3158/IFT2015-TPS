@@ -324,7 +324,7 @@ class LinkedQuadTree:
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud a None
 			self._size -= 1
-			return
+			return True
 
 		if noeud._parent._nE is not None and not noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element:
 			noeud._parent._nE = None					#Changer le pointeur parent de l'enfant a None
@@ -332,7 +332,7 @@ class LinkedQuadTree:
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud a None
 			self._size -= 1
-			return
+			return True
 
 		if noeud._parent._sE is not None and not noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element:
 			noeud._parent._sE = None					#Changer pointeur parent enfant a None
@@ -340,7 +340,7 @@ class LinkedQuadTree:
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
-			return
+			return True
 
 		if noeud._parent._sO is not None and not noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element:
 			noeud._parent._sO = None					#Changer pointeur parent enfant à None
@@ -348,7 +348,7 @@ class LinkedQuadTree:
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
-			return
+			return True
 	
 	"""
 	#####SUPPRIMER QUADRANT#######################################################################
@@ -358,48 +358,50 @@ class LinkedQuadTree:
 	"""
 	def supprimer_noeud_interne(self,noeud):
 		if(self.root()._element == noeud._element):		#Si le pointeur du noeud a supprimer est la racine
+			self._root = None
 			self._size = 0								#On le supprime
-			return										#On ne retourne rien l'arbre est vide
-		if noeud._parent._element == noeud._element:
-			return
-		if (noeud._parent is not None and noeud._parent._nO is not None and noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element):
+			return True								    #On ne retourne rien l'arbre est vide
+			
+		elif (noeud._parent is not None and noeud._parent._nO is not None and noeud._parent._nO._element._est_interne and noeud._parent._nO._element == noeud._element):
 			noeud._parent._nO = None					#Changer le pointeur parent enfant à None
 			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
 
-			return
-		if(noeud._parent._nE is not None and noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element):
+			return True
+		elif(noeud._parent._nE is not None and noeud._parent._nE._element._est_interne and noeud._parent._nE._element == noeud._element):
 			noeud._parent._nE = None					#Changer pointeur parent enfant à None
 			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
-			return
+			return True
 
-		if(noeud._parent._sE is not None and noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element):
+		elif(noeud._parent._sE is not None and noeud._parent._sE._element._est_interne and noeud._parent._sE._element == noeud._element):
 			noeud._parent._sE = None					#Changer pointeur parent enfant à None
 			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
-			return
+			return True
 
-		if(noeud._parent._sO is not None and noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element):
+		elif(noeud._parent._sO is not None and noeud._parent._sO._element._est_interne and noeud._parent._sO._element == noeud._element):
 			noeud._parent._sO = None					#Changer pointeur parent enfant à None
 			if not self.has_children(noeud._parent):	#le noeud interne n'a plus d'enfants
 				self.supprimer_noeud_interne(noeud._parent)
 			noeud._parent = None						#Pointer le parent du noeud à None
 			self._size -= 1
-			return
-	
+			return True
+		else:
+			return False
+			
 	#FORMAT X1, Y1, X2, Y2
 	"""Methode permettant de pointer sur la racine du QuadTree
 		et appelant la suppression recursive des bateaux a l'aide des bombes"""
 	def test_bombes(self,x1,x2,y1,y2):
 		noeud = self._root
-		self.bombes(noeud,x1,x2,y1,y2)
+		return self.bombes(noeud,x1,x2,y1,y2)
 		
 	"""Methode recursive permettant la suppression des bateaux"""
 	def bombes(self,racine,x1,x2,y1,y2):
@@ -409,14 +411,13 @@ class LinkedQuadTree:
 		#Si le noeud est un bateau et qu'il se trouve a l'interieur des coordonees de la bombe, alors supprimer le bateau et return vide
 		if not noeud._element._est_interne and x1 <= noeud._element._xx <= x2 and y1 <= noeud._element._yy <= y2:
 			self.supprimer_feuille(noeud)
-			return																		
-		
+			return True																		
 		#Si noeud est un quadrant
 		if noeud._element._est_interne:
 			#Si le quadrant se trouve a l'interieur des coordonnes de la bombe, alors supprimer le quadrant et ne rien retourner
 			if x1 <= noeud._element._x1 and noeud._element._x2 <= x2 and y1 <= noeud._element._y1 and noeud._element._y2 <= y2:
 				self.supprimer_noeud_interne(noeud)
-				return
+				return True
 			if noeud._nO is not None:  #Si enfant Nord-Ouest existe
 				#Si l'enfant Nord-Ouest est un bateau et qu'il se trouve a l'interieur de coordoonee bombe, alors supprimer le bateau Nord-Ouest
 				if not noeud._nO._element._est_interne and x1 <= noeud._nO._element._xx <= x2 and y1 <= noeud._nO._element._yy <= y2:
@@ -466,7 +467,7 @@ class LinkedQuadTree:
 					elif (noeud._sO._element._x1 <= x1 <= noeud._sO._element._x2 or noeud._sO._element._x1 <= x2 <= noeud._sO._element._x2) and (noeud._sO._element._y1 <= y1 <= noeud._sO._element._y2 or noeud._sO._element._y1 <= y2 <= noeud._sO._element._y2):
 						self.bombes(noeud._sO,x1,x2,y1,y2)				
 
-	"""Affichage de l'arbre en utilisant la traversée
+	"""Affichage de l'arbre en utilisant la traversee
 			breadth-first"""
 	def breadth_first_print( self ):
 		if self._root is not None:

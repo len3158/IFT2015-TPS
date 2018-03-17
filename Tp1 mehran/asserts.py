@@ -24,6 +24,36 @@ def test_ajoute_plusieurs_noeuds_et_les_retrouvent():
 	assert mytree._subtree_search(mytree._root, 99, 80)
 	assert mytree._subtree_search(mytree._root, 10315, 10315)
 
+def test_ajoute_et_supprime_la_racine():
+	mytree = LinkedQuadTree()
+	mytree.ajouter(97,34)
+	assert mytree.test_bombes(97, 97, 34, 34)
+	assert mytree.is_empty()
+	
+def test_supprime_la_racine_ne_vide_pas_larbre():
+	mytree = LinkedQuadTree()
+	mytree.ajouter(97,34)
+	mytree.ajouter(29, 0)
+	mytree.ajouter(9, 3)
+	mytree.ajouter(14, 14)
+	mytree.ajouter(152, 851)
+	mytree.ajouter(42, 79)
+	mytree.ajouter(10315, 10315)
+	mytree.test_bombes(97, 97, 34, 34)	
+	assert not mytree.is_empty()
+	
+def test_noeud_introuvable_apres_suppression():
+	mytree = LinkedQuadTree()
+	mytree.ajouter(29, 0)
+	mytree.ajouter(9, 3)
+	mytree.ajouter(14, 14)
+	mytree.ajouter(152, 851)
+	mytree.ajouter(42, 79)
+	mytree.ajouter(10315, 10315)
+	assert str(mytree._subtree_search(mytree._root, 9, 3)) == "[9 3]"
+	assert mytree.test_bombes(9, 9, 3, 3)
+	assert not str(mytree._subtree_search(mytree._root, 9, 3)) == "[9 3]"
+	
 def test_arbre_vide_apres_ajout_suppresion_de_plusieurs_noeuds():
 	mytree = LinkedQuadTree()
 	mytree.ajouter(0, 0)
@@ -75,8 +105,11 @@ if __name__=="__main__":
 	test_arbre_vide()
 	test_ajoute_un_noeud_et_le_retrouve()
 	test_ajoute_plusieurs_noeuds_et_les_retrouvent()
+	test_ajoute_et_supprime_la_racine()
+	test_supprime_la_racine_ne_vide_pas_larbre()
+	test_noeud_introuvable_apres_suppression()
 	test_arbre_vide_apres_ajout_suppresion_de_plusieurs_noeuds()
 	test_une_bombe_supprime_un_seul_bateau()
 	test_une_bombe_supprime_tous_les_bateaux()
 	test_stabilite_insertion_bateau_identique()
-	
+	print("***********All Tests passed!***********\n")
