@@ -4,6 +4,37 @@ https://en.wikipedia.org/wiki/Horner%27s_method
 """
 
 class HasTable:
+
+	""" Class interne Item"""
+	class _Item:
+		__slots__ = '_key', '_value'
+
+        def __init__( self, k, v = None ):
+            self._key = k
+            self._value = v
+
+        def __eq__( self, other ):
+            return self._key == other._key
+
+        def __ne__( self, other ):
+            return not( self == other )
+
+        def __lt__( self, other ):
+            return self._key < other._key
+
+        def __ge__( self, other ):
+            return self._key >= other._key
+
+        def __str__( self ):
+            return "<" + str( self._key ) + "," + str( self._value ) + ">"
+
+        def key( self ):
+            return self._key
+
+        def value( self ):
+            return self._value
+			
+	""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 	
 	def __init__(self, cap=11, p=109345121, somme=33):
 		self._Tableau = cap*[None] #taille par defaut lors de l'appel
@@ -23,6 +54,13 @@ class HasTable:
 		iterateur = self._compress(self._hash_(k))
 	def __delete_item__(self,k):
 		
+	
+	"""Generate a sequence of key in the map"""
+	def __iter__(self):
+	
+	"""Generate a sequence of (k,v) tuples for all entries of M"""
+	def __item__(self):
+	
 	def _get_bucket(self, i, k):
 		bucket = self._Tableau[i]
 		if bucket is not None:
