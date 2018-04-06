@@ -23,6 +23,51 @@ class Bucket():
     #get the size
 	def __len__(self):
 		return self._size
+	
+	def __getitem__(self,doublet):
+		if self._size == 0:
+			return None
+		else:
+			racine = self._root
+			noeud = self.get_set_tree_search(racine,doublet)
+			if noeud is None:
+				return None
+			else:
+				return noeud._frequence
+			
+	def __setitem__(self,doublet,frequence):
+		if self._size == 0:
+			return None
+		else:
+			racine = self._root
+			self.get_set_tree_search(racine,doublet,frequence)
+		
+	# Utilisé pour getitem et setitem
+	def get_set_tree_search(self, noeud, doublet,frequence=None):
+		if doublet == noeud._doublet:
+			if(frequence == None):
+				return noeud
+			else:
+				noeud._frequence = frequence
+		elif doublet < noeud._doublet:			
+			if noeud._left is None:		#Si enfant gauche est null
+				if frequence is None:		#Si frequence est None
+					return None					#Alors retourner None
+				else:
+					node = self._add_left(noeud,doublet)		#Sinon ajouter un nouveau element
+					node._frequence = frequence				#Puis assigner la frequence du noeud par celui passee en parametre
+			else:
+				return self.get_set_tree_search(noeud._left,doublet,frequence)
+		else:
+			if noeud._right is None:
+				if frequence is None:		#Si frequence est None
+					return None					#Alors retourner None
+				else:
+					node = self._add_right(noeud,doublet)		#Sinon ajouter un nouveau element
+					node._frequence = frequence				#Puis assigner la frequence du noeud par celui passee en parametre
+			else:
+				return self.get_set_tree_search(noeud._right,doublet,frequence)
+		
 
     #get the root
 	def root(self):
@@ -117,6 +162,18 @@ class Bucket():
 	def __str__(self):
 		return self.breadth_first_print()
 
+	
+	def __iter__(self):
+		racine = self._root
+		return self.inorder_generate(racine)
+	
+	def inorder_generate( self, noeud ):
+		if noeud._left is not None:
+			self.inorder_print( noeud._left )
+		yield(noeud)
+		if noeud._right is not None:
+			self.inorder_print( noeud._right )
+	
 	def inorder_print( self, noeud ):
 		if noeud._left is not None:
 			self.inorder_print( noeud._left )

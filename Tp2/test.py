@@ -10,5 +10,12 @@ class test():
 		table.ajouter("mangerchoroclat")
 		table.ajouter("Bonjour moi")
 		print(table)
+                
+		print(table["salut"])
+		
+		table["manger chien"] = 5
+		print(table["manger chien"])
+
+		
 
 	
