@@ -95,6 +95,7 @@ class Bucket():
 			
 	def add_tree_search(self, noeud, doublet):
 		if doublet == noeud._doublet:
+			noeud._frequence += 1
 			return noeud
 		elif doublet < noeud._doublet:
 			if noeud._left is None:
@@ -122,7 +123,7 @@ class Bucket():
 		print(noeud)
 		if noeud._right is not None:
 			self.inorder_print( noeud._right )
-	## Seulement pour montrer la structure de l'arbre pour test	
+	## Seulement pour montrer la structure de l'arbre pour test		
 	def breadth_first_print( self ):
 		if self._root is not None:
 			table = collections.deque()
