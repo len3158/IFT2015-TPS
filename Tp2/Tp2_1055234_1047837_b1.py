@@ -2,7 +2,7 @@
 En utilisant la méthode de Horner pour la fonction de hashage:
 https://en.wikipedia.org/wiki/Horner%27s_method
 """
-
+from Bucket import Bucket
 class HasTable:
 
 	""" Class interne Item"""
@@ -43,6 +43,7 @@ class HasTable:
 		self._polynome = somme		#33 peut-être évaluer autre valeur? à voir
 		self._echelle = 1 + randrange(p-1)	#echelle MAD
 		self._shift = randrange(p)	#décalage pour MAD
+		self._index = []		# List des index à utiliser pour les methode iter et items
 		
 	def __len__(self):
 		return self._size
@@ -59,23 +60,20 @@ class HasTable:
 	def __iter__(self):
 	
 	"""Generate a sequence of (k,v) tuples for all entries of M"""
-	def __item__(self):
+	def __items__(self):
 	
-	def _get_bucket(self, i, k):
+	def _get_bucket_item(self, i, k):
 		bucket = self._Tableau[i]
 		if bucket is not None:
-			try:
-				value = bucket._index(k)
-			except ValueError:
-				return None
 			return bucket[value]
-			
+		return False		#If bucket is None
+	
 	def _append(self, i,k):
 		if self._Tableau[i] is None:
-			self._Tableau[i] = []	#créer un nouveau sceau
-		if k in self._Tableau[i] is None:
-			self._Tableau.append(k)
-			self._taille += 1	
+			self._Tableau[i] = Bucket()
+		frequence = self._Tableau[i].insert(k)
+		if frequence != 1:
+			self._size += 1
 	
 	def _resize(self, newSize):
 		

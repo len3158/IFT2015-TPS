@@ -16,8 +16,10 @@ class test():
 		print(table["manger chien"])
 
 		del table["bonjour toi"]
-
 		print(table)
+
+
+		
 
 		
                 
