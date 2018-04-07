@@ -1,20 +1,27 @@
 from Bucket import Bucket
 class test():
 		table = Bucket()
-		table.ajouter("bonjour toi")
-		table.ajouter("manger chat")
-		table.ajouter("salut")
-		table.ajouter("salut")
-		table.ajouter("salutt")
-		table.ajouter("manger chien")
-		table.ajouter("mangerchoroclat")
-		table.ajouter("Bonjour moi")
+		table.insert("bonjour toi")
+		table.insert("manger chat")
+		table.insert("salut")
+		table.insert("salut")
+		table.insert("salutt")
+		table.insert("manger chien")
+		table.insert("mangerchoroclat")
+		table.insert("Bonjour moi")
 		print(table)
-                
-		print(table["salut"])
-		
-		table["manger chien"] = 5
+
+		table["manger chien"] = 7
+
 		print(table["manger chien"])
+
+		del table["bonjour toi"]
+
+		print(table)
+
+		
+                
+		
 
 		
 

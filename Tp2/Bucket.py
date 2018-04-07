@@ -1,206 +1,155 @@
-import collections		#Just pour test imprimer arbre pour voir la structure
-class Bucket():
+"""Code Python pour le cours IFT2015
+   Mise à jour par François Major le 23 mars 2014.
+"""
 
-	class _Noeud():
-        #create a static structure for _Bucdoubletet using __slots__
-		__slots__ = '_doublet', '_parent', '_left', '_right', '_frequence'
-		def __init__( self, doublet, parent = None,left = None,right = None ):
+class Bucket( ):
+
+	class _Node:
+
+		def __init__( self, doublet = None, prev = None, next = None,frequence = 1 ):
+			__slots__ = '_doublet', '_prev', '_next', '_frequence'
 			self._doublet = doublet
-			self._parent = parent
-			self._left = left
-			self._right = right
-			self._frequence = 1
-		def __str__(self):
-			return "(" + str(self._doublet) + "," + str(self._frequence)+ ")"
+			self._prev = prev
+			self._next = next
+			self._frequence = frequence
 		
-
-	#BinaryTree constructor
+		def __str__(self):
+			return "(" + str(self._doublet) + "," + str(self._frequence) + ")"
+			
 	def __init__(self):
-	#create an initially empty binary tree
-		self._root = None
+		self._head = self._Node()
+		self._tail = self._Node()
+		self._head._next = self._tail
+		self._tail._prev = self._head
 		self._size = 0
 
-    #get the size
 	def __len__(self):
 		return self._size
-	
-	def __getitem__(self,doublet):
-		if self._size == 0:
-			return None
+
+	def __str__(self):
+		pp = " "
+		if self.is_empty():
+			pp = "[](size = 0)"
 		else:
-			racine = self._root
-			noeud = self.get_set_tree_search(racine,doublet)
-			if noeud is None:
-				return None
+			pp = "["
+			curr = self._head._next
+			while curr._next != self._tail:
+				pp += curr.__str__() + ", "
+				curr = curr._next
+			pp += str( curr.doublet ) + "]"
+			pp += "(size = " + str( self._size ) + ")"
+		return pp
+
+	def is_empty(self):
+		return self._size == 0
+
+	def find( self, doublet ):
+		curr = self._head._next
+		for i in range( self._size ):
+			if curr._doublet == doublet:
+				return curr
 			else:
-				return noeud._frequence
+				curr = curr._next
+		return None
+
+	def __iter__(self):
+		curr = self._head._next
+		for i in range( self._size ):
+			yield curr._doublet
 			
+	def __items__(self):
+		curr = self._head._next
+		for i in range( self._size ):
+			yield (curr._doublet,curr._frequence)
+			
+	def __contains__(self,doublet):
+		noeud = self.find(doublet)
+		if noeud is not None:
+			return True
+		return False
+
+	def append( self, doublet,frequence = 1 ):
+		newNode = self._Node( doublet, self._tail._prev, self._tail )
+		self._tail._prev._next = newNode
+		self._tail._prev = newNode
+		self._size += 1
+		return newNode
+
+	def insert( self, doublet):
+		if self._size == 0:
+			newNode = self._Node( doublet, self._head, self._head._next)
+			self._head._next._prev = newNode
+			self._head._next = newNode
+			self._size += 1
+		else:
+			noeud = self.find(doublet)
+			if noeud is not None:
+				noeud._frequence += 1
+				return noeud._frequence
+			else:
+				self.append(doublet)
+		return 1
+
+	def remove( self, doublet ):
+		if self.is_empty():
+			raise IndexError( 'Bucket empty' )
+		else:
+			noeud = self.find(doublet)
+			if noeud is not None:
+				noeud._prev._next = noeud._next
+				noeud._next._prev = noeud._prev
+				noeud._next = None #convention pour un noeud désasigné
+				self._size -= 1
+				return noeud._doublet
+			else:
+				return None
+
+	def	__getitem__(self,doublet):
+		noeud = self.find(doublet)
+		if noeud is not None:
+			return noeud._frequence
+		else:
+			return None
 	def __setitem__(self,doublet,frequence):
 		if self._size == 0:
+			newNode = self._Node( doublet, self._head, self._head._next,frequence )
+			self._head._next._prev = newNode
+			self._head._next = newNode
+		else:
+			noeud = self.find(doublet)
+			if noeud is not None:
+				noeud._frequence = frequence
+			else:
+				self.append(doublet,frequence)
+
+	def __delitem__(self,doublet):
+		return self.remove(doublet)
+	
+
+		
+
+	def __str__(self):
+		if self.is_empty():
+			return "Tableau vide"
+		pp = "[ "
+		curr = self._head._next
+		pp += str(curr)
+		curr = curr._next
+		for i in range( self._size - 1 ):
+			pp += " ," + str(curr)
+			curr = curr._next
+		pp += " ]"
+		return pp
+	
+	def last( self ):
+		if self.is_empty():
 			return None
 		else:
-			racine = self._root
-			self.get_set_tree_search(racine,doublet,frequence)
-		
-	# Utilisé pour getitem et setitem
-	def get_set_tree_search(self, noeud, doublet,frequence=None):
-		if doublet == noeud._doublet:
-			if(frequence == None):
-				return noeud
-			else:
-				noeud._frequence = frequence
-		elif doublet < noeud._doublet:			
-			if noeud._left is None:		#Si enfant gauche est null
-				if frequence is None:		#Si frequence est None
-					return None					#Alors retourner None
-				else:
-					node = self._add_left(noeud,doublet)		#Sinon ajouter un nouveau element
-					node._frequence = frequence				#Puis assigner la frequence du noeud par celui passee en parametre
-			else:
-				return self.get_set_tree_search(noeud._left,doublet,frequence)
+			return self._tail._prev.doublet
+
+	def first( self ):
+		if self.is_empty():
+			return None
 		else:
-			if noeud._right is None:
-				if frequence is None:		#Si frequence est None
-					return None					#Alors retourner None
-				else:
-					node = self._add_right(noeud,doublet)		#Sinon ajouter un nouveau element
-					node._frequence = frequence				#Puis assigner la frequence du noeud par celui passee en parametre
-			else:
-				return self.get_set_tree_search(noeud._right,doublet,frequence)
-		
-
-    #get the root
-	def root(self):
-		return self._madoublete_position( self._root )
-
-    #get the parent of a position
-	def parent( self, noeud ):
-		return noeud._parent
-
-    #get the left child of a position
-	def left( self, noeud ):
-		return noeud._left
-
-    #get the right child of a position
-	def right( self, noeud ):
-		return noeud._right
-
-	def children( self, noeud ):
-		if self.left( noeud ) is not None:
-			yield self.left( noeud )
-		if self.right( noeud ) is not None:
-			yield self.right( noeud )
-
-    #get the number of children of a position
-	def num_children( self, noeud ):
-		count = 0
-		if noeud._left is not None:
-			count += 1
-		if noeud._right is not None:
-			count += 1
-		return count
-
-	"""developer-level building methods"""
-
-    #add the root noeud with doublet
-	def _add_root( self, doublet ):
-		if self._root is not None: raise ValueError( 'Root exists' )
-		self._size = 1
-		self._root = self._Noeud( doublet )
-		return self._root
-
-    #add a left child with doublet
-	def _add_left( self, noeud, doublet ):
-		if noeud._left is not None: raise ValueError( 'Left child exists' )
-		self._size += 1
-		noeud._left = self._Noeud( doublet, noeud )
-		return noeud._left
-
-    #add a right child with doublet
-	def _add_right( self,noeud, doublet ):
-		if noeud._right is not None: raise ValueError( 'Right child exists' )
-		self._size += 1
-		noeud._right = self._Noeud( doublet, noeud )
-		return noeud._right
-
-    #replace the doublet of a position
-	def _replace( self, noeud, doublet ):
-		old = noeud._doublet
-		noeud._doublet = doublet
-		return old
-
-    
-	def ajouter(self,doublet):
-		if self._size == 0:
-			self._add_root(doublet)
-			return 1
-		else:
-			racine = self._root
-			return self.add_tree_search(racine,doublet)
+			return self._head._next.doublet
 			
-	def add_tree_search(self, noeud, doublet):
-		if doublet == noeud._doublet:
-			noeud._frequence += 1
-			return noeud
-		elif doublet < noeud._doublet:
-			if noeud._left is None:
-				#return 1
-				return self._add_left(noeud,doublet)
-			else:
-				return self.add_tree_search(noeud._left,doublet)
-		else:
-			if noeud._right is None:
-				#return 1
-				return self._add_right(noeud,doublet)
-			else:
-				return self.add_tree_search(noeud._right,doublet)
-	
-	def imprime(self):
-		racine = self._root
-		self.inorder_print(racine)
-        
-	def __str__(self):
-		return self.breadth_first_print()
-
-	
-	def __iter__(self):
-		racine = self._root
-		return self.inorder_generate(racine)
-	
-	def inorder_generate( self, noeud ):
-		if noeud._left is not None:
-			self.inorder_print( noeud._left )
-		yield(noeud)
-		if noeud._right is not None:
-			self.inorder_print( noeud._right )
-	
-	def inorder_print( self, noeud ):
-		if noeud._left is not None:
-			self.inorder_print( noeud._left )
-		print(noeud)
-		if noeud._right is not None:
-			self.inorder_print( noeud._right )
-	## Seulement pour montrer la structure de l'arbre pour test		
-	def breadth_first_print( self ):
-		if self._root is not None:
-			table = collections.deque()
-			table1 = collections.deque()
-			mot = ""
-			mot += str(self._root)
-			mot += "\n"
-			for c in self.children( self._root ):
-				mot += str(c)
-				table.appendleft( c )
-			mot += "\n"
-			while len(table)!= 0:
-				p = table.pop()
-				for c in self.children(p):
-					mot += str(c)
-					table1.appendleft(c)
-				if len(table)== 0 and not len(table1) == 0:
-					mot += "\n"
-					table = table1.copy()
-					table1.clear()
-		else:
-			mot = "Tree is empty"
-		return mot
