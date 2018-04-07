@@ -10,7 +10,7 @@ from Bucket import Bucket
 import sys
 class Tp2_1055234_1047837_b1:
 	sys.setrecursionlimit(1500)
-	def __init__(self,cap = 7, p = 109345121):
+	def __init__(self,cap = 786433, p = 109345121):
 		self._taille = cap
 		self._Tableau = self._taille * [None] #taille par defaut lors de l'appel
 		self._premier = p				#nombre premier pour compression MAD
@@ -22,12 +22,9 @@ class Tp2_1055234_1047837_b1:
 		self._index = Bucket()		# List des index à utiliser pour la methode items
 		self._indice_premier = 0 #keep track of prime number in prime list
 		
-		
 	def __len__(self):
 		return len(self._Tableau)
 		
-
-	
 	"""Inserer valeur associee a la cle k dans la hashTable"""
 	def __setitem__(self, k, v):
 		iterateur = self._hash_(k)
@@ -60,6 +57,9 @@ class Tp2_1055234_1047837_b1:
 		for i in self._index:
 			yield list(self._Tableau[i].__items__())
 			
+	def keys(self):
+		return self._keys
+	
 	def __str__(self):
 		
 		pp = "Taille de table: "+ str(self._taille) + "\n"
@@ -115,7 +115,7 @@ class Tp2_1055234_1047837_b1:
 	"""Grows the table as more keys are added
 		http://www.orcca.on.ca/~yxie/courses/cs2210b-2011/htmls/extra/PlanetMath_%20goodhashtable.pdf"""
 	def _resize(self, newSize):		#Est ce qu'on utilise l'attribut newSize?
-		listePremiers = [7, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469]
+		listePremiers = [7, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457, 1610612741]
 		i = listePremiers.index(self._taille)
 		#print("i= "+str(i))
 		while i < len(listePremiers):
@@ -128,7 +128,8 @@ class Tp2_1055234_1047837_b1:
 				#print("true")
 				old = list(self.__items__())
 				self._index = Bucket()
-				#print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i+1]) +")")
+				self._keys = Bucket()
+				print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i+1]) +")")
 				self._Tableau = listePremiers[i+1] * [None]
 				self._taille = listePremiers[i+1]
 				#print(str(self._taille))
