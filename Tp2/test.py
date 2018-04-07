@@ -1,5 +1,5 @@
 from Tp2_1055234_1047837_b1 import Tp2_1055234_1047837_b1
-PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_","«"]
+PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_","«","»"]
 #class test():
 #		table = Tp2_1055234_1047837_b1()
 #		table.insert("bonjour toi")
@@ -61,7 +61,7 @@ def treatLine(line):
 #table = Tp2_1055234_1047837_b1()
 #treatText(tableTest,"test.txt")
 treatText(tableHugo,"hugo.txt")
-print(tableHugo)
+#print(tableHugo)
 
 		
 

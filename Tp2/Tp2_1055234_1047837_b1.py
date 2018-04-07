@@ -117,18 +117,18 @@ class Tp2_1055234_1047837_b1:
 	def _resize(self, newSize):		#Est ce qu'on utilise l'attribut newSize?
 		listePremiers = [7, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469]
 		i = listePremiers.index(self._taille)
-		print("i= "+str(i))
+		#print("i= "+str(i))
 		while i < len(listePremiers):
-			print("i= "+str(i))
-			print("nbElem= "+str(self._nbElem))
-			print("TabLen= "+str(len(self._Tableau)))
-			print("listepremier= "+str(listePremiers[i]))
+			#print("i= "+str(i))
+			#print("nbElem= "+str(self._nbElem))
+			#print("TabLen= "+str(len(self._Tableau)))
+			#print("listepremier= "+str(listePremiers[i]))
 			if self._nbElem > (len(self._Tableau)//2):
 				#self._indice_premier = i+1
-				print("true")
+				#print("true")
 				old = list(self.__items__())
 				self._index = Bucket()
-				print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i+1]) +")")
+				#print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i+1]) +")")
 				self._Tableau = listePremiers[i+1] * [None]
 				self._taille = listePremiers[i+1]
 				#print(str(self._taille))
