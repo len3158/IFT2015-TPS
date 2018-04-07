@@ -56,11 +56,13 @@ class Bucket( ):
 		curr = self._head._next
 		for i in range( self._size ):
 			yield curr._doublet
+			curr = curr._next
 			
 	def __items__(self):
 		curr = self._head._next
 		for i in range( self._size ):
 			yield (curr._doublet,curr._frequence)
+			curr = curr._next
 			
 	def __contains__(self,doublet):
 		noeud = self.find(doublet)
@@ -75,6 +77,7 @@ class Bucket( ):
 		self._size += 1
 		return newNode
 
+	
 	def insert( self, doublet):
 		if self._size == 0:
 			newNode = self._Node( doublet, self._head, self._head._next)
@@ -85,10 +88,10 @@ class Bucket( ):
 			noeud = self.find(doublet)
 			if noeud is not None:
 				noeud._frequence += 1
-				return noeud._frequence
+				return True
 			else:
 				self.append(doublet)
-		return 1
+		return False
 
 	def remove( self, doublet ):
 		if self.is_empty():
@@ -100,9 +103,9 @@ class Bucket( ):
 				noeud._next._prev = noeud._prev
 				noeud._next = None #convention pour un noeud désasigné
 				self._size -= 1
-				return noeud._doublet
+				return True
 			else:
-				return None
+				return False
 
 	def	__getitem__(self,doublet):
 		noeud = self.find(doublet)
@@ -111,19 +114,26 @@ class Bucket( ):
 		else:
 			return None
 	def __setitem__(self,doublet,frequence):
+		self._setitem(doublet,frequence)
+	def _setitem(self,doublet,frequence):
 		if self._size == 0:
 			newNode = self._Node( doublet, self._head, self._head._next,frequence )
 			self._head._next._prev = newNode
 			self._head._next = newNode
+			self._size += 1
+			return False;
 		else:
 			noeud = self.find(doublet)
 			if noeud is not None:
 				noeud._frequence = frequence
+				return True
 			else:
 				self.append(doublet,frequence)
+				return False			
+	
 
 	def __delitem__(self,doublet):
-		return self.remove(doublet)
+		self.remove(doublet)
 	
 
 		

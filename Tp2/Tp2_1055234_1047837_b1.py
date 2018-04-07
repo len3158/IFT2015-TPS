@@ -1,94 +1,149 @@
 """
+Notre classe dictionnaire
+
 En utilisant la méthode de Horner pour la fonction de hashage:
 https://en.wikipedia.org/wiki/Horner%27s_method
+
 """
+from random import randrange
 from Bucket import Bucket
-class HasTable:
-
-	""" Class interne Item"""
-	class _Item:
-		__slots__ = '_key', '_value'
-
-        def __init__( self, k, v = None ):
-            self._key = k
-            self._value = v
-
-        def __eq__( self, other ):
-            return self._key == other._key
-
-        def __ne__( self, other ):
-            return not( self == other )
-
-        def __lt__( self, other ):
-            return self._key < other._key
-
-        def __ge__( self, other ):
-            return self._key >= other._key
-
-        def __str__( self ):
-            return "<" + str( self._key ) + "," + str( self._value ) + ">"
-
-        def key( self ):
-            return self._key
-
-        def value( self ):
-            return self._value
-			
-	""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-	
-	def __init__(self, cap=11, p=109345121, somme=33):
-		self._Tableau = cap*[None] #taille par defaut lors de l'appel
-		self._taille = 0
+import sys
+class Tp2_1055234_1047837_b1:
+	sys.setrecursionlimit(1500)
+	def __init__(self,cap = 1, p = 109345121):
+		self._taille = cap
+		self._Tableau = self._taille * [None] #taille par defaut lors de l'appel
 		self._premier = p				#nombre premier pour compression MAD
-		self._polynome = somme		#33 peut-être évaluer autre valeur? à voir
-		self._echelle = 1 + randrange(p-1)	#echelle MAD
-		self._shift = randrange(p)	#décalage pour MAD
-		self._index = []		# List des index à utiliser pour les methode iter et items
+		self._coefficient = 33		#33 peut-être évaluer autre valeur? à voir
+		self._echelle = 1 + randrange(self._premier-1)	#echelle MAD
+		self._shift = randrange(self._premier)	#décalage pour MAD
+		self._nbElem = 0
+		self._keys = Bucket()	#keep track of all inserted keys pour la distance
+		self._index = Bucket()		# List des index à utiliser pour la methode items
+		
 		
 	def __len__(self):
-		return self._size
+		return len(self._Tableau)
 		
-	def __setitem__(self, k):
-		iterateur = self._compress(self._hash_(k))
-		self._append(iterateur, key)
-	def __getitem__(self, k):
-		iterateur = self._compress(self._hash_(k))
-	def __delete_item__(self,k):
-		
+
 	
+	"""Inserer valeur associee a la cle k dans la hashTable"""
+	def __setitem__(self, k, v):
+		iterateur = self._hash_(k)
+		i = self._compress(iterateur)
+		existe = self._bucket_setitem(i, k, v)
+		if self._nbElem > len(self._Tableau)//2:
+			self._resize(2*len(self._Tableau)-1)
+		if not existe:
+			self._keys.append(k)
+			self._nbElem += 1
+	
+	"""Inserer une clée sans valeur associee a la cle k dans la hashTable"""
+	def insert(self, k):
+		iterateur = self._hash_(k)
+		i = self._compress(iterateur)
+		existe = self._bucket_insert(i, k)
+		if self._nbElem > len(self._Tableau)//2:
+			self._resize(2*len(self._Tableau)-1)
+		if not existe:
+			self._keys.append(k)
+			self._nbElem += 1
+			
 	"""Generate a sequence of key in the map"""
 	def __iter__(self):
-	
+		for key in self._keys:
+			yield key
+
 	"""Generate a sequence of (k,v) tuples for all entries of M"""
 	def __items__(self):
+		for i in self._index:
+			yield list(self._Tableau[i].__items__())
+			
+	def __str__(self):
+		
+		pp = "Taille de table: "+ str(self._taille) + "\n"
+		for i in self._index:
+			pp += "Index: " + str(i)
+			pp += str(self._Tableau[i])
+			pp += "\n"
+		return pp
 	
-	def _get_bucket_item(self, i, k):
+	
+	"""Retourner la valeur associee a la cle k"""
+	def __getitem__(self, k):
+		iterateur = self._hash_(k)
+		i = self._compress(iterateur)
+		return self._bucket_getitems(i, k)
+		
+	def __delitem__(self,k):
+		iterateur = self._hash_(k)
+		i = self._compress(iterateur)
+		if self._bucket_deleteitem(i,k):
+			self._nbElem -= 1
+			del self._keys[k]
+		
+	def _bucket_getitems(self,i,k):
 		bucket = self._Tableau[i]
 		if bucket is not None:
-			return bucket[value]
-		return False		#If bucket is None
-	
-	def _append(self, i,k):
+			return bucket[k]
+		return None		#If bucket is None
+			
+	def _bucket_setitem(self,i,k,v):
 		if self._Tableau[i] is None:
 			self._Tableau[i] = Bucket()
-		frequence = self._Tableau[i].insert(k)
-		if frequence != 1:
-			self._size += 1
+			self._index.append(i)
+		return self._Tableau[i]._setitem(k,v)	
 	
-	def _resize(self, newSize):
+
+	def _bucket_insert(self, i,k):
+		if self._Tableau[i] is None:
+			self._Tableau[i] = Bucket()
+			self._index.append(i)
+		return self._Tableau[i].insert(k)
+	
+	def _bucket_deleteitem(self, i, k):
+		bucket = self._Tableau[i]
+		if bucket is None:
+			return False
+		succes = bucket.remove(k)
+		if bucket.is_empty():
+			self._T = None
+			del self._index[i]
+		return succes
+			
+	"""Grows the table as more keys are added
+		http://www.orcca.on.ca/~yxie/courses/cs2210b-2011/htmls/extra/PlanetMath_%20goodhashtable.pdf"""
+	def _resize(self, newSize):		#Est ce qu'on utilise l'attribut newSize?
+		listePremiers = [53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469]
+		for i in range(1, len(listePremiers)-1):
+			if self._nbElem >len(self._Tableau)//2:
+				old = list(self.__items__())
+				self._index = Bucket()
+				print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i]) +")")
+				self._Tableau = listePremiers[i] * [None]
+				self._taille = listePremiers[i]
+				#print(str(self._taille))
+				self._premier = listePremiers[i+1]
+				self._nbElem = 0
+				if old is not None:
+					for ss in old:
+						for tt in ss:
+							self.__setitem__(tt[0],tt[1])
+				break
 		
 		
 	def _hash_(self,k):
-			return self._horner_method(self._polynome, obj)
-			
-	def _horner_method(self, polyValX, obj):
-		hash_value = 0
-		for x in obj:
-			hash_value = x*hash_value + ord(c)	#ord retourne le char en entier (coefficient)
-		return hash_value
+			return self._horner_method(k)
+	
+	"""Fonction de hashage"""
+	def _horner_method(self, k):
+		if len(k) <= 1:
+			return ord(k[0])
+		else:
+			return  ord(k[0]) + self._coefficient*self._horner_method(k[1:])	#ord retourne le char en entier (coefficient)
 		
 	"""En utilisant la methode MAD"""
 	def _compress(self, hash_value):
-		return (hash_value*self._echelle+self._shit)%self._premier%len(self._table)
+		return (hash_value*self._echelle+self._shift)%self._premier%len(self._Tableau)
 	
 	
