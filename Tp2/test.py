@@ -1,7 +1,7 @@
 from Tp2_1055234_1047837_b1 import Tp2_1055234_1047837_b1
 import time
 import math
-PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_","«","»"]
+PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_"]
 #class test():
 #		table = Tp2_1055234_1047837_b1()
 #		table.insert("bonjour toi")
@@ -72,6 +72,7 @@ def dist_between_ds(d1, d2):
 	dist = 0
 	for k in d1.keys():
 		x = d1[k]
+		print(x)
 		if k in d2:
 			y = d2[k]
 			commond[k] = (x, y)
@@ -89,14 +90,20 @@ def dist_between_ds(d1, d2):
 	for k in commond.keys():
 		x = commond[k]
 		dist += (x[0]/thisn - x[1]/othern)**2
-	dist = dist / len(commond.keys())
-	dist = math.sqrt(dist)
-	return dist
+	if not len(commond.keys()) == 0:
+		dist = dist / len(commond.keys())
+		dist = math.sqrt(dist)
+		return dist
+	else:
+		return 0
 #if __name__=="main":
 
-treatText(tableHugo, "hugo.txt")
+#treatText(tableHugo, "hugo.txt")
+treatText(tableTest, "test.txt")
 treatText(tableMystere, "mystere.txt")
-dist_between_ds(tableHugo, tableMystere)
+#print(tableMystere.keys())
+print(dist_between_ds(tableTest, tableMystere))
+#dist_between_ds(tableHugo, tableMystere)
 			
 			
 			
