@@ -60,8 +60,7 @@ class Tp2_1055234_1047837_b1:
 	def keys(self):
 		return self._keys
 	
-	def __str__(self):
-		
+	def __str__(self):	
 		pp = "Taille de table: "+ str(self._taille) + "\n"
 		for i in self._index:
 			pp += "Index: " + str(i)

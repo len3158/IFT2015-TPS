@@ -70,20 +70,16 @@ def dist_between_ds(d1, d2):
 	thisn = 0
 	othern = 0
 	dist = 0
-	curr = d1.keys()
-	while curr is not None:
-		#print(curr._Node._frequence)
-		print(curr.getDoublet())
-		curr = curr._next
-#	for k in d1.keys():
-#		x = d1[k]
-#		print(x)
-#		if k in d2:
-#			y = d2[k]
-#			commond[k] = (x, y)
-#			thisn += x
-#			othern += y
-	for k in d2.keys():
+	for k in d1._keys:
+		#print(k)
+		x = d1[k]
+		#print(x)
+		if k in d2:
+			y = d2[k]
+			commond[k] = (x, y)
+			thisn += x
+			othern += y
+	for k in d2._keys:
 		if k in commond:
 			continue
 		y = d2[k]
@@ -104,11 +100,12 @@ def dist_between_ds(d1, d2):
 #if __name__=="main":
 
 #treatText(tableHugo, "hugo.txt")
-treatText(tableTest, "test.txt")
-print(tableTest.keys())
+#treatText(tableTest, "test.txt")
+treatText(tableVoltaire, "voltaire.txt")
+#print(tableTest.keys())
 treatText(tableMystere, "mystere.txt")
 #print(tableMystere.keys())
-print(dist_between_ds(tableTest, tableMystere))
+print(dist_between_ds(tableMystere, tableVoltaire))
 #dist_between_ds(tableHugo, tableMystere)
 			
 			
