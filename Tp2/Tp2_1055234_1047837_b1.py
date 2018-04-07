@@ -91,6 +91,6 @@ class HasTable:
 		
 	"""En utilisant la methode MAD"""
 	def _compress(self, hash_value):
-		return (hash_value*self._echelle+self._shit)%self._premier%len(self._table)
+		return (hash_value*self._echelle+self._shift)%self._premier%len(self._table)
 	
 	
