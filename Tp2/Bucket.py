@@ -1,8 +1,7 @@
 """Code Python pour le cours IFT2015
    Mise à jour par François Major le 23 mars 2014.
 """
-
-class Bucket( ):
+class Bucket():
 
 	class _Node:
 
@@ -23,6 +22,9 @@ class Bucket( ):
 		self._tail._prev = self._head
 		self._size = 0
 
+	def getDoublet(self):
+		return self._Node()._doublet
+	
 	def __len__(self):
 		return self._size
 
@@ -113,8 +115,10 @@ class Bucket( ):
 			return noeud._frequence
 		else:
 			return None
+			
 	def __setitem__(self,doublet,frequence):
 		self._setitem(doublet,frequence)
+		
 	def _setitem(self,doublet,frequence):
 		if self._size == 0:
 			newNode = self._Node( doublet, self._head, self._head._next,frequence )
@@ -135,9 +139,6 @@ class Bucket( ):
 	def __delitem__(self,doublet):
 		self.remove(doublet)
 	
-
-		
-
 	def __str__(self):
 		if self.is_empty():
 			return "Tableau vide"

@@ -18,8 +18,8 @@ class Tp2_1055234_1047837_b1:
 		self._echelle = 1 + randrange(self._premier-1)	#echelle MAD
 		self._shift = randrange(self._premier)	#décalage pour MAD
 		self._nbElem = 0
-		self._keys = Bucket()	#keep track of all inserted keys pour la distance
-		self._index = Bucket()		# List des index à utiliser pour la methode items
+		self._keys = Bucket()	 #keep track of all inserted keys pour la distance
+		self._index = Bucket()		#List des index à utiliser pour la methode items
 		self._indice_premier = 0 #keep track of prime number in prime list
 		
 	def __len__(self):
