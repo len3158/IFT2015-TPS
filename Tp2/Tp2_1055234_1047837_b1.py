@@ -10,7 +10,7 @@ from Bucket import Bucket
 import sys
 class Tp2_1055234_1047837_b1:
 	sys.setrecursionlimit(1500)
-	def __init__(self,cap = 1, p = 109345121):
+	def __init__(self,cap = 7, p = 109345121):
 		self._taille = cap
 		self._Tableau = self._taille * [None] #taille par defaut lors de l'appel
 		self._premier = p				#nombre premier pour compression MAD
@@ -20,6 +20,7 @@ class Tp2_1055234_1047837_b1:
 		self._nbElem = 0
 		self._keys = Bucket()	#keep track of all inserted keys pour la distance
 		self._index = Bucket()		# List des index à utiliser pour la methode items
+		self._indice_premier = 0 #keep track of prime number in prime list
 		
 		
 	def __len__(self):
@@ -114,14 +115,22 @@ class Tp2_1055234_1047837_b1:
 	"""Grows the table as more keys are added
 		http://www.orcca.on.ca/~yxie/courses/cs2210b-2011/htmls/extra/PlanetMath_%20goodhashtable.pdf"""
 	def _resize(self, newSize):		#Est ce qu'on utilise l'attribut newSize?
-		listePremiers = [53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469]
-		for i in range(1, len(listePremiers)-1):
-			if self._nbElem >len(self._Tableau)//2:
+		listePremiers = [7, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469]
+		i = listePremiers.index(self._taille)
+		print("i= "+str(i))
+		while i < len(listePremiers):
+			print("i= "+str(i))
+			print("nbElem= "+str(self._nbElem))
+			print("TabLen= "+str(len(self._Tableau)))
+			print("listepremier= "+str(listePremiers[i]))
+			if self._nbElem > (len(self._Tableau)//2):
+				#self._indice_premier = i+1
+				print("true")
 				old = list(self.__items__())
 				self._index = Bucket()
-				print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i]) +")")
-				self._Tableau = listePremiers[i] * [None]
-				self._taille = listePremiers[i]
+				print("Redimension de la table de (" + str(self._taille) + ") a (" + str(listePremiers[i+1]) +")")
+				self._Tableau = listePremiers[i+1] * [None]
+				self._taille = listePremiers[i+1]
 				#print(str(self._taille))
 				self._premier = listePremiers[i+1]
 				self._nbElem = 0
@@ -129,7 +138,9 @@ class Tp2_1055234_1047837_b1:
 					for ss in old:
 						for tt in ss:
 							self.__setitem__(tt[0],tt[1])
-				break
+			
+			return
+			#break
 		
 		
 	def _hash_(self,k):

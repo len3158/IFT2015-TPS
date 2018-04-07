@@ -21,7 +21,7 @@ class TextDict:
                 if line == '': continue
                 words = self.treatLine(line)
                 ####### À COMPLÉTER ############################################
-
+                print(words)
 
 
     def treatLine(self, line):
@@ -40,3 +40,6 @@ class TextDict:
             if len(w) > 2:
                 wlower.append(w.lower())
         return wlower
+
+if __name__=="main":
+    treatText("hugo.txt")
