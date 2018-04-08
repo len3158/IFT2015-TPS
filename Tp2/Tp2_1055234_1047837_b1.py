@@ -7,9 +7,7 @@ https://en.wikipedia.org/wiki/Horner%27s_method
 """
 from random import randrange
 from Bucket import Bucket
-import sys
 class Tp2_1055234_1047837_b1:
-	sys.setrecursionlimit(1500)
 	def __init__(self,cap = 786433, p = 109345121):
 		self._taille = cap
 		self._Tableau = self._taille * [None] #taille par defaut lors de l'appel
@@ -60,6 +58,14 @@ class Tp2_1055234_1047837_b1:
 	def keys(self):
 		return self._keys
 	
+	
+	def __contains__(self,k):
+		value = self.__getitem__(k)
+		if value is None:
+			return False
+		else:
+			return True
+	
 	def __str__(self):	
 		pp = "Taille de table: "+ str(self._taille) + "\n"
 		for i in self._index:
@@ -74,13 +80,6 @@ class Tp2_1055234_1047837_b1:
 		iterateur = self._hash_(k)
 		i = self._compress(iterateur)
 		return self._bucket_getitems(i, k)
-		
-	def __delitem__(self,k):
-		iterateur = self._hash_(k)
-		i = self._compress(iterateur)
-		if self._bucket_deleteitem(i,k):
-			self._nbElem -= 1
-			del self._keys[k]
 		
 	def _bucket_getitems(self,i,k):
 		bucket = self._Tableau[i]
@@ -100,16 +99,7 @@ class Tp2_1055234_1047837_b1:
 			self._Tableau[i] = Bucket()
 			self._index.append(i)
 		return self._Tableau[i].insert(k)
-	
-	def _bucket_deleteitem(self, i, k):
-		bucket = self._Tableau[i]
-		if bucket is None:
-			return False
-		succes = bucket.remove(k)
-		if bucket.is_empty():
-			self._T = None
-			del self._index[i]
-		return succes
+
 			
 	"""Grows the table as more keys are added
 		http://www.orcca.on.ca/~yxie/courses/cs2210b-2011/htmls/extra/PlanetMath_%20goodhashtable.pdf"""
