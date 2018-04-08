@@ -32,7 +32,7 @@ tableMystere = Tp2_1055234_1047837_b1()
 """Represents text with doublet frequencies."""
 def treatText(table, filename):
 	prevword = None
-	with open(filename) as f:
+	with open(filename,encoding="utf8") as f:
 		lines = f.readlines()
 		for line in lines:
 			line = line.rstrip()
@@ -99,19 +99,28 @@ def dist_between_ds(d1, d2):
 		return dist
 #if __name__=="main":
 
-#treatText(tableHugo, "hugo.txt")
-#treatText(tableTest, "test.txt")
-treatText(tableVoltaire, "voltaire.txt")
-#print(tableTest.keys())
+treatText(tableHugo, "hugo.txt")
+treatText(tableTest, "test.txt")
 treatText(tableMystere, "mystere.txt")
+treatText(tableVoltaire, "voltaire.txt")
+treatText(tableVerne, "verne.txt")
+treatText(tableZola, "zola.txt")
+treatText(tableBalzac, "balzac.txt")
+treatText(tableHugo,"hugo.txt")
+treatText(tableSegur, "segur.txt")
+#print(tableTest.keys())
 #print(tableMystere.keys())
 print(dist_between_ds(tableMystere, tableVoltaire))
+print(dist_between_ds(tableMystere, tableVerne))
+print(dist_between_ds(tableMystere, tableZola))
+print(dist_between_ds(tableMystere, tableBalzac))
+print(dist_between_ds(tableMystere, tableHugo))
+print(dist_between_ds(tableMystere, tableSegur))
 #dist_between_ds(tableHugo, tableMystere)
+		
 			
 			
-			
-#table = Tp2_1055234_1047837_b1()
-#treatText(tableTest,"test.txt")
+
 #print("Taille initiale : "+str(tableVerne._taille))
 #start_time = time.time()
 #treatText(tableVerne, "verne.txt")
