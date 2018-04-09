@@ -93,14 +93,14 @@ def deviner_Texte():
 	tableMystere = Dictionnaire()
 	treatText(tableMystere, "mystere.txt")
 
-	resultats.append([dist_between_ds(tableVerne, tableMystere), "Verne: "])
-	resultats.append([dist_between_ds(tableZola, tableMystere), "Zola: "])
-	resultats.append([dist_between_ds(tableHugo, tableMystere), "Hugo: "])
-	resultats.append([dist_between_ds(tableSegur, tableMystere), "Segur: "])
-	resultats.append([dist_between_ds(tableVoltaire, tableMystere), "Voltaire: "])
-	resultats.append([dist_between_ds(tableBalzac, tableMystere), "Balzac: "])
+	resultats.append([dist_between_ds(tableVerne, tableMystere), "Verne "])
+	resultats.append([dist_between_ds(tableZola, tableMystere), "Zola "])
+	resultats.append([dist_between_ds(tableHugo, tableMystere), "Hugo "])
+	resultats.append([dist_between_ds(tableSegur, tableMystere), "Segur "])
+	resultats.append([dist_between_ds(tableVoltaire, tableMystere), "Voltaire "])
+	resultats.append([dist_between_ds(tableBalzac, tableMystere), "Balzac "])
 	for i in resultats:
-		print(i[1]+" "+str(round(i[0], 5)))
+		print(i[1]+" : "+str(i[0]))
 	value = min(resultats)
 	print("Auteur du texte mystère: "+value[1])
 	
