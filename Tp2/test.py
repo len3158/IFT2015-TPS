@@ -21,7 +21,6 @@ PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_"]
 #		del table["bonjour toi"]
 #		print("Afficher la table apres (manger chien = 7) et delete (bonjour toi)") 
 #		print(table)
-tableTest = Tp2_1055234_1047837_b1()
 tableVerne = Tp2_1055234_1047837_b1()
 tableZola = Tp2_1055234_1047837_b1()
 tableBalzac = Tp2_1055234_1047837_b1()
@@ -43,6 +42,7 @@ def treatText(table, filename):
 			for item in range(len(words)):
 				try:
 					if words[item+1] is not None:
+						
 						#print(words[item]+" "+words[item+1])
 						table.insert(words[item]+" "+words[item+1])
 				except IndexError:
@@ -70,24 +70,28 @@ def dist_between_ds(d1, d2):
 	thisn = 0
 	othern = 0
 	dist = 0
-	for k in d1._keys:
+	#for k in d1._keys:
+	for bucket in d1._index:
+		for k,v in bucket.__items__():
 		#print(k)
-		x = d1[k]
-		#print(x)
-		if k in d2:
-			y = d2[k]
-			commond[k] = (x, y)
-			thisn += x
-			othern += y
-	for k in d2._keys:
-		if k in commond:
-			continue
-		y = d2[k]
-		if k in d1:
-			x = d1[k]
-			commond[k] = (x, y)
-			thisn += x
-			othern += y
+			x = v
+			#print(x)
+			if k in d2:
+				y = d2[k]
+				commond[k] = (x, y)
+				thisn += x
+				othern += y
+	#for k in d2._index:
+	for bucket in d2._index:
+		for k,v in bucket.__items__():
+			if k in commond:
+				continue
+			y = v
+			if k in d1:
+				x = d1[k]
+				commond[k] = (x, y)
+				thisn += x
+				othern += y
 	for k in commond.keys():
 		x = commond[k]
 		dist += (x[0]/thisn - x[1]/othern)**2
@@ -98,67 +102,38 @@ def dist_between_ds(d1, d2):
 	else:
 		return dist
 #if __name__=="main":
-
-treatText(tableHugo, "hugo.txt")
-treatText(tableTest, "test.txt")
-treatText(tableMystere, "mystere.txt")
-treatText(tableVoltaire, "voltaire.txt")
-treatText(tableVerne, "verne.txt")
-treatText(tableZola, "zola.txt")
-treatText(tableBalzac, "balzac.txt")
-treatText(tableHugo,"hugo.txt")
-treatText(tableSegur, "segur.txt")
-#print(tableTest.keys())
-#print(tableMystere.keys())
-print(dist_between_ds(tableMystere, tableVoltaire))
-print(dist_between_ds(tableMystere, tableVerne))
-print(dist_between_ds(tableMystere, tableZola))
-print(dist_between_ds(tableMystere, tableBalzac))
-print(dist_between_ds(tableMystere, tableHugo))
-print(dist_between_ds(tableMystere, tableSegur))
-#dist_between_ds(tableHugo, tableMystere)
-		
-			
-			
-
-#print("Taille initiale : "+str(tableVerne._taille))
 #start_time = time.time()
-#treatText(tableVerne, "verne.txt")
-#print("verne: " + str(time.time() - start_time))
+treatText(tableMystere, "mystere.txt")
+start_time = time.time()
+treatText(tableVerne, "verne.txt")
+print("verne: " + str(time.time() - start_time))
 #
 #start_time = time.time()	
-#treatText(tableZola, "zola.txt")
-#print("zola: " + str(time.time() - start_time))
+treatText(tableZola, "zola.txt")
+print("zola: " + str(time.time() - start_time))
 #
 #start_time = time.time()
-#treatText(tableBalzac, "balzac.txt")
-#print("balzac: " + str(time.time() - start_time))
+treatText(tableBalzac, "balzac.txt")
+print("balzac: " + str(time.time() - start_time))
 #
 #start_time = time.time()
-#treatText(tableHugo,"hugo.txt")
-#print("hugo: " + str(time.time() - start_time))
+treatText(tableHugo,"hugo.txt")
+print("hugo: " + str(time.time() - start_time))
 #
 #start_time = time.time()
-#treatText(tableSegur, "segur.txt")
-#print("segur: " + str(time.time() - start_time))
+treatText(tableSegur, "segur.txt")
+print("segur: " + str(time.time() - start_time))
 #
 #start_time = time.time()
-#treatText(tableVoltaire, "voltaire.txt")
-#print("voltaire: " + str(time.time() - start_time))
+treatText(tableVoltaire, "voltaire.txt")
+print("voltaire: " + str(time.time() - start_time))
 #
-#start_time = time.time()
-#treatText(tableMystere, "mystere.txt")
-#print("mystere: " + str(time.time() - start_time))
-#print(tableVerne)
-#print(tableZola)
-#print(tableBalzac)
-#print(tableSegur)
-#print(tableHugo)
-#print(tableVoltaire)
-#print(tableMystere)
-#print("Verne: ")
-
-#print(tableHugo)
+print("verne: " + str(dist_between_ds(tableMystere, tableVerne)) + "temps: " + str(time.time() - start_time))
+print("zola: " +str(dist_between_ds(tableMystere, tableZola))+ "temps: " + str(time.time() - start_time))
+print("balzac: " +str(dist_between_ds(tableMystere, tableBalzac))+ "temps: " + str(time.time() - start_time))
+print("hugo: " +str(dist_between_ds(tableMystere, tableHugo))+ "temps: " + str(time.time() - start_time))
+print("segur: " +str(dist_between_ds(tableMystere, tableSegur))+ "temps: " + str(time.time() - start_time))
+print("voltaire: " +str(dist_between_ds(tableMystere, tableVoltaire))+ "temps: " + str(time.time() - start_time))
 
 		
 

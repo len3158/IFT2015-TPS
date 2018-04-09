@@ -6,10 +6,10 @@ class Bucket():
 	class _Node:
 
 		def __init__( self, doublet = None, next = None,frequence = 1 ):
-			__slots__ = '_doublet', '_frequence', '_next'
+			__slots__ = '_doublet', '_next', '_frequence'
 			self._doublet = doublet
-			self._frequence = frequence
 			self._next = next
+			self._frequence = frequence
 			
 		
 		def __str__(self):
@@ -71,23 +71,22 @@ class Bucket():
 
 	def append( self, doublet,frequence = 1 ):
 		newNode = self._Node( doublet, None,frequence )
-		if self._tail == None:
-			self._head = self._tail = newNode
-		else:
-			self._tail._next = newNode
-			self._tail = newNode
+		self._tail._next = newNode
+		self._tail = newNode
+		self._size += 1
+		
+	def add_first( self, doublet,frequence = 1):
+		newNode = self._Node( doublet, None,frequence )
+		self._head = self._tail = newNode
 		self._size += 1
 
 	
 	def insert( self, doublet):
-		if self._size == 0:
-			self.append(doublet)
-		else:
-			noeud = self.find(doublet)
-			if noeud is not None:
-				noeud._frequence += 1
-				return True
-			self.append(doublet)
+		noeud = self.find(doublet)
+		if noeud is not None:
+			noeud._frequence += 1
+			return True
+		self.append(doublet)
 		return False
 
 	def	__getitem__(self,doublet):
