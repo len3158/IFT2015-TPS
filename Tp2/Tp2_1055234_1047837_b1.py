@@ -37,6 +37,7 @@ class Tp2_1055234_1047837_b1:
 		if not existe:
 			#self._keys.append(k)
 			self._nbElem += 1
+
 	
 	"""Inserer une clée sans valeur associee a la cle k dans la hashTable"""
 	def insert(self, k):
@@ -61,6 +62,7 @@ class Tp2_1055234_1047837_b1:
 		for bucket in self._index:
 			for k,v in bucket.__items__():
 				yield (k,v)
+
 			
 	def generatebucket(self):
 		for bucket in self._index:
@@ -118,6 +120,7 @@ class Tp2_1055234_1047837_b1:
 			self._Tableau[i].add_first(k)
 			return False
 		return self._Tableau[i].insert(k)
+		
 
 			
 	"""Grows the table as more keys are added

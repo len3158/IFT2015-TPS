@@ -89,22 +89,22 @@ def dist_between_ds(d1, d2):
 			y = v
 			if k in d1:
 				x = d1[k]
-				commond[k] = (x, y)
+				ccommond[k] = (x, y)
 				thisn += x
 				othern += y
-	for k in commond.keys():
-		x = commond[k]
+	#for k in commond.keys():
+	for x in commond.values():
 		dist += (x[0]/thisn - x[1]/othern)**2
-	if not len(commond.keys()) == 0:
-		dist = dist / len(commond.keys())
+	if not len(commond) == 0:
+		dist = dist / len(commond)
 		dist = math.sqrt(dist)
 		return dist
 	else:
 		return dist
 #if __name__=="main":
 #start_time = time.time()
-treatText(tableMystere, "mystere.txt")
 start_time = time.time()
+treatText(tableMystere, "mystere.txt")
 treatText(tableVerne, "verne.txt")
 print("verne: " + str(time.time() - start_time))
 #
