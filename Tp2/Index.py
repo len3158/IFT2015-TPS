@@ -1,7 +1,15 @@
-"""Code Python pour le cours IFT2015
-   Mise à jour par François Major le 23 mars 2014.
 """
-class Bucket1():
+La classe Index de notre dictionnaire abstrait
+**Auteurs: - Mehran ASADI. Matricule: 1047837
+		   - Lenny SIEMENI. Matricule: 1055234**
+
+Utile pour accelerer le code lors du calcul de la distance.
+Garde uniquement les clés d'un dictionnaire
+
+Inspire du code vu en classe par François Major le 23 mars 2014
+dans le cadre du cours IFT2015.
+"""
+class Index():
 
 	class _Node:
 
@@ -10,7 +18,6 @@ class Bucket1():
 			self._doublet = doublet
 			self._next = next
 			
-		
 		def __str__(self):
 			return "(" + str(self._doublet) + "," + str(self._frequence) + ")"
 			
@@ -18,8 +25,6 @@ class Bucket1():
 		self._head = None
 		self._tail = None
 		self._size = 0
-
-
 	
 	def __len__(self):
 		return self._size

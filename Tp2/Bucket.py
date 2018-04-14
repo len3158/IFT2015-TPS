@@ -1,5 +1,12 @@
-"""Code Python pour le cours IFT2015
-   Mise à jour par François Major le 23 mars 2014.
+"""
+La classe Index de notre dictionnaire abstrait
+**Auteurs: - Mehran ASADI. Matricule: 1047837
+		   - Lenny SIEMENI. Matricule: 1055234**
+
+On utilise une liste simplement chainee pour gerer la structure dans un sceau
+
+Inspire du code vu en classe par François Major le 23 mars 2014
+dans le cadre du cours IFT2015.
 """
 class Bucket():
 
@@ -10,8 +17,8 @@ class Bucket():
 			self._doublet = doublet
 			self._next = next
 			self._frequence = frequence
-			
 		
+		#utile pour deboggage	
 		def __str__(self):
 			return "(" + str(self._doublet) + "," + str(self._frequence) + ")"
 			
@@ -20,24 +27,8 @@ class Bucket():
 		self._tail = None
 		self._size = 0
 
-
-	
 	def __len__(self):
 		return self._size
-
-	def __str__(self):
-		pp = " "
-		if self.is_empty():
-			pp = "[](size = 0)"
-		else:
-			pp = "["
-			curr = self._head
-			while curr._next != self._tail:
-				pp += curr.__str__() + ", "
-				curr = curr._next
-			pp += str( curr.doublet ) + "]"
-			pp += "(size = " + str( self._size ) + ")"
-		return pp
 
 	def is_empty(self):
 		return self._size == 0
@@ -81,7 +72,7 @@ class Bucket():
 		self._size += 1
 
 	
-	def insert( self, doublet):
+	def insertKey( self, doublet):
 		noeud = self.find(doublet)
 		if noeud is not None:
 			noeud._frequence += 1
@@ -107,10 +98,7 @@ class Bucket():
 		else:
 			self.append(doublet,frequence)
 			return False			
-	
-
-
-	
+		
 	def __str__(self):
 		if self.is_empty():
 			return "Tableau vide"
