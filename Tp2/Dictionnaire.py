@@ -13,11 +13,16 @@ dans le cadre du cours IFT2015.
 """
 
 from random import randrange
-from Bucket import Bucket
-from Index import Index
+#from Bucket import Bucket
+#from Index import Index
 import time
 
 class Dictionnaire:
+	class _Item:
+		__slots__ = '_doublet','_frequence'
+		def __init__(self,k,v):
+			self._doublet = k
+			self._frequence = v
 	def __init__(self,cap = 786433, p = 109345121):
 		self._taille = cap
 		start_time = time.time()
@@ -27,8 +32,7 @@ class Dictionnaire:
 		self._echelle = 1 + randrange(self._premier-1)	#echelle MAD
 		self._shift = randrange(self._premier)	#décalage pour MAD
 		self._nbElem = 0
-		self._index = Index()		#Liste des index à utiliser pour la methode items
-		self._indice_premier = 0    #keep track of prime number in prime liste
+		self._index = []		#Liste des index à utiliser pour la methode items
 		
 	def __len__(self):
 		return len(self._Tableau)
@@ -37,22 +41,18 @@ class Dictionnaire:
 	def __setitem__(self, k, v):
 		iterateur = self._hash_(k)
 		i = self._compress(iterateur)
-		existe = self._bucket_setitem(i, k, v)
+		self._bucket_setitem(i, k, v)
 		if self._nbElem > len(self._Tableau)//2:	#load factor
 			self._resize(2*len(self._Tableau)-1)
-		if not existe:
-			self._nbElem += 1
 
 	
 	"""Inserer une clée k sans valeur dans la hashTable"""
 	def insertKey(self, k):
 		iterateur = self._hash_(k)
 		i = self._compress(iterateur)
-		existe = self._bucket_insertKey(i, k)
+		self._bucket_insertKey(i, k)
 		if self._nbElem > len(self._Tableau)//2:	#load factor
 			self._resize(2*len(self._Tableau)-1)
-		if not existe:
-			self._nbElem += 1
 			
 	"""Generate a sequence of key in the map"""
 	def __iter__(self):
@@ -63,8 +63,7 @@ class Dictionnaire:
 	"""Generate a sequence of (k,v) tuples for all entries of M"""
 	def __items__(self):
 		for index in self._index:
-			for k,v in index.__items__():
-				yield (k,v)
+			yield (index._doublet,index._frequence)
 
 	"""Iterateur"""	
 	def generatebucket(self):
@@ -89,30 +88,45 @@ class Dictionnaire:
 		i = self._compress(iterateur)
 		return self._bucket_getitems(i, k)
 	
-	"""Retourner le bucket associe a la collision a l'indice i"""
+	"""Retourner le bucket associe a la collision a l'indice i sinon retourner None"""
 	def _bucket_getitems(self,i,k):
-		bucket = self._Tableau[i]
-		if bucket is not None:
-			return bucket[k]
-		return None
+		while True:
+			if self._Tableau[i] is None:
+				return None
+			elif len(k) == len(self._Tableau[i]._doublet) and k == self._Tableau[i]._doublet:
+				return self._Tableau[i]._frequence
+			else:
+				i = (i+1) % len(self._Tableau)
 	
-	"""Instancier le bucket associe a la collision a l'indice i"""
+	"""Si le doublet existe, remplacer sa frequence v sinon ajouter le doublet dans un index libre"""
 	def _bucket_setitem(self,i,k,v):
-		if self._Tableau[i] is None:
-			self._Tableau[i] = Bucket()
-			self._index.append(self._Tableau[i])
-			self._Tableau[i].add_first(k,v)
-			return False
-		return self._Tableau[i]._setitem(k,v)	
+		while True:
+			if self._Tableau[i] is None:
+				item = self._Item(k,v)
+				self._Tableau[i] = item
+				self._index.append(item)
+				self._nbElem += 1
+				return
+			elif len(k) == len(self._Tableau[i]._doublet) and k == self._Tableau[i]._doublet:
+				self._Tableau[i]._frequence = v
+				return
+			else:
+				i = (i+1) % len(self._Tableau)	
 	
-	"""Inserer la collision dans le bucket a l'indice i"""
+	"""si le doublet existe, incrementer frequence sinon inserer le doublet dans index libre """
 	def _bucket_insertKey(self, i,k):
-		if self._Tableau[i] is None:
-			self._Tableau[i] = Bucket()			#si pas de sceau a cet index, on en instancie un
-			self._index.append(self._Tableau[i])	#on append la cle
-			self._Tableau[i].add_first(k)			
-			return False
-		return self._Tableau[i].insertKey(k)
+		while True:
+			if self._Tableau[i] is None:
+				item = self._Item(k,1)
+				self._Tableau[i] = item
+				self._index.append(item)
+				self._nbElem += 1
+				return
+			elif len(k) == len(self._Tableau[i]._doublet) and k == self._Tableau[i]._doublet:
+				self._Tableau[i]._frequence += 1
+				return
+			else:
+				i = (i+1) % len(self._Tableau)
 			
 	"""Agrandit la table si le load factor est en desequilibre
 	liste optimale de nombre premiers pour la taille de la table:
@@ -123,13 +137,13 @@ class Dictionnaire:
 		while i < len(listePremiers):
 			if self._nbElem > (len(self._Tableau)//2):
 				old = list(self.__items__())
-				self._index = Index()
+				self._index = []
 				self._Tableau = listePremiers[i+1] * [None]
 				self._taille = listePremiers[i+1]
 				self._nbElem = 0
 				if old is not None:
-					for tt in old:
-						self.__setitem__(tt[0],tt[1])
+					for k,v in old:
+						self.__setitem__(k,v)
 				return
 	
 	"""Utilitaire pour appeler la fonction de hasahage"""

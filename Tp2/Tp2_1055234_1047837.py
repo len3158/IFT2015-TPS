@@ -11,12 +11,13 @@ texte mystere, a l'aide d'un Dictionnaire Abstrait.
 from Dictionnaire import Dictionnaire
 import time
 import math
+#from Bucket import Bucket
 PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_"]
 
 """Represents text with doublet frequencies."""
 def treatText(table, filename):
 	prevword = None
-	with open(filename) as f:
+	with open(filename,encoding="utf8") as f:
 		lines = f.readlines()
 		for line in lines:
 			line = line.rstrip()
@@ -51,30 +52,20 @@ def treatLine(line):
 
 """Calcule la distance entre deux signatures de deux dictionnaires"""
 def dist_between_ds(d1, d2):
-	commond = dict()
+	commond = []
 	thisn = 0
 	othern = 0
 	dist = 0
-	for bucket in d1._index:
-		for k,v in bucket.__items__():
-			x = v
-			if k in d2:
-				y = d2[k]
-				commond[k] = (x, y)
-				thisn += x
-				othern += y
-	for bucket in d2._index:
-		for k,v in bucket.__items__():
-			if k in commond:
-				continue
-			y = v
-			if k in d1:
-				x = d1[k]
-				ccommond[k] = (x, y)
-				thisn += x
-				othern += y
-	for x in commond.values():
-		dist += (x[0]/thisn - x[1]/othern)**2
+	for k,x in d1.__items__():
+		y = d2[k]
+		if y is not None:
+			commond.append((x,y))
+			#commond.appendCommond( x,y )
+			thisn += x
+			othern += y
+
+	for x,y in commond:
+		dist += (x/thisn - y/othern)**2
 	if not len(commond) == 0:
 		dist = dist / len(commond)
 		dist = math.sqrt(dist)
@@ -85,9 +76,10 @@ def dist_between_ds(d1, d2):
 """Determine qui est l'auteur le plus probable du texte mystere
 parmis 6 textes donnes"""	
 def deviner_Texte():
+	start_time = time.time()
 	resultats = []
-	tableTest = Dictionnaire()
-	treatText(tableTest,"test.txt")
+	#tableTest = Dictionnaire()
+	#treatText(tableTest,"test.txt")
 	tableVerne = Dictionnaire()
 	treatText(tableVerne, "verne.txt")
 	tableZola = Dictionnaire()	
@@ -114,13 +106,14 @@ def deviner_Texte():
 		print(i[1]+" : "+str(i[0]))
 	value = min(resultats)
 	print("Auteur du texte mystère: "+value[1])
+	print(str(time.time() - start_time))
 
 """Retourne le temps d'importation pour chaque texte dans un dictionnaire"""	
 def test_performance():		
-	start_time = time.time()
-	tableTest = Dictionnaire()
-	treatText(tableTest,"test.txt")
-	print("Temps importation du texte de Test: " + str(round(time.time() - start_time,3))+" secondes")
+	#start_time = time.time()
+	#tableTest = Dictionnaire()
+	#treatText(tableTest,"test.txt")
+	#print("Temps importation du texte de Test: " + str(round(time.time() - start_time,3))+" secondes")
 	
 	start_time = time.time()
 	tableVerne = Dictionnaire()
