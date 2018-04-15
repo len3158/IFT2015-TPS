@@ -63,15 +63,14 @@ def dist_between_ds(d1, d2):
 			#commond.appendCommond( x,y )
 			thisn += x
 			othern += y
-
-	for x,y in commond:
-		dist += (x/thisn - y/othern)**2
 	if not len(commond) == 0:
-		dist = dist / len(commond)
-		dist = math.sqrt(dist)
-		return dist
-	else:
-		return dist
+		for x,y in commond:
+			dist += (x/thisn - y/othern)**2
+		
+			dist = dist / len(commond)
+			dist = math.sqrt(dist)
+
+	return dist
 
 """Determine qui est l'auteur le plus probable du texte mystere
 parmis 6 textes donnes"""	
