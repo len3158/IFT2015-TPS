@@ -11,7 +11,7 @@ texte mystere, a l'aide d'un Dictionnaire Abstrait.
 from Dictionnaire import Dictionnaire
 import time
 import math
-#from Bucket import Bucket
+
 PONC = ["!",'"',"'",")","(",",",".",";",":","?", "-", "_"]
 
 """Represents text with doublet frequencies."""
@@ -60,7 +60,6 @@ def dist_between_ds(d1, d2):
 		y = d2[k]
 		if y is not None:
 			commond.append((x,y))
-			#commond.appendCommond( x,y )
 			thisn += x
 			othern += y
 	if not len(commond) == 0:
@@ -76,8 +75,6 @@ parmis 6 textes donnes"""
 def deviner_Texte():
 	start_time = time.time()
 	resultats = []
-	#tableTest = Dictionnaire()
-	#treatText(tableTest,"test.txt")
 	tableVerne = Dictionnaire()
 	treatText(tableVerne, "verne.txt")
 	tableZola = Dictionnaire()	
@@ -93,25 +90,21 @@ def deviner_Texte():
 	tableMystere = Dictionnaire()
 	treatText(tableMystere, "mystere.txt")
 
-	resultats.append([dist_between_ds(tableSegur, tableMystere), "Segur "])
-	resultats.append([dist_between_ds(tableBalzac, tableMystere), "Balzac "])
-	resultats.append([dist_between_ds(tableVoltaire, tableMystere), "Voltaire "])
-	resultats.append([dist_between_ds(tableZola, tableMystere), "Zola "])
-	resultats.append([dist_between_ds(tableVerne, tableMystere), "Verne "])
-	resultats.append([dist_between_ds(tableHugo, tableMystere), "Hugo "])
+	resultats.append([dist_between_ds(tableSegur, tableMystere), "Segur"])
+	resultats.append([dist_between_ds(tableBalzac, tableMystere), "Balzac"])
+	resultats.append([dist_between_ds(tableVoltaire, tableMystere), "Voltaire"])
+	resultats.append([dist_between_ds(tableZola, tableMystere), "Zola"])
+	resultats.append([dist_between_ds(tableVerne, tableMystere), "Verne"])
+	resultats.append([dist_between_ds(tableHugo, tableMystere), "Hugo"])
 	
 	for i in resultats:
 		print(i[1]+" : "+str(i[0]))
 	value = min(resultats)
 	print("Auteur du texte mystère: "+value[1])
-	print(str(time.time() - start_time))
+	print(str(time.time() - start_time)+" trouvé en secondes.")
 
 """Retourne le temps d'importation pour chaque texte dans un dictionnaire"""	
 def test_performance():		
-	#start_time = time.time()
-	#tableTest = Dictionnaire()
-	#treatText(tableTest,"test.txt")
-	#print("Temps importation du texte de Test: " + str(round(time.time() - start_time,3))+" secondes")
 	
 	start_time = time.time()
 	tableVerne = Dictionnaire()

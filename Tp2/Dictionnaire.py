@@ -5,7 +5,7 @@ La classe principale du dictionnaire Abstrait
 En utilisant la méthode de Horner pour la fonction de hashage:
 https://en.wikipedia.org/wiki/Horner%27s_method
 
-Et en utilisant la methode des "buckets", et la compression MAD
+Et en utilisant la methode linear probing, et la compression MAD
 pour la gestion des collisions
 
 Inspire du code vu en classe par François Major le 23 mars 2014
@@ -13,8 +13,6 @@ dans le cadre du cours IFT2015.
 """
 
 from random import randrange
-#from Bucket import Bucket
-#from Index import Index
 import time
 
 class Dictionnaire:
@@ -23,6 +21,7 @@ class Dictionnaire:
 		def __init__(self,k,v):
 			self._doublet = k
 			self._frequence = v
+			
 	def __init__(self,cap = 786433, p = 109345121):
 		self._taille = cap
 		start_time = time.time()
@@ -41,7 +40,7 @@ class Dictionnaire:
 	def __setitem__(self, k, v):
 		iterateur = self._hash_(k)
 		i = self._compress(iterateur)
-		self._bucket_setitem(i, k, v)
+		self._probe_setitem(i, k, v)
 		if self._nbElem > len(self._Tableau)//2:	#load factor
 			self._resize(2*len(self._Tableau)-1)
 
@@ -50,7 +49,7 @@ class Dictionnaire:
 	def insertKey(self, k):
 		iterateur = self._hash_(k)
 		i = self._compress(iterateur)
-		self._bucket_insertKey(i, k)
+		self._probe_insertkey(i, k)
 		if self._nbElem > len(self._Tableau)//2:	#load factor
 			self._resize(2*len(self._Tableau)-1)
 			
@@ -64,11 +63,6 @@ class Dictionnaire:
 	def __items__(self):
 		for index in self._index:
 			yield (index._doublet,index._frequence)
-
-	"""Iterateur"""	
-	def generatebucket(self):
-		for index in self._index:
-			yield index
 	
 	"""Retourne la longueur de la liste d'indexes contenant un bucket"""	
 	def nbIndex(self):
@@ -86,10 +80,10 @@ class Dictionnaire:
 	def __getitem__(self, k):
 		iterateur = self._hash_(k)
 		i = self._compress(iterateur)
-		return self._bucket_getitems(i, k)
+		return self._probe_getitems(i, k)
 	
 	"""Retourner le bucket associe a la collision a l'indice i sinon retourner None"""
-	def _bucket_getitems(self,i,k):
+	def _probe_getitems(self,i,k):
 		while True:
 			if self._Tableau[i] is None:
 				return None
@@ -99,7 +93,7 @@ class Dictionnaire:
 				i = (i+1) % len(self._Tableau)
 	
 	"""Si le doublet existe, remplacer sa frequence v sinon ajouter le doublet dans un index libre"""
-	def _bucket_setitem(self,i,k,v):
+	def _probe_setitem(self,i,k,v):
 		while True:
 			if self._Tableau[i] is None:
 				item = self._Item(k,v)
@@ -114,7 +108,7 @@ class Dictionnaire:
 				i = (i+1) % len(self._Tableau)	
 	
 	"""si le doublet existe, incrementer frequence sinon inserer le doublet dans index libre """
-	def _bucket_insertKey(self, i,k):
+	def _probe_insertkey(self, i,k):
 		while True:
 			if self._Tableau[i] is None:
 				item = self._Item(k,1)
@@ -155,7 +149,7 @@ class Dictionnaire:
 		if len(k) <= 1:
 			return ord(k[0])
 		else:
-			return  ord(k[0]) + self._coefficient*self._horner_method(k[1:])	#ord retourne le char en entier (coefficient)
+			return  ord(k[0]) + self._coefficient*self._horner_method(k[1:])	#ord retourne le char en nombre entier
 		
 	"""Fonction de compression en utilisant la methode MAD"""
 	def _compress(self, hash_value):
