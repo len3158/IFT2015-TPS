@@ -66,9 +66,8 @@ def dist_between_ds(d1, d2):
 	if not len(commond) == 0:
 		for x,y in commond:
 			dist += (x/thisn - y/othern)**2
-		
-			dist = dist / len(commond)
-			dist = math.sqrt(dist)
+		dist = dist / len(commond)
+		dist = math.sqrt(dist)
 
 	return dist
 
